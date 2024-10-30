@@ -1,12 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from core.settings import Settings
 
+from app.core.settings import Settings
 
 setting = Settings()
 
 
-def get_application():
+def get_application() -> FastAPI:
     _app = FastAPI(title="P.Y.T.A", debug=setting.debug)
 
     _app.add_middleware(
