@@ -1,13 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from core.settings import Settings
 
-from .database import db
 
-db.connect()
+setting = Settings()
 
 
 def get_application():
-    _app = FastAPI(title="P.Y.T.A")
+    _app = FastAPI(title="P.Y.T.A", debug=setting.debug)
 
     _app.add_middleware(
         CORSMiddleware,
@@ -21,3 +21,8 @@ def get_application():
 
 
 app = get_application()
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run("main:app", host="0.0.0.0", port=setting.port, reload=setting.debug)

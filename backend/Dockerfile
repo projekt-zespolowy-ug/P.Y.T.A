@@ -5,9 +5,12 @@ ENV PORT=8000
 
 WORKDIR /app
 
-COPY . .
+COPY pyproject.toml /app/
+COPY poetry.lock /app/
 
 RUN pip install poetry
 RUN poetry install
 
-CMD ["poetry", "run", "fastapi", "run", "app/main.py", "--port", "8000"]
+COPY . .
+
+CMD ["poetry", "run", "python", "app/main.py"]

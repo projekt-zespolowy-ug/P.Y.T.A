@@ -7,7 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-fastapi = {extras = ["standard"], version = "^0.115.3"}
+fastapi = {extras = ["all"], version = "^0.115.3"}
 peewee = "^3.17.7"
 psycopg2 = "^2.9.10"
 
