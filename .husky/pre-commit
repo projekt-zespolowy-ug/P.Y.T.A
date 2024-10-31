@@ -1,2 +1,4 @@
 #!/bin/sh
+ruff check $(git diff --name-only --cached -- '*.py') --config ./backend/pyproject.toml --fix
+mypy ./backend --config-file ./backend/pyproject.toml
 npx @biomejs/biome check --staged --files-ignore-unknown=true --no-errors-on-unmatched --fix
