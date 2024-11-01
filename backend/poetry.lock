@@ -68,6 +68,17 @@ files = [
 ]
 
 [[package]]
+name = "cuid2"
+version = "2.0.1"
+description = "Next generation GUIDs. Collision-resistant ids optimized for horizontal scaling and performance."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "cuid2-2.0.1-py3-none-any.whl", hash = "sha256:943bdf86dc3ed07f32253e1be6e3c34dda8c7bda1c453f851f4ebaaa5a2dcfbf"},
+    {file = "cuid2-2.0.1.tar.gz", hash = "sha256:8d262eb467c16b81419361e18e47f41da77c4446dd2cf0640eac2616680bc924"},
+]
+
+[[package]]
 name = "dnspython"
 version = "2.7.0"
 description = "DNS toolkit"
@@ -1214,4 +1225,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "d1b087aaa6a011a162e19da3e387de8333a0cac7f160811cb70d8eb40fd8a2dd"
+content-hash = "810183b2653d1e9f58678d69ef775451702264484f410186a7deab09542d3c83"
