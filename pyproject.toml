@@ -9,8 +9,11 @@ readme = "README.md"
 python = "^3.12"
 fastapi = {extras = ["all"], version = "^0.115.3"}
 peewee = "^3.17.7"
-psycopg2 = "^2.9.10"
 cuid2 = "^2.0.1"
+psycopg2-binary = "^2.9.10"
+types-peewee = "^3.17.7.20241017"
+mypy = "^1.13.0"
+ruff = "^0.7.2"
 
 
 [build-system]
