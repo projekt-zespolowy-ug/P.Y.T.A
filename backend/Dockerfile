@@ -13,4 +13,4 @@ RUN poetry install
 
 COPY . .
 
-CMD ["poetry", "run", "python", "app/main.py"]
+CMD ["poetry", "run", "fastapi", "run"]

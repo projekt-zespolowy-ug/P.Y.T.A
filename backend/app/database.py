@@ -1,11 +1,13 @@
-import os
-
-import dotenv
 from peewee import PostgresqlDatabase
 
-dotenv.load_dotenv(".env.local")
+from app.core.settings import Settings
 
+settings = Settings()
 
 db = PostgresqlDatabase(
-    "pyta", host=os.environ["DB_HOST"], port=5432, user="postgres", password="example"
+    "pyta",
+    host=settings.db_host,
+    port=settings.db_port,
+    user=settings.db_user,
+    password=settings.db_password,
 )

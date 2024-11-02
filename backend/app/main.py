@@ -2,8 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.settings import Settings
+from app.core.utils.init_db import InitDB
 
 setting = Settings()
+
+InitDB()
 
 
 def get_application() -> FastAPI:
