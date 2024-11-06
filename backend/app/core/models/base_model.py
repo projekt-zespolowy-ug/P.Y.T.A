@@ -9,5 +9,5 @@ cuid_generator: Callable[[], str] = cuid_wrapper()
 
 
 class BaseModel(Model):
-    class Meta:
-        database = db
+	class Meta:
+		database = db

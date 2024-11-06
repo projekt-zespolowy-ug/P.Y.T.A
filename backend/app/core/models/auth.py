@@ -5,10 +5,10 @@ from app.core.models.role import Role
 
 
 class Auth(BaseModel):
-    id = TextField(primary_key=True, default=cuid_generator)
-    role_id = ForeignKeyField(Role)
-    email = TextField()
-    password = TextField()
+	id = TextField(primary_key=True, default=cuid_generator)
+	role_id = ForeignKeyField(Role)
+	email = TextField()
+	password = TextField()
 
-    class Meta:
-        table_name = "auth"
+	class Meta:
+		table_name = "auth"
