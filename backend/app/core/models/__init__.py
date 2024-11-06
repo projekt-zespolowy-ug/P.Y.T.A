@@ -8,12 +8,12 @@ from app.core.models.transaction import Transaction
 from app.core.models.user import User
 
 __all__ = [
-    "Auth",
-    "Company",
-    "Exchange",
-    "Industry",
-    "Role",
-    "StockHistory",
-    "Transaction",
-    "User",
+	"Auth",
+	"Company",
+	"Exchange",
+	"Industry",
+	"Role",
+	"StockHistory",
+	"Transaction",
+	"User",
 ]

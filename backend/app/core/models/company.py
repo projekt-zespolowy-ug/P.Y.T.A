@@ -6,12 +6,12 @@ from app.core.models.industry import Industry
 
 
 class Company(BaseModel):
-    id = TextField(primary_key=True, default=cuid_generator)
-    industry_id = ForeignKeyField(Industry)
-    exchange_id = ForeignKeyField(Exchange)
-    name = TextField()
-    description = TextField()
-    ticker = TextField()
+	id = TextField(primary_key=True, default=cuid_generator)
+	industry_id = ForeignKeyField(Industry)
+	exchange_id = ForeignKeyField(Exchange)
+	name = TextField()
+	description = TextField()
+	ticker = TextField()
 
-    class Meta:
-        table_name = "company"
+	class Meta:
+		table_name = "company"

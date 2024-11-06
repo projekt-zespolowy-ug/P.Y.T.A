@@ -47,3 +47,5 @@ ignore = [
 
 fixable = ["ALL"]
 unfixable = []
+
+isort.lines-between-types = 1 

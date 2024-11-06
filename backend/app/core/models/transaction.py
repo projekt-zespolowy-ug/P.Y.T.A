@@ -6,11 +6,11 @@ from app.core.models.user import User
 
 
 class Transaction(BaseModel):
-    id = TextField(primary_key=True, default=cuid_generator)
-    user_id = ForeignKeyField(User)
-    stock_history_id = ForeignKeyField(StockHistory)
-    amount = TextField()
-    timestamp = TimestampField()
+	id = TextField(primary_key=True, default=cuid_generator)
+	user_id = ForeignKeyField(User)
+	stock_history_id = ForeignKeyField(StockHistory)
+	amount = TextField()
+	timestamp = TimestampField()
 
-    class Meta:
-        table_name = "transaction"
+	class Meta:
+		table_name = "transaction"
