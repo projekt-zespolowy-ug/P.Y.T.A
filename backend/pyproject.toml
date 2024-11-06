@@ -31,7 +31,7 @@ target-version = "py313"
 line-length = 100
 
 [tool.ruff.format]
-indent-style = "space"
+indent-style = "tab"
 
 [tool.ruff.lint]
 select = [
@@ -51,4 +51,4 @@ ignore = [
 fixable = ["ALL"]
 unfixable = []
 
-isort.lines-between-types = 1 
+isort.lines-between-types = 1
