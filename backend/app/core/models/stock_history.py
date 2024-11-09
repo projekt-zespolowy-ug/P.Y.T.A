@@ -1,20 +1,18 @@
-from peewee import (
-	FloatField,
-	ForeignKeyField,
-	TextField,
-	TimestampField,
-)
+from datetime import datetime
 
-from app.core.models.base_model import BaseModel, cuid_generator
-from app.core.models.company import Company
+from sqlmodel import TIMESTAMP, Column, Field, text
+
+from app.core.models.base_table import BaseTable
 
 
-class StockHistory(BaseModel):
-	id = TextField(primary_key=True, default=cuid_generator)
-	company_id = ForeignKeyField(Company)
-	buy = FloatField()
-	sell = FloatField()
-	timestamp = TimestampField()
+class StockHistory(BaseTable, table=True):
+	company_id: str = Field(foreign_key="company.id")
+	buy: float
+	sell: float
+	timestamp: datetime = Field(
+		sa_column=Column(
+			TIMESTAMP(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP")
+		)
+	)
 
-	class Meta:
-		table_name = "stock_history"
+	__tablename__ = "stock_history"

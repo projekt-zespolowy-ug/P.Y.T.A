@@ -1,15 +1,16 @@
-from peewee import TextField, TimeField
+from datetime import time
 
-from app.core.models.base_model import BaseModel, cuid_generator
+from sqlmodel import TIME, Column, Field, text
+
+from app.core.models.base_table import BaseTable
 
 
-class Exchange(BaseModel):
-	id = TextField(primary_key=True, default=cuid_generator)
-	name = TextField()
-	time_open = TimeField()
-	time_close = TimeField()
-	timezone = TextField()
-	currency = TextField()
-
-	class Meta:
-		table_name = "exchange"
+class Exchange(BaseTable, table=True):
+	name: str
+	time_open: time = Field(
+		sa_column=Column(TIME(timezone=True), nullable=False, server_default=text("CURRENT_TIME"))
+	)
+	time_close: time = Field(
+		sa_column=Column(TIME(timezone=True), nullable=False, server_default=text("CURRENT_TIME"))
+	)
+	currency: str
