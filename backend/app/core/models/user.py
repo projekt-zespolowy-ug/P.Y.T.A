@@ -1,15 +1,12 @@
-from peewee import DateField, ForeignKeyField, TextField
+from datetime import date
 
-from app.core.models.auth import Auth
-from app.core.models.base_model import BaseModel, cuid_generator
+from sqlmodel import DATE, Column, Field
+
+from app.core.models.base_table import BaseTable
 
 
-class User(BaseModel):
-	id = TextField(primary_key=True, default=cuid_generator)
-	auth_id = ForeignKeyField(Auth)
-	name = TextField()
-	last_name = TextField()
-	date_of_birth = DateField()
-
-	class Meta:
-		table_name = "user"
+class User(BaseTable, table=True):
+	auth_id: str = Field(foreign_key="auth.id")
+	name: str
+	last_name: str
+	date_of_birth: date = Field(sa_column=Column(DATE, nullable=False))

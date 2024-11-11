@@ -1,17 +1,11 @@
-from peewee import ForeignKeyField, TextField
+from sqlmodel import Field
 
-from app.core.models.base_model import BaseModel, cuid_generator
-from app.core.models.exchange import Exchange
-from app.core.models.industry import Industry
+from app.core.models.base_table import BaseTable
 
 
-class Company(BaseModel):
-	id = TextField(primary_key=True, default=cuid_generator)
-	industry_id = ForeignKeyField(Industry)
-	exchange_id = ForeignKeyField(Exchange)
-	name = TextField()
-	description = TextField()
-	ticker = TextField()
-
-	class Meta:
-		table_name = "company"
+class Company(BaseTable, table=True):
+	industry_id: str = Field(foreign_key="industry.id")
+	exchange_id: str = Field(foreign_key="exchange.id")
+	name: str
+	description: str
+	ticker: str

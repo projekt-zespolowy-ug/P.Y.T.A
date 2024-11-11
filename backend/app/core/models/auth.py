@@ -1,23 +1,25 @@
-from typing import Any
+from pydantic import EmailStr, validator
+from sqlmodel import Field, String
 
-from peewee import ForeignKeyField, TextField
-
-from app.core.models.base_model import BaseModel, cuid_generator
-from app.core.models.role import Role
+from app.core.models.base_table import BaseTable
 from app.core.utils.querying_utils import QueryingUtils
 
 
-class Auth(BaseModel):
-	id = TextField(primary_key=True, default=cuid_generator)
-	role_id = ForeignKeyField(Role)
-	email = TextField()
-	password: str = TextField()  # type: ignore [assignment]
+class Auth(BaseTable, table=True):
+	role_id: str = Field(foreign_key="role.id")
+	email: EmailStr = Field(
+		sa_type=String,
+		unique=True,
+		index=True,
+		nullable=False,
+	)
+	password: str = Field(nullable=False)
 
-	class Meta:
-		table_name = "auth"
+	@validator("password")
+	def hash_password(cls, value: str) -> str:
+		if value:
+			return QueryingUtils.hash_password(value)
+		raise ValueError("Password must not be empty")
 
-	def save(self, force_insert: bool = False, only: Any | None = None) -> Any:
-		if self.password:
-			self.password = QueryingUtils.hash_password(self.password)
-
-		super().save(force_insert=force_insert, only=only)
+	class Config:
+		validate_assignment = True

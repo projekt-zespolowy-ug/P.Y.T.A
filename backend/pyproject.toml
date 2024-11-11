@@ -8,15 +8,14 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 fastapi = { extras = ["all"], version = "^0.115.3" }
-peewee = "^3.17.7"
 cuid2 = "^2.0.1"
 psycopg2-binary = "^2.9.10"
-types-peewee = "^3.17.7.20241017"
 mypy = "^1.13.0"
 ruff = "^0.7.2"
 requests = "^2.32.3"
 bcrypt = "^4.2.0"
 types-requests = "^2.32.0.20241016"
+sqlmodel = "^0.0.22"
 
 [build-system]
 requires = ["poetry-core"]
@@ -35,17 +34,17 @@ indent-style = "tab"
 
 [tool.ruff.lint]
 select = [
-    "E",  # pycodestyle errors
-    "W",  # pycodestyle warnings
-    "F",  # pyflakes
-    "I",  # isort
-    "B",  # flake8-bugbear
-    "C4", # flake8-comprehensions
-    "UP", # pyupgrade
+  "E",  # pycodestyle errors
+  "W",  # pycodestyle warnings
+  "F",  # pyflakes
+  "I",  # isort
+  "B",  # flake8-bugbear
+  "C4", # flake8-comprehensions
+  "UP", # pyupgrade
 ]
 ignore = [
-    "B008", # do not perform function calls in argument defaults
-    "W191", # indentation contains tabs
+  "B008", # do not perform function calls in argument defaults
+  "W191", # indentation contains tabs
 ]
 
 fixable = ["ALL"]

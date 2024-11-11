@@ -1,16 +1,16 @@
-from peewee import ForeignKeyField, TextField, TimestampField
+from datetime import datetime
 
-from app.core.models.base_model import BaseModel, cuid_generator
-from app.core.models.stock_history import StockHistory
-from app.core.models.user import User
+from sqlmodel import TIMESTAMP, Column, Field, text
+
+from app.core.models.base_table import BaseTable
 
 
-class Transaction(BaseModel):
-	id = TextField(primary_key=True, default=cuid_generator)
-	user_id = ForeignKeyField(User)
-	stock_history_id = ForeignKeyField(StockHistory)
-	amount = TextField()
-	timestamp = TimestampField()
-
-	class Meta:
-		table_name = "transaction"
+class Transaction(BaseTable, table=True):
+	user_id: str = Field(foreign_key="user.id")
+	stock_history_id: str = Field(foreign_key="stock_history.id")
+	amount: float
+	timestamp: datetime = Field(
+		sa_column=Column(
+			TIMESTAMP(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP")
+		)
+	)
