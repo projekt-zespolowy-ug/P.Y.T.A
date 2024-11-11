@@ -51,3 +51,4 @@ fixable = ["ALL"]
 unfixable = []
 
 isort.lines-between-types = 1
+isort.known-local-folder = ["app"]
