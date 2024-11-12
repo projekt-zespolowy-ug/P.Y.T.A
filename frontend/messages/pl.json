@@ -1,38 +1,38 @@
 {
-	"AuthPage": {
-		"signIn": "Zaloguj się",
-		"signUp": "Zarejestruj się"
-	},
-	"Header": {
-		"logoAlt": "Logo aplikacji"
-	},
-	"SignUpForm": {
-		"notAnEmailError": "Wprowadź poprawny adres email.",
-		"passwordTooShortError": "Zbyt krótkie hasło.",
-		"passwordTooLongError": "Hasło jest zbyt długie.",
-		"noPasswordMatchError": "Wprowadzone hasła nie zgadzają się.",
-		"registerButtonText": "Zarejestruj się",
-		"emailInputLabel": "Twój email",
-		"passwordInputLabel": "Hasło",
-		"confirmPasswordInputLabel": "Potwierdzenie hasła",
-		"emailPlaceHolder": "Email",
-		"passwordPlaceHolder": "Hasło",
-		"confirmPasswordPlaceHolder": "Potwierdź hasło"
-	},
-	"SignInForm": {
-		"notAnEmailError": "Wprowadź poprawny adres email.",
-		"passwordTooShortError": "Zbyt krótkie hasło.",
-		"passwordTooLongError": "Hasło jest zbyt długie.",
-		"loginButtonText": "Zaloguj się",
-		"emailInputLabel": "Twój email",
-		"passwordInputLabel": "Hasło",
-		"emailPlaceHolder": "Email",
-		"passwordPlaceHolder": "Hasło"
-	},
-	"ModeToggler": {
-		"changeMode": "Zmień motyw",
-		"system": "System",
-		"dark": "Ciemny",
-		"light": "Jasny"
-	}
+  "AuthPage": {
+    "signIn": "Zaloguj się",
+    "signUp": "Zarejestruj się"
+  },
+  "Header": {
+    "logoAlt": "Logo aplikacji"
+  },
+  "SignUpForm": {
+    "notAnEmailError": "Wprowadź poprawny adres email.",
+    "passwordTooShortError": "Zbyt krótkie hasło.",
+    "passwordTooLongError": "Hasło jest zbyt długie.",
+    "noPasswordMatchError": "Wprowadzone hasła nie zgadzają się.",
+    "registerButtonText": "Zarejestruj się",
+    "emailInputLabel": "Twój email",
+    "passwordInputLabel": "Hasło",
+    "confirmPasswordInputLabel": "Potwierdzenie hasła",
+    "emailPlaceHolder": "Email",
+    "passwordPlaceHolder": "Hasło",
+    "confirmPasswordPlaceHolder": "Potwierdź hasło"
+  },
+  "SignInForm": {
+    "notAnEmailError": "Wprowadź poprawny adres email.",
+    "passwordTooShortError": "Zbyt krótkie hasło.",
+    "passwordTooLongError": "Hasło jest zbyt długie.",
+    "loginButtonText": "Zaloguj się",
+    "emailInputLabel": "Twój email",
+    "passwordInputLabel": "Hasło",
+    "emailPlaceHolder": "Email",
+    "passwordPlaceHolder": "Hasło"
+  },
+  "ModeToggler": {
+    "changeMode": "Zmień motyw",
+    "system": "System",
+    "dark": "Ciemny",
+    "light": "Jasny"
+  }
 }
