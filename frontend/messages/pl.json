@@ -2,5 +2,19 @@
 	"AuthPage": {
 		"signIn": "Zaloguj się",
 		"signUp": "Zarejestruj się"
+	},
+	"SignUpForm": {
+		"emailTooShortError": "Email musi składać się z co najmniej 2 liter.",
+		"notAnEmailError": "Wprowadź poprawny adres email.",
+		"passwordTooShortError": "Zbyt krótkie hasło.",
+		"passwordTooLongError": "Hasło jest zbyt długie.",
+		"noPasswordMatchError": "Wprowadzone hasła nie zgadzają się.",
+		"registerButtonText": "Zarejestruj się",
+		"emailInputLabel": "Twoj email",
+		"passwordInputLabel": "Hasło",
+		"confirmPasswordInputLabel": "Hasło",
+		"emailPlaceHolder": "Email",
+		"passwordPlaceHolder": "Hasło",
+		"confirmPasswordPlaceHolder": "Hasło"
 	}
 }
