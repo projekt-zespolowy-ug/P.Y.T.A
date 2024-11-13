@@ -3,6 +3,9 @@
 		"signIn": "Sign In",
 		"signUp": "Sign Up"
 	},
+	"Header": {
+		"logoAlt": "App logo"
+	},
 	"SignUpForm": {
 		"emailTooShortError": "Email must be at least 2 characters.",
 		"notAnEmailError": "Surely does not look like an email",

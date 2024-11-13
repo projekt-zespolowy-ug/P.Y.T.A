@@ -3,6 +3,9 @@
 		"signIn": "Zaloguj się",
 		"signUp": "Zarejestruj się"
 	},
+	"Header": {
+		"logoAlt": "Logo aplikacji"
+	},
 	"SignUpForm": {
 		"emailTooShortError": "Email musi składać się z co najmniej 2 liter.",
 		"notAnEmailError": "Wprowadź poprawny adres email.",
