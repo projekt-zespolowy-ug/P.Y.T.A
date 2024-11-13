@@ -4,8 +4,7 @@
 		"signUp": "Sign Up"
 	},
 	"SignUpForm": {
-		"emailTooShortError": "Email must be at least 2 characters.",
-		"notAnEmailError": "Surely does not look like an email",
+		"notAnEmailError": "Surely does not look like an email.",
 		"passwordTooShortError": "Password too short.",
 		"passwordTooLongError": "Password too long.",
 		"noPasswordMatchError": "The passwords did not match.",

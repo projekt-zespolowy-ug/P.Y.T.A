@@ -4,7 +4,6 @@
 		"signUp": "Zarejestruj się"
 	},
 	"SignUpForm": {
-		"emailTooShortError": "Email musi składać się z co najmniej 2 liter.",
 		"notAnEmailError": "Wprowadź poprawny adres email.",
 		"passwordTooShortError": "Zbyt krótkie hasło.",
 		"passwordTooLongError": "Hasło jest zbyt długie.",

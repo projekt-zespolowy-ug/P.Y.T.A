@@ -21,12 +21,7 @@ const SignUpForm = () => {
 	// TODO: Add password regex
 	const formSchema = z
 		.object({
-			email: z
-				.string()
-				.min(5, {
-					message: t("emailTooShortError"),
-				})
-				.email({ message: t("notAnEmailError") }),
+			email: z.string().email({ message: t("notAnEmailError") }),
 			password: z
 				.string()
 				.min(7, { message: t("passwordTooShortError") })
