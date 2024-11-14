@@ -16,6 +16,8 @@ requests = "^2.32.3"
 bcrypt = "^4.2.0"
 types-requests = "^2.32.0.20241016"
 sqlmodel = "^0.0.22"
+types-python-dateutil = "^2.9.0.20241003"
+python-dateutil = "^2.9.0.post0"
 
 [build-system]
 requires = ["poetry-core"]

@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.settings import Settings
 from app.core.utils.init_db import InitDB
+from app.v1.auth import auth_router
 
 setting = Settings()
 
@@ -10,7 +11,7 @@ InitDB()
 
 
 def get_application() -> FastAPI:
-	_app = FastAPI(title="P.Y.T.A", debug=setting.debug)
+	_app = FastAPI(title="P.Y.T.A", debug=setting.debug, root_path="/api")
 
 	_app.add_middleware(
 		CORSMiddleware,
@@ -19,6 +20,8 @@ def get_application() -> FastAPI:
 		allow_methods=["*"],
 		allow_headers=["*"],
 	)
+
+	_app.include_router(auth_router)
 
 	return _app
 
