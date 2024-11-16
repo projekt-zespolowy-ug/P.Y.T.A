@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlmodel import TIMESTAMP, Column, Field
 
 from app.core.models.base_table import BaseTable
-from app.core.utils.querying_utils import QueryingUtils
+from app.core.utils.model_utils import ModelUtils
 
 
 class Session(BaseTable, table=True):
@@ -14,5 +14,5 @@ class Session(BaseTable, table=True):
 			TIMESTAMP(timezone=True),
 			nullable=False,
 		),
-		default_factory=QueryingUtils.session_expire_timestamp_factory,
+		default_factory=ModelUtils.session_expire_timestamp_factory,
 	)
