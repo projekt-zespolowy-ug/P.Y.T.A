@@ -1,6 +1,19 @@
 {
 	"AuthPage": {
-		"signIn": "Log in",
-		"signUp": "Sign in"
+		"signIn": "Sign In",
+		"signUp": "Sign Up"
+	},
+	"SignUpForm": {
+		"notAnEmailError": "Surely does not look like an email.",
+		"passwordTooShortError": "Password too short.",
+		"passwordTooLongError": "Password too long.",
+		"noPasswordMatchError": "The passwords did not match.",
+		"registerButtonText": "Sign Up",
+		"emailInputLabel": "Your Email",
+		"passwordInputLabel": "Password",
+		"confirmPasswordInputLabel": "Confirm Password",
+		"emailPlaceHolder": "Email",
+		"passwordPlaceHolder": "Password",
+		"confirmPasswordPlaceHolder": "Password"
 	}
 }
