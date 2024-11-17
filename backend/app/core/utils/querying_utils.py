@@ -11,12 +11,11 @@ from app.database import engine
 
 class QueryingUtils:
 	@staticmethod
-	def get_default_role_id() -> str:
-		with Session(engine) as session:
-			default_role = session.exec(select(Role).where(Role.role == RoleType.USER)).first()
-			if not default_role:
-				raise ValueError("Default role not found")
-			return default_role.id
+	def get_default_role_id(session: Session) -> str:
+		default_role = session.exec(select(Role).where(Role.role == RoleType.USER)).first()
+		if not default_role:
+			raise ValueError("Default role not found")
+		return default_role.id
 
 	@staticmethod
 	def register(user: UserRegister, ip: str) -> str:
@@ -27,7 +26,7 @@ class QueryingUtils:
 			new_auth = Auth(
 				email=user.email,
 				password=user.password,
-				role_id=QueryingUtils.get_default_role_id(),
+				role_id=QueryingUtils.get_default_role_id(session),
 			)
 			session.add(new_auth)
 
@@ -43,7 +42,7 @@ class QueryingUtils:
 			if not searched_user:
 				raise UserCreationError
 
-			new_session: SessionModel = SessionModel(user_id=searched_user.id, device_ip=ip)
+			new_session: SessionModel = SessionModel(user_id=new_user.id, device_ip=ip)
 
 			session.add(new_session)
 
