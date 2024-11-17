@@ -13,8 +13,8 @@ async def register(user: UserRegister, request: Request) -> SessionOut:
 	try:
 		if not request.client:
 			raise HTTPException(status_code=500, detail="User creation failed")
-		session = QueryingUtils.register(user, request.client.host)
-		return SessionOut(session_id=session.id)
+		new_session = QueryingUtils.register(user, request.client.host)
+		return SessionOut(session_id=new_session)
 	except UserCreationError as _:
 		raise HTTPException(status_code=500, detail="User creation failed") from None
 	except EmailAlreadyExistsError as _:

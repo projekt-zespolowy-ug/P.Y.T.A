@@ -19,42 +19,37 @@ class QueryingUtils:
 			return default_role.id
 
 	@staticmethod
-	def register(user: UserRegister, ip: str) -> SessionModel:
+	def register(user: UserRegister, ip: str) -> str:
 		with Session(engine) as session:
 			if session.exec(select(Auth).where(Auth.email == user.email)).first():
 				raise EmailAlreadyExistsError
+
 			new_auth = Auth(
 				email=user.email,
 				password=user.password,
 				role_id=QueryingUtils.get_default_role_id(),
 			)
 			session.add(new_auth)
-			searched_auth = session.exec(select(Auth).where(Auth.email == user.email)).first()
-			if not searched_auth:
-				raise UserCreationError
+
 			new_user = User(
 				name=user.name,
 				last_name=user.last_name,
 				date_of_birth=user.date_of_birth,
-				auth_id=searched_auth.id,
+				auth_id=new_auth.id,
 			)
 			session.add(new_user)
-			searched_user = session.exec(
-				select(User).where(User.auth_id == searched_auth.id)
-			).first()
+
+			searched_user = session.exec(select(User).where(User.auth_id == new_auth.id)).first()
 			if not searched_user:
 				raise UserCreationError
-			new_session = SessionModel(user_id=searched_user.id, device_ip=ip)
-			session.add(new_session)
-			session.commit()
-			searched_session = session.exec(
-				select(SessionModel).where(SessionModel.user_id == searched_user.id)
-			).first()
-			if not searched_session:
-				raise UserCreationError
-			return searched_session
 
-	@staticmethod
-	def find_auth_by_email(email: str) -> Auth | None:
-		with Session(engine) as session:
-			return session.exec(select(Auth).where(Auth.email == email)).first()
+			new_session: SessionModel = SessionModel(user_id=searched_user.id, device_ip=ip)
+
+			session.add(new_session)
+
+			try:
+				session.commit()
+			except Exception as _:
+				raise UserCreationError from None
+
+			return new_session.id
