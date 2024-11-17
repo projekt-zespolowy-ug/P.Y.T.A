@@ -38,9 +38,7 @@ class QueryingUtils:
 			)
 			session.add(new_user)
 
-			searched_user = session.exec(select(User).where(User.auth_id == new_auth.id)).first()
-			if not searched_user:
-				raise UserCreationError
+			session.flush()
 
 			new_session: SessionModel = SessionModel(user_id=new_user.id, device_ip=ip)
 
