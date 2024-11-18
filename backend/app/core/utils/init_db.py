@@ -2,6 +2,8 @@ import random
 
 import requests
 
+from sqlmodel import Session, SQLModel, select
+
 from app.core.models import (
 	Auth,
 	Company,
@@ -12,7 +14,6 @@ from app.core.models import (
 )
 from app.core.models.role import RoleType
 from app.database import engine
-from sqlmodel import Session, SQLModel, select
 
 
 class InitDB:
