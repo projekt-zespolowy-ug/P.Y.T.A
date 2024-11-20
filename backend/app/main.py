@@ -1,4 +1,10 @@
-from fastapi import FastAPI
+import logging
+import time
+
+from collections.abc import Awaitable, Callable
+from typing import Any
+
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.logger import configure_logging
@@ -10,6 +16,9 @@ configure_logging()
 setting = Settings()
 
 InitDB()
+
+logging.getLogger("uvicorn.access").disabled = True
+logger = logging.getLogger(__name__)
 
 
 def get_application() -> FastAPI:
@@ -29,6 +38,25 @@ def get_application() -> FastAPI:
 
 
 app = get_application()
+
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next: Callable[[Request], Awaitable[Any]]) -> Any:
+	if not request.client:
+		client = "unknown"
+	else:
+		client = f"{request.client.host}:{request.client.port}"
+
+	logger.info(f"I: {request.method} {request.url} {client}")
+
+	start_time = time.time()
+	response = await call_next(request)
+	process_time = (time.time() - start_time) * 1000
+
+	logger.info(f"C: {request.method} {request.url} [{response.status_code}] {process_time:.4f}ms")
+
+	return response
+
 
 if __name__ == "__main__":
 	import uvicorn

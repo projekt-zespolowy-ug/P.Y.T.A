@@ -3,37 +3,58 @@ import logging.config
 import os
 
 from datetime import datetime
+from typing import Any
+
+from app.core.settings import Settings
+
+settings = Settings()
 
 
 class DynamicFileHandler(logging.FileHandler):
-	def __init__(self, base_filename, *args, **kwargs):
+	def __init__(self, base_filename: str, *args: Any, **kwargs: Any) -> None:
 		timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 		filename = f"{base_filename}_{timestamp}.log"
 		super().__init__(filename, *args, **kwargs)
 
+		self.delete_old_logs(amount_to_keep=settings.logs_amount_to_keep)
 
-<<<<<<< HEAD
-=======
-# Create logs directory
->>>>>>> origin/feat/backend-logging
+	def delete_old_logs(self, amount_to_keep: int = 0) -> None:
+		assert amount_to_keep >= 0, "Amount to keep must be non-negative"
+
+		if amount_to_keep == 0:
+			return
+
+		log_files = sorted(
+			os.listdir("logs"),
+			key=lambda x: os.path.getmtime(os.path.join("logs", x)),
+			reverse=True,
+		)
+
+		for log_file in log_files[amount_to_keep:]:
+			os.remove(os.path.join("logs", log_file))
+
+
 os.makedirs("logs", exist_ok=True)
 
-# Modify the logging configuration
 LOGGING_CONFIG = {
 	"version": 1,
 	"disable_existing_loggers": False,
 	"formatters": {
-<<<<<<< HEAD
 		"standard": {
 			"format": "%(asctime)s-%(name)-25s [%(levelname)-6s]: %(message)s",
 			"use_colors": True,
 		},
-=======
-		"standard": {"format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"},
->>>>>>> origin/feat/backend-logging
+		"rich": {
+			"format": "%(name)s - %(message)s",
+			"datefmt": "[%X]",
+		},
 	},
 	"handlers": {
-		"console": {"class": "logging.StreamHandler", "formatter": "standard", "level": "INFO"},
+		"console": {
+			"class": "rich.logging.RichHandler",
+			"formatter": "rich",
+			"level": "INFO",
+		},
 		"file": {
 			"()": DynamicFileHandler,
 			"base_filename": "logs/pyta",
@@ -47,14 +68,10 @@ LOGGING_CONFIG = {
 			"level": "INFO",
 			"propagate": True,
 		},
-<<<<<<< HEAD
 		"uvicorn": {"handlers": ["file", "console"], "level": "INFO", "propagate": False},
-=======
-		"uvicorn": {"handlers": ["console", "file"], "level": "INFO", "propagate": False},
->>>>>>> origin/feat/backend-logging
 	},
 }
 
 
-def configure_logging():
+def configure_logging() -> None:
 	logging.config.dictConfig(LOGGING_CONFIG)
