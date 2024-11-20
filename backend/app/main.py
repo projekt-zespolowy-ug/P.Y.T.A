@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.core.logger import configure_logging
 from app.core.settings import Settings
 from app.core.utils.init_db import InitDB
 from app.v1.auth import auth_router
 
+configure_logging()
 setting = Settings()
 
 InitDB()
