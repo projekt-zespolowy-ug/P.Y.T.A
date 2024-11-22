@@ -24,12 +24,16 @@ async def register(user: UserRegister, request: Request, response: Response) -> 
 	try:
 		if not request.client:
 			raise HTTPException(status_code=500, detail="User creation failed")
+
 		new_session = QueryingUtils.register(user, request.client.host)
+
 		response.set_cookie(key="session_id", value=new_session)
 		return SessionOut(session_id=new_session)
+
 	except UserCreationError as _:
 		logger.error("Failed to create user", exc_info=True)
 		raise HTTPException(status_code=500, detail="User creation failed") from None
+
 	except EmailAlreadyExistsError as _:
 		logger.error(f"User creation failed: {user.email} already exists")
 		raise HTTPException(status_code=400, detail="Email already used") from None
@@ -40,12 +44,18 @@ async def login(user: UserLogin, request: Request, response: Response) -> Sessio
 	try:
 		if not request.client:
 			raise HTTPException(status_code=500, detail="User login failed")
+
 		new_session = QueryingUtils.login(user, request.client.host)
+
 		response.set_cookie(key="session_id", value=new_session)
 		return SessionOut(session_id=new_session)
+
 	except InvalidCredentialsError as _:
+		logger.info(f"Invalid credentials for {user.email}")
 		raise HTTPException(status_code=404, detail="Invalid credentials") from None
+
 	except UserNotFoundError as _:
+		logger.info(f"User not found: {user.email}")
 		raise HTTPException(status_code=404, detail="User not found") from None
 
 
@@ -60,6 +70,6 @@ async def logout(request: Request, response: Response) -> dict[str, str]:
 		QueryingUtils.logout(session_id)
 		response.delete_cookie("session_id")
 	except Exception as _:
-		pass
+		logger.error("Failed to logout", exc_info=True)
 
 	return {"detail": "Logged out"}

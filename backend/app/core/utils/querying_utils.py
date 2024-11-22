@@ -84,7 +84,9 @@ class QueryingUtils:
 	@staticmethod
 	def logout(session_id: str) -> None:
 		with Session(engine) as session:
-			user_session = session.exec(select(SessionModel).where(SessionModel.id == session_id))
+			user_session = session.exec(
+				select(SessionModel).where(SessionModel.id == session_id)
+			).first()
 			if not user_session:
 				return
 			session.delete(user_session)
