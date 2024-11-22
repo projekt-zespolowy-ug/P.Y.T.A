@@ -10,4 +10,6 @@ class Settings(BaseSettings):
 	db_user: str = "postgres"
 	db_password: str = "example"
 
+	logs_amount_to_keep: int = 1
+
 	model_config = SettingsConfigDict(env_file=".env.local")
