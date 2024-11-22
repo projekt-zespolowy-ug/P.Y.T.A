@@ -84,9 +84,13 @@ class QueryingUtils:
 	@staticmethod
 	def logout(session_id: str) -> None:
 		with Session(engine) as session:
+<<<<<<< HEAD
 			user_session = session.exec(
 				select(SessionModel).where(SessionModel.id == session_id)
 			).first()
+=======
+			user_session = session.exec(select(SessionModel).where(SessionModel.id == session_id))
+>>>>>>> b72d5c6 (feat(backend): [PYTA-18] Add login and logout endpoints)
 			if not user_session:
 				return
 			session.delete(user_session)
