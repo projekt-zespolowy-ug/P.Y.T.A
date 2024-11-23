@@ -1,4 +1,4 @@
-FROM python:3.12.7-slim as base
+FROM python:3.12.7-slim AS base
 
 ENV PYTHONPATH="${PYTHONPATH}:/"
 ENV PORT=8000
@@ -20,11 +20,11 @@ RUN poetry install --no-root
 COPY . .
 
 # Running tests
-FROM base as test
+FROM base AS test
 RUN poetry run pytest
 
 # Remove tests
-FROM test as prod
+FROM test AS prod
 
 RUN rm -rf  /tests
 
