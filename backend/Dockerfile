@@ -25,7 +25,7 @@ ARG SKIP_TESTS=false
 RUN if [ "$SKIP_TESTS" = "false" ]; then poetry run pytest; fi
 
 # Remove tests
-FROM test AS prod
+FROM base AS prod
 
 RUN rm -rf  /tests
 
