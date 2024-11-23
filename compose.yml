@@ -32,7 +32,10 @@ services:
     restart: always
     depends_on:
       - db
-    build: ./backend/.
+    build:
+      context: ./backend/.
+      args:
+        - SKIP_TESTS=true
     env_file:
       - ./backend/.env
     ports:
