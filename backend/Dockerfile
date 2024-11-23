@@ -1,6 +1,5 @@
 FROM python:3.12.7-slim AS base
 
-ENV PYTHONPATH="${PYTHONPATH}:/"
 ENV PORT=8000
 
 # Install necessary dependencies
@@ -21,7 +20,9 @@ COPY . .
 
 # Running tests
 FROM base AS test
-RUN poetry run pytest
+
+ARG SKIP_TESTS=false
+RUN if [ "$SKIP_TESTS" = "false" ]; then poetry run pytest; fi
 
 # Remove tests
 FROM test AS prod
