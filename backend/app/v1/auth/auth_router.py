@@ -27,7 +27,7 @@ async def register(user: UserRegister, request: Request, response: Response) -> 
 
 		new_session = QueryingUtils.register(user, request.client.host)
 
-		response.set_cookie(key="session_id", value=new_session)
+		response.set_cookie(key="session_id", value=new_session, httponly=True)
 		return SessionOut(session_id=new_session)
 
 	except UserCreationError as _:
@@ -47,7 +47,7 @@ async def login(user: UserLogin, request: Request, response: Response) -> Sessio
 
 		new_session = QueryingUtils.login(user, request.client.host)
 
-		response.set_cookie(key="session_id", value=new_session)
+		response.set_cookie(key="session_id", value=new_session, httponly=True)
 		return SessionOut(session_id=new_session)
 
 	except InvalidCredentialsError as _:
