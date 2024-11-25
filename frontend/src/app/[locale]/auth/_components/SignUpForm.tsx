@@ -76,7 +76,11 @@ const SignUpForm = () => {
 						<FormItem>
 							<FormLabel>{t("passwordInputLabel")}</FormLabel>
 							<FormControl>
-								<Input placeholder={t("passwordPlaceHolder")} {...field} />
+								<Input
+									type="password"
+									placeholder={t("passwordPlaceHolder")}
+									{...field}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -90,6 +94,7 @@ const SignUpForm = () => {
 							<FormLabel>{t("confirmPasswordInputLabel")}</FormLabel>
 							<FormControl>
 								<Input
+									type="password"
 									placeholder={t("confirmPasswordPlaceHolder")}
 									{...field}
 								/>
