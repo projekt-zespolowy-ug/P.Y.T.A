@@ -13,11 +13,11 @@
 		"passwordTooLongError": "Hasło jest zbyt długie.",
 		"noPasswordMatchError": "Wprowadzone hasła nie zgadzają się.",
 		"registerButtonText": "Zarejestruj się",
-		"emailInputLabel": "Twoj email",
+		"emailInputLabel": "Twój email",
 		"passwordInputLabel": "Hasło",
-		"confirmPasswordInputLabel": "Hasło",
+		"confirmPasswordInputLabel": "Potwierdzenie hasła",
 		"emailPlaceHolder": "Email",
 		"passwordPlaceHolder": "Hasło",
-		"confirmPasswordPlaceHolder": "Hasło"
+		"confirmPasswordPlaceHolder": "Potwierdź hasło"
 	}
 }

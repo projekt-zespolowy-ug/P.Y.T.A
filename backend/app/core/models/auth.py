@@ -2,7 +2,7 @@ from pydantic import EmailStr, validator
 from sqlmodel import Field, String
 
 from app.core.models.base_table import BaseTable
-from app.core.utils.querying_utils import QueryingUtils
+from app.core.utils.model_utils import ModelUtils
 
 
 class Auth(BaseTable, table=True):
@@ -18,7 +18,7 @@ class Auth(BaseTable, table=True):
 	@validator("password")
 	def hash_password(cls, value: str) -> str:
 		if value:
-			return QueryingUtils.hash_password(value)
+			return ModelUtils.hash_password(value)
 		raise ValueError("Password must not be empty")
 
 	class Config:
