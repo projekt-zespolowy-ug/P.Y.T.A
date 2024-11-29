@@ -26,10 +26,6 @@ async def register(user: UserRegister, request: Request, response: Response) -> 
 			raise HTTPException(status_code=500, detail="User creation failed")
 
 		new_session = QueryingUtils.register(user, request.client.host)
-<<<<<<< HEAD
-
-=======
->>>>>>> b72d5c6 (feat(backend): [PYTA-18] Add login and logout endpoints)
 		response.set_cookie(key="session_id", value=new_session)
 		return SessionOut(session_id=new_session)
 
@@ -47,7 +43,6 @@ async def login(user: UserLogin, request: Request, response: Response) -> Sessio
 	try:
 		if not request.client:
 			raise HTTPException(status_code=500, detail="User login failed")
-<<<<<<< HEAD
 
 		new_session = QueryingUtils.login(user, request.client.host)
 
@@ -60,14 +55,6 @@ async def login(user: UserLogin, request: Request, response: Response) -> Sessio
 
 	except UserNotFoundError as _:
 		logger.info(f"User not found: {user.email}")
-=======
-		new_session = QueryingUtils.login(user, request.client.host)
-		response.set_cookie(key="session_id", value=new_session)
-		return SessionOut(session_id=new_session)
-	except InvalidCredentialsError as _:
-		raise HTTPException(status_code=404, detail="Invalid credentials") from None
-	except UserNotFoundError as _:
->>>>>>> b72d5c6 (feat(backend): [PYTA-18] Add login and logout endpoints)
 		raise HTTPException(status_code=404, detail="User not found") from None
 
 
@@ -82,10 +69,6 @@ async def logout(request: Request, response: Response) -> dict[str, str]:
 		QueryingUtils.logout(session_id)
 		response.delete_cookie("session_id")
 	except Exception as _:
-<<<<<<< HEAD
 		logger.error("Failed to logout", exc_info=True)
-=======
-		pass
->>>>>>> b72d5c6 (feat(backend): [PYTA-18] Add login and logout endpoints)
 
 	return {"detail": "Logged out"}
