@@ -4,7 +4,21 @@
 		"signUp": "Sign Up"
 	},
 	"Header": {
-		"logoAlt": "App logo"
+		"logoAlt": "App logo",
+		"LeftTabs": {
+			"browseStocks": "Browse stocks",
+			"portfolio": "Portfolio"
+		},
+		"RightTabs": {
+			"LocaleSwitcher": {
+				"label": "Change language",
+				"locale": "{locale, select, pl {🇵🇱} en {🇺🇸} other {Unknown}}"
+			},
+			"Avatar": {
+				"profile": "Settings",
+				"signOut": "Sign out"
+			}
+		}
 	},
 	"SignUpForm": {
 		"notAnEmailError": "Surely does not look like an email.",
