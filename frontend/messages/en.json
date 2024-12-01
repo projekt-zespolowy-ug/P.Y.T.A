@@ -33,6 +33,6 @@
 		"changeMode": "Toggle theme",
 		"system": "System",
 		"dark": "Dark",
-		"ligth": "Light"
+		"light": "Light"
 	}
 }
