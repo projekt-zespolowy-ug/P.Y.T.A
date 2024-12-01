@@ -4,7 +4,21 @@
 		"signUp": "Zarejestruj się"
 	},
 	"Header": {
-		"logoAlt": "Logo aplikacji"
+		"logoAlt": "Logo aplikacji",
+		"LeftTabs": {
+			"browseStocks": "Przeglądaj aktywa",
+			"portfolio": "Portfolio"
+		},
+		"RightTabs": {
+			"LocaleSwitcher": {
+				"label": "Change language",
+				"locale": "{locale, select, pl {🇵🇱} en {🇺🇸} other {Unknown}}"
+			},
+			"Avatar": {
+				"profile": "Ustawienia",
+				"signOut": "Wyloguj się"
+			}
+		}
 	},
 	"SignUpForm": {
 		"registerButton": "Zarejestruj",
