@@ -28,5 +28,11 @@
 		"passwordInputLabel": "Hasło",
 		"emailPlaceHolder": "Email",
 		"passwordPlaceHolder": "Hasło"
+	},
+	"ModeToggler": {
+		"changeMode": "Zmień motyw",
+		"system": "System",
+		"dark": "Ciemny",
+		"ligth": "Jasny"
 	}
 }
