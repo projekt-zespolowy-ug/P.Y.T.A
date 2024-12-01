@@ -7,7 +7,7 @@ import SignUpForm from "./SignUpForm";
 const AuthLayout = () => {
 	const t = useTranslations("AuthPage");
 	return (
-		<Tabs defaultValue="signIn" className="w-[400px]">
+		<Tabs defaultValue="signIn" className="w-[400px] mx-2">
 			<TabsList>
 				<TabsTrigger value="signIn">{t("signIn")}</TabsTrigger>
 				<TabsTrigger value="signUp">{t("signUp")}</TabsTrigger>

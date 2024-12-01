@@ -15,5 +15,15 @@
 		"emailPlaceHolder": "Email",
 		"passwordPlaceHolder": "Password",
 		"confirmPasswordPlaceHolder": "Password"
+	},
+	"SignInForm": {
+		"notAnEmailError": "Surely does not look like an email.",
+		"passwordTooShortError": "Password too short.",
+		"passwordTooLongError": "Password too long.",
+		"loginButtonText": "Sign In",
+		"emailInputLabel": "Your Email",
+		"passwordInputLabel": "Password",
+		"emailPlaceHolder": "Email",
+		"passwordPlaceHolder": "Password"
 	}
 }
