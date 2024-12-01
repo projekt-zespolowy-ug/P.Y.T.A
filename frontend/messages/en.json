@@ -3,6 +3,9 @@
 		"signIn": "Sign In",
 		"signUp": "Sign Up"
 	},
+	"Header": {
+		"logoAlt": "App logo"
+	},
 	"SignUpForm": {
 		"notAnEmailError": "Surely does not look like an email.",
 		"passwordTooShortError": "Password too short.",

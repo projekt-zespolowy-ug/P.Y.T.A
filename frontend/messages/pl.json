@@ -3,6 +3,9 @@
 		"signIn": "Zaloguj się",
 		"signUp": "Zarejestruj się"
 	},
+	"Header": {
+		"logoAlt": "Logo aplikacji"
+	},
 	"SignUpForm": {
 		"notAnEmailError": "Wprowadź poprawny adres email.",
 		"passwordTooShortError": "Zbyt krótkie hasło.",
