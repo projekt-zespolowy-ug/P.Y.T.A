@@ -3,6 +3,9 @@
 		"signIn": "Sign In",
 		"signUp": "Sign Up"
 	},
+	"Header": {
+		"logoAlt": "App logo"
+	},
 	"SignUpForm": {
 		"notAnEmailError": "Surely does not look like an email.",
 		"passwordTooShortError": "Password too short.",
@@ -15,5 +18,21 @@
 		"emailPlaceHolder": "Email",
 		"passwordPlaceHolder": "Password",
 		"confirmPasswordPlaceHolder": "Password"
+	},
+	"SignInForm": {
+		"notAnEmailError": "Surely does not look like an email.",
+		"passwordTooShortError": "Password too short.",
+		"passwordTooLongError": "Password too long.",
+		"loginButtonText": "Sign In",
+		"emailInputLabel": "Your Email",
+		"passwordInputLabel": "Password",
+		"emailPlaceHolder": "Email",
+		"passwordPlaceHolder": "Password"
+	},
+	"ModeToggler": {
+		"changeMode": "Toggle theme",
+		"system": "System",
+		"dark": "Dark",
+		"light": "Light"
 	}
 }
