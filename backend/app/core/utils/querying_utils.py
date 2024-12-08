@@ -147,21 +147,21 @@ class QueryingUtils:
 		exchange: str | None = None,
 		limit: int = 50,
 		page: int = 1,
-	) -> Sequence[Company, Industry, Exchange]:
+	) -> list[tuple[Company, Industry, Exchange]]:
 		with Session(engine) as session:
 			query = (
 				select(Company, Industry, Exchange)
-				.join(Industry, Industry.id == Company.industry_id)
-				.join(Exchange, Exchange.id == Company.exchange_id)
-				.where(Company.ticker.in_(tickers))
+				.join(Industry, Industry.id == Company.industry_id)  # type: ignore[arg-type]
+				.join(Exchange, Exchange.id == Company.exchange_id)  # type: ignore[arg-type]
+				.where(Company.ticker.in_(tickers))  # type: ignore[attr-defined]
 			)
 
-			if industry is not None:
+			if industry:
 				query = query.where(Industry.name == industry)
 
-			if exchange is not None:
+			if exchange:
 				query = query.where(Exchange.name == exchange)
 
 			query = query.limit(limit).offset((page - 1) * limit)
 
-			return session.exec(query).all()
+			return list(session.exec(query).all())

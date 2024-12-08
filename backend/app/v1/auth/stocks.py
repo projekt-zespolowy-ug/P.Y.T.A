@@ -3,12 +3,11 @@ import logging
 import time
 
 from fastapi import APIRouter, Request, WebSocket
-from sqlalchemy import Sequence
 
 from app.core.models.company import Company
 from app.core.models.exchange import Exchange
 from app.core.models.industry import Industry
-from app.core.schemas.stock_list import StockList
+from app.core.schemas.stock_list import Stock, StockList
 from app.core.settings import Settings
 from app.core.utils.querying_utils import QueryingUtils
 
@@ -24,33 +23,38 @@ async def list_stocks(
 	request: Request,
 	limit: int = 50,
 	page: int = 1,
-	industry: str = None,
-	exchange: str = None,
+	industry: str = "",
+	exchange: str = "",
 ) -> StockList:
-	stocks: Sequence[Company, Industry, Exchange] = QueryingUtils.get_stock_details(
-		[stock.ticker for stock in request.app.state.stock_manager.stocks],
-		industry,
-		exchange,
-		limit,
-		page,
+	# Convert QueryingUtils result to a list to resolve return type issue
+	stocks: list[tuple[Company, Industry, Exchange]] = list(
+		QueryingUtils.get_stock_details(
+			[stock.ticker for stock in request.app.state.stock_manager.stocks],
+			industry,
+			exchange,
+			limit,
+			page,
+		)
 	)
 
-	res = {"returned_count": len(stocks), "is_last_page": len(stocks) < limit, "stocks": {}}
+	stock_list: dict[str, Stock] = {}
 
-	for stock, industry, exchange in stocks:
+	for stock, industry_obj, exchange_obj in stocks:
 		price = list(
 			filter(lambda x: x.ticker == stock.ticker, request.app.state.stock_manager.stocks)
 		)[0].price_history[-1]
 
-		res["stocks"][stock.ticker] = {
-			"name": stock.name,
-			"industry": industry.name,
-			"exchange": exchange.name,
-			"buy": price[0],
-			"sell": price[1],
-		}
+		stock_list[stock.name] = Stock(
+			name=stock.name,
+			industry=industry_obj.name,  # Use .name attribute of industry object
+			exchange=exchange_obj.name,  # Use .name attribute of exchange object
+			buy=price[0],
+			sell=price[1],
+		)
 
-	return res
+	return StockList(
+		stocks=stock_list, returned_count=len(stocks), is_last_page=len(stocks) < limit
+	)
 
 
 @stocks_router.websocket("/updates/{ticker}")
