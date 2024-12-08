@@ -1,0 +1,15 @@
+meta {
+  name: Get stock list
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/api/stocks?limit=20
+  body: none
+  auth: none
+}
+
+params:query {
+  limit: 2
+}

@@ -14,6 +14,8 @@ from app.core.exceptions import (
 )
 from app.core.models.auth import Auth
 from app.core.models.company import Company
+from app.core.models.exchange import Exchange
+from app.core.models.industry import Industry
 from app.core.models.role import Role, RoleType
 from app.core.models.session import Session as SessionModel
 from app.core.models.stock_history import StockHistory
@@ -26,10 +28,10 @@ from app.database import engine
 class QueryingUtils:
 	@staticmethod
 	def get_default_role_id(session: Session) -> str:
-		default_role = session.exec(select(Role).where(Role.role == RoleType.USER)).first()
-		if not default_role:
+		if default_role := session.exec(select(Role).where(Role.role == RoleType.USER)).first():
+			return default_role.id
+		else:
 			raise ValueError("Default role not found")
-		return default_role.id
 
 	@staticmethod
 	def register(user: UserRegister, ip: str) -> str:
@@ -99,8 +101,7 @@ class QueryingUtils:
 	@staticmethod
 	def get_stocks() -> Sequence[Company]:
 		with Session(engine) as session:
-			stocks = session.exec(select(Company)).all()
-			return stocks
+			return session.exec(select(Company)).all()
 
 	@staticmethod
 	async def insert_prices(stocks_price_tuple: list[tuple[str, tuple[float, float]]]) -> None:
@@ -138,3 +139,29 @@ class QueryingUtils:
 			stock_prices: Any = session.exec(stock_prices_query).all()
 
 			return {stock.ticker: {"buy": stock.buy, "sell": stock.sell} for stock in stock_prices}
+
+	@staticmethod
+	def get_stock_details(
+		tickers: list[str],
+		industry: str | None = None,
+		exchange: str | None = None,
+		limit: int = 50,
+		page: int = 1,
+	) -> Sequence[Company, Industry, Exchange]:
+		with Session(engine) as session:
+			query = (
+				select(Company, Industry, Exchange)
+				.join(Industry, Industry.id == Company.industry_id)
+				.join(Exchange, Exchange.id == Company.exchange_id)
+				.where(Company.ticker.in_(tickers))
+			)
+
+			if industry is not None:
+				query = query.where(Industry.name == industry)
+
+			if exchange is not None:
+				query = query.where(Exchange.name == exchange)
+
+			query = query.limit(limit).offset((page - 1) * limit)
+
+			return session.exec(query).all()
