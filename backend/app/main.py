@@ -1,14 +1,17 @@
+import asyncio
 import logging
 import time
 
-from collections.abc import Awaitable, Callable
+from collections.abc import AsyncGenerator, Awaitable, Callable
 from typing import Any
 
 from fastapi import FastAPI, Request
+from fastapi.concurrency import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.logger import configure_logging
 from app.core.settings import Settings
+from app.core.simulation.simulator import StockPriceManager
 from app.core.utils.init_db import InitDB
 from app.v1.auth import auth_router
 
@@ -21,8 +24,16 @@ logging.getLogger("uvicorn.access").disabled = True
 logger = logging.getLogger(__name__)
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
+	stock_manager = StockPriceManager()
+	asyncio.create_task(stock_manager.generate_prices())
+
+	yield
+
+
 def get_application() -> FastAPI:
-	_app = FastAPI(title="P.Y.T.A", debug=setting.debug, root_path="/api")
+	_app = FastAPI(title="P.Y.T.A", debug=setting.debug, root_path="/api", lifespan=lifespan)
 
 	_app.add_middleware(
 		CORSMiddleware,
