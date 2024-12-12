@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, HTTPException, Request
 
 from app.core.exceptions import UserNotFoundError
@@ -5,6 +7,8 @@ from app.core.schemas.user_out import UserOut
 from app.core.utils.querying_utils import QueryingUtils
 
 user_router = APIRouter(prefix="/user")
+
+logger = logging.getLogger(__name__)
 
 
 @user_router.get("/me")
@@ -21,7 +25,9 @@ async def user_info(request: Request) -> UserOut:
 		return user
 
 	except UserNotFoundError as _:
+		logger.error(f"Invalid session. Session ID: {session_id}")
 		raise HTTPException(status_code=404, detail="User not found") from None
 
 	except Exception as _:
-		raise HTTPException(status_code=500, detail="User info failed") from None
+		logger.error(f"Unathorized. Cookie: {request.cookies}")
+		raise HTTPException(status_code=401, detail="Unauthorized") from None
