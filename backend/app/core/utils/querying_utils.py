@@ -19,7 +19,9 @@ from app.core.models.session import Session as SessionModel
 from app.core.models.stock_history import StockHistory
 from app.core.models.user import User
 from app.core.schemas.user_login import UserLogin
+from app.core.schemas.user_out import UserOut
 from app.core.schemas.user_register import UserRegister
+from app.core.utils.model_utils import ModelUtils
 from app.database import engine
 
 
@@ -95,6 +97,32 @@ class QueryingUtils:
 				return
 			session.delete(user_session)
 			session.commit()
+
+	@staticmethod
+	def get_user_info(session_id: str) -> UserOut:
+		with Session(engine) as session:
+			session_data = session.exec(
+				select(SessionModel).where(SessionModel.id == session_id)
+			).first()
+			if not session_data:
+				raise UserNotFoundError
+
+			user = session.exec(select(User).where(User.id == session_data.user_id)).first()
+			if not user:
+				raise UserNotFoundError
+
+			auth = session.exec(select(Auth).where(Auth.id == user.auth_id)).first()
+			if not auth:
+				raise UserNotFoundError
+
+			user_out = UserOut(
+				first_name=user.name,
+				last_name=user.last_name,
+				hashed_email=ModelUtils.hash_password(auth.email),
+				balance=user.balance,
+			)
+
+			return user_out
 
 	@staticmethod
 	def get_stocks() -> Sequence[Company]:
