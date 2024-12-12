@@ -1,3 +1,5 @@
+import re
+
 from pydantic import field_validator
 from sqlmodel import Field
 
@@ -15,8 +17,10 @@ class Company(BaseTable, table=True):
 	@field_validator("image_url")
 	def validate_image_url(cls, value: str) -> str:
 		if (
-			value
-			== r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
+			re.match(
+				r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+",
+				value,
+			)
 			or value == ""
 		):
 			return value

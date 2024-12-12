@@ -1,3 +1,5 @@
+import hashlib
+
 from collections.abc import Sequence
 from typing import Any
 
@@ -21,7 +23,6 @@ from app.core.models.user import User
 from app.core.schemas.user_login import UserLogin
 from app.core.schemas.user_out import UserOut
 from app.core.schemas.user_register import UserRegister
-from app.core.utils.model_utils import ModelUtils
 from app.database import engine
 
 
@@ -118,7 +119,7 @@ class QueryingUtils:
 			user_out = UserOut(
 				first_name=user.name,
 				last_name=user.last_name,
-				hashed_email=ModelUtils.hash_password(auth.email),
+				hashed_email=hashlib.sha256(auth.email.encode()).hexdigest(),
 				balance=user.balance,
 			)
 
