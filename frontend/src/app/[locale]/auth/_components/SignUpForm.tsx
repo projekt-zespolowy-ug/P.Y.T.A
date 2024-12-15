@@ -1,10 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
 	Form,
 	FormControl,
@@ -14,56 +15,128 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import moment from "moment";
 import { useTranslations } from "next-intl";
+import { passwordRegex } from "../schemas/regex";
+import { DatePicker } from "./DatePicker";
 
 const SignUpForm = () => {
 	const t = useTranslations("SignUpForm");
-	// TODO: Add password regex
-	const formSchema = z
+	const now = new Date();
+	const minBirthDate = new Date(now);
+	const minAge = 18;
+	const maxAge = 140;
+
+	// Calculate the minBirthDate (18 years ago)
+	minBirthDate.setFullYear(now.getFullYear() - minAge);
+
+	// Calculate the maxBirthDate (140 years ago)
+	const maxBirthDate = new Date(now);
+	maxBirthDate.setFullYear(now.getFullYear() - maxAge);
+
+	const registerFormSchema = z
 		.object({
-			email: z.string().email({ message: t("notAnEmailError") }),
+			email: z.string().email({ message: t("messages.notAnEmail") }),
+			name: z
+				.string()
+				.min(1, t("messages.required", { field: t("fields.name") }))
+				.max(29, t("messages.tooLong", { field: t("fields.name") })),
+			lastName: z
+				.string()
+				.min(1, t("messages.required", { field: t("fields.lastName") }))
+				.max(29, t("messages.tooLong", { field: t("fields.lastName") })),
+			dateOfBirth: z
+				.date()
+				.min(maxBirthDate, t("messages.tooOld"))
+				.max(minBirthDate, t("messages.tooYoung"))
+				.transform((val) => moment(val).format("YYYY-MM-DD").toString()),
 			password: z
 				.string()
-				.min(7, { message: t("passwordTooShortError") })
-				.max(64, { message: t("passwordTooLongError") }),
-
-			confirmPassword: z
-				.string()
-				.min(7, { message: t("passwordTooShortError") })
-				.max(64, { message: t("passwordTooLongError") }),
+				.min(8, {
+					message: t("messages.required", { field: t("fields.password") }),
+				})
+				.regex(passwordRegex, t("messages.weakPassword")),
+			confirmPassword: z.string(),
+			termsChecked: z.boolean().refine((val) => val, {
+				message: t("messages.required", { field: t("messages.acceptTerms") }),
+			}),
 		})
 		.superRefine(({ confirmPassword, password }, ctx) => {
 			if (confirmPassword !== password) {
 				ctx.addIssue({
 					code: "custom",
-					message: t("noPasswordMatchError"),
+					message: t("messages.noPasswordMatchError"),
 					path: ["confirmPassword"],
 				});
 			}
 		});
-	const form = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
+	const form = useForm<z.infer<typeof registerFormSchema>>({
+		resolver: zodResolver(registerFormSchema),
 		defaultValues: {
 			email: "",
 			password: "",
 			confirmPassword: "",
+			lastName: "",
+			name: "",
+			dateOfBirth: undefined,
+			termsChecked: false,
 		},
 	});
-
-	function onSubmit(values: z.infer<typeof formSchema>) {
+	const {
+		formState: { isDirty, isValid },
+	} = form;
+	function onSubmit(values: z.infer<typeof registerFormSchema>) {
 		console.log(values);
 	}
 	return (
-		<Form {...form}>
+		<FormProvider {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 				<FormField
 					control={form.control}
 					name="email"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>{t("emailInputLabel")}</FormLabel>
+							<FormLabel>{t("labels.email")}</FormLabel>
 							<FormControl>
-								<Input placeholder={t("emailPlaceHolder")} {...field} />
+								<Input
+									autoComplete="email"
+									placeholder={t("placeholders.email")}
+									{...field}
+								/>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="name"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>{t("labels.name")}</FormLabel>
+							<FormControl>
+								<Input
+									autoComplete="name"
+									placeholder={t("placeholders.name")}
+									{...field}
+								/>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="lastName"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>{t("labels.lastName")}</FormLabel>
+							<FormControl>
+								<Input
+									autoComplete="family-name"
+									placeholder={t("placeholders.lastName")}
+									{...field}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -74,9 +147,14 @@ const SignUpForm = () => {
 					name="password"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>{t("passwordInputLabel")}</FormLabel>
+							<FormLabel>{t("labels.password")}</FormLabel>
 							<FormControl>
-								<Input placeholder={t("passwordPlaceHolder")} {...field} />
+								<Input
+									autoComplete="current-password"
+									type="password"
+									placeholder={t("placeholders.password")}
+									{...field}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -87,10 +165,12 @@ const SignUpForm = () => {
 					name="confirmPassword"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>{t("confirmPasswordInputLabel")}</FormLabel>
+							<FormLabel>{t("labels.confirmPassword")}</FormLabel>
 							<FormControl>
 								<Input
-									placeholder={t("confirmPasswordPlaceHolder")}
+									autoComplete="current-password"
+									type="password"
+									placeholder={t("placeholders.confirmPassword")}
 									{...field}
 								/>
 							</FormControl>
@@ -98,9 +178,28 @@ const SignUpForm = () => {
 						</FormItem>
 					)}
 				/>
-				<Button type="submit">{t("registerButtonText")}</Button>
+				<DatePicker fromDate={maxBirthDate} toDate={minBirthDate} />
+				<FormField
+					control={form.control}
+					name="termsChecked"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>{t("labels.terms")}</FormLabel>
+							<FormControl>
+								<Checkbox
+									checked={field.value}
+									onCheckedChange={field.onChange}
+								/>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<Button disabled={!isDirty || !isValid} type="submit">
+					{t("registerButtonText")}
+				</Button>
 			</form>
-		</Form>
+		</FormProvider>
 	);
 };
 
