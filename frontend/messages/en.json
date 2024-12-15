@@ -17,7 +17,23 @@
     "confirmPasswordInputLabel": "Confirm Password",
     "emailPlaceHolder": "Email",
     "passwordPlaceHolder": "Password",
-    "confirmPasswordPlaceHolder": "Password"
+    "confirmPasswordPlaceHolder": "Password",
+		"Calendar": {
+			"dobLabel": "Date of birth",
+			"pickDate": "Pick a date",
+			"january": "January",
+			"february": "February",
+			"march": "March",
+			"april": "April",
+			"may": "May",
+			"june": "June",
+			"july": "July",
+			"august": "August",
+			"september": "September",
+			"october": "October",
+			"november": "November",
+			"december": "December"
+		}
   },
   "SignInForm": {
     "notAnEmailError": "Surely does not look like an email.",

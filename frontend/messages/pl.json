@@ -17,7 +17,23 @@
     "confirmPasswordInputLabel": "Potwierdzenie hasła",
     "emailPlaceHolder": "Email",
     "passwordPlaceHolder": "Hasło",
-    "confirmPasswordPlaceHolder": "Potwierdź hasło"
+    "confirmPasswordPlaceHolder": "Potwierdź hasło",
+	"Calendar": {
+		"dobLabel": "Data urodzenia",
+		"pickDate": "Wybierz datę",
+		"january": "Styczeń",
+		"february": "Luty",
+		"march": "Marzec",
+		"april": "Kwiecień",
+		"may": "Maj",
+		"june": "Czerwiec",
+		"july": "Lipiec",
+		"august": "Sierpień",
+		"september": "Wrzesień",
+		"october": "Październik",
+		"november": "Listopad",
+		"december": "Grudzień"
+	}  
   },
   "SignInForm": {
     "notAnEmailError": "Wprowadź poprawny adres email.",
