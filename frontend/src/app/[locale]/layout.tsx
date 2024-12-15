@@ -5,6 +5,7 @@ import { routing } from "@/i18n/routing";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
+import Header from "./_components/Header";
 import QueryProvider from "./_components/QueryProvider";
 import { ThemeProvider } from "./_components/theme-provider";
 
@@ -52,7 +53,10 @@ export default async function LocaleLayout({
 						enableSystem
 						disableTransitionOnChange
 					>
-						<QueryProvider>{children}</QueryProvider>
+						<QueryProvider>
+							<Header />
+							{children}
+						</QueryProvider>
 					</ThemeProvider>
 				</NextIntlClientProvider>
 			</body>
