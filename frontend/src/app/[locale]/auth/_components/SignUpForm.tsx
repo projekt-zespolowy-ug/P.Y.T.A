@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import moment from "moment";
 import { useTranslations } from "next-intl";
-import { passwordRegex } from "../schemas/regex";
+import { passwordRegex } from "../../../../lib/regex";
 import { DatePicker } from "./DatePicker";
 
 const SignUpForm = () => {
