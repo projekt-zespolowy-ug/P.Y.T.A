@@ -8,6 +8,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Toaster } from "sonner";
+import Footer from "./_components/Footer";
 import Header from "./_components/Header";
 import QueryProvider from "./_components/QueryProvider";
 import { ThemeProvider } from "./_components/theme-provider";
@@ -60,6 +61,7 @@ export default async function LocaleLayout({
 							<Header />
 							{children}
 							<Toaster />
+							<Footer />
 							{process.env.NODE_ENV === "development" ? (
 								<ReactQueryDevtools />
 							) : null}
