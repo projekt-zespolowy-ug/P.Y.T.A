@@ -1,10 +1,9 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import React from "react";
 import LocaleSwitcher from "./LocaleSwitcher";
 import { ModeToggle } from "./ModeToggle";
@@ -14,11 +13,11 @@ const Header = () => {
 	const { resolvedTheme } = useTheme();
 	const tHeader = useTranslations("Header");
 	const tLeftTabs = useTranslations("Header.LeftTabs");
-	const currentPath = usePathname();
+	const locale = useLocale();
 	// TODO: TAKE THIS VALUE FROM AUTH.JS API
 	const loggedIn = true;
 	return (
-		<header className="flex justify-between bg-secondary">
+		<header className="flex justify-between items-center bg-secondary">
 			<div className="left">
 				<div className="logo">
 					<Image
@@ -36,30 +35,25 @@ const Header = () => {
 				<div className="tabs flex">
 					<ul className="flex list-none gap-2">
 						<li>
-							<Link href={`${currentPath}/market`}>
-								{tLeftTabs("browseStocks")}
-							</Link>
+							<Link href={`${locale}/market`}>{tLeftTabs("browseStocks")}</Link>
 						</li>
 						<li>
-							<Link href={`${currentPath}/portfolio`}>
-								{tLeftTabs("portfolio")}
-							</Link>
+							<Link href={`${locale}/portfolio`}>{tLeftTabs("portfolio")}</Link>
 						</li>
 					</ul>
 				</div>
 			</div>
 			<div className="right">
 				{loggedIn ? (
-					<div className="flex">
+					<div className="flex items-center gap-2">
 						<LocaleSwitcher />
 						<ModeToggle />
-						<div className="avatar flex flex-col">
+						<div className="avatar flex flex-col items-center">
 							<UserAvatarMenu />
-							UserName
 						</div>
 					</div>
 				) : (
-					<Button>Sign In</Button>
+					<Button>{tHeader("signIn")}</Button>
 				)}
 			</div>
 		</header>
