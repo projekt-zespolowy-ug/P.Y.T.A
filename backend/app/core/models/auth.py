@@ -1,4 +1,4 @@
-from pydantic import EmailStr, validator
+from pydantic import EmailStr, field_validator
 from sqlmodel import Field, String
 
 from app.core.models.base_table import BaseTable
@@ -15,7 +15,7 @@ class Auth(BaseTable, table=True):
 	)
 	password: str = Field(nullable=False)
 
-	@validator("password")
+	@field_validator("password")
 	def hash_password(cls, value: str) -> str:
 		if value:
 			return ModelUtils.hash_password(value)
