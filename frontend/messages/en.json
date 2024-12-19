@@ -3,6 +3,9 @@
 		"signIn": "Sign In",
 		"signUp": "Sign Up"
 	},
+	"Footer": {
+		"authorInfo": "Created by:"
+	},
 	"Header": {
 		"logoAlt": "App logo",
 		"LeftTabs": {
@@ -17,7 +20,8 @@
 			"Avatar": {
 				"profile": "Settings",
 				"signOut": "Sign out"
-			}
+			},
+			"signIn": "Sign in"
 		}
 	},
 	"SignUpForm": {

@@ -3,6 +3,9 @@
 		"signIn": "Zaloguj się",
 		"signUp": "Zarejestruj się"
 	},
+	"Footer": {
+		"authorInfo": "Stworzone przez:"
+	},
 	"Header": {
 		"logoAlt": "Logo aplikacji",
 		"LeftTabs": {
@@ -17,7 +20,8 @@
 			"Avatar": {
 				"profile": "Ustawienia",
 				"signOut": "Wyloguj się"
-			}
+			},
+			"signIn": "Zaloguj"
 		}
 	},
 	"SignUpForm": {
