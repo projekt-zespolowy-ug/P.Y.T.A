@@ -7,6 +7,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { Toaster } from "sonner";
 import QueryProvider from "./_components/QueryProvider";
 import { ThemeProvider } from "./_components/theme-provider";
 
@@ -56,6 +57,7 @@ export default async function LocaleLayout({
 					>
 						<QueryProvider>
 							{children}
+							<Toaster />
 							{process.env.NODE_ENV === "development" ? (
 								<ReactQueryDevtools />
 							) : null}

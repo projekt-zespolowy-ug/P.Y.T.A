@@ -1,82 +1,84 @@
 {
-  "AuthPage": {
-    "signIn": "Sign In",
-    "signUp": "Sign Up"
-  },
-  "Header": {
-    "logoAlt": "App logo"
-  },
-  "SignUpForm": {
-    "registerButtonText": "Register",
+	"AuthPage": {
+		"signIn": "Sign In",
+		"signUp": "Sign Up"
+	},
+	"Header": {
+		"logoAlt": "App logo"
+	},
+	"SignUpForm": {
+		"registerButtonText": "Register",
 
-    "messages": {
-      "required": "{field} is required.",
-      "tooLong": "{field} is too long.",
-      "notAnEmail": "Surely does not look like an email.",
-      "tooYoung": "You are too young to use the application.",
-      "tooOld": "You are probably too old to be alive, is that date correct?",
-      "noPasswordMatchError": "The passwords did not match.",
-      "acceptTerms": "Accepting terms",
-      "weakPassword": "Password is too weak"
-    },
-    "fields": {
-      "email": "Email",
-      "name": "Name",
-      "lastName": "Last name",
-      "password": "Password",
-      "confirmPassword": "Password confirmation",
-      "dob": "Date of birth",
-      "terms": "TBA"
-    },
-    "placeholders": {
-      "email": "pyta@pyta.com",
-      "name": "Name",
-      "lastName": "Last name",
-      "password": "Password",
-      "confirmPassword": "Password confirmation",
-      "dob": "Date of birth",
-      "terms": "Terms"
-    },
-    "labels": {
-      "email": "Email",
-      "name": "Name",
-      "lastName": "Last name",
-      "password": "Password",
-      "confirmPassword": "Password confirmation",
-      "dob": "Date of birth",
-      "terms": "I accept the terms."
-    },
-    "Calendar": {
-      "dobLabel": "Date of birth",
-      "pickDate": "Pick a date",
-      "january": "January",
-      "february": "February",
-      "march": "March",
-      "april": "April",
-      "may": "May",
-      "june": "June",
-      "july": "July",
-      "august": "August",
-      "september": "September",
-      "october": "October",
-      "november": "November",
-      "december": "December"
-    }
-  },
-  "SignInForm": {
-    "notAnEmailError": "Surely does not look like an email.",
-    "passwordTooShortError": "Password too short.",
-    "passwordTooLongError": "Password too long.",
-    "loginButtonText": "Sign In",
-    "emailInputLabel": "Your Email",
-    "passwordInputLabel": "Password",
-    "emailPlaceHolder": "Email",
-    "passwordPlaceHolder": "Password"
-  },
-  "ModeToggler": {
-    "changeMode": "Toggle theme",
-    "system": "System",
-    "dark": "Dark",
-    "light": "Light"
-  }
+		"messages": {
+			"required": "{field} is required.",
+			"tooLong": "{field} is too long.",
+			"notAnEmail": "Surely does not look like an email.",
+			"tooYoung": "You are too young to use the application.",
+			"tooOld": "You are probably too old to be alive, is that date correct?",
+			"noPasswordMatchError": "The passwords did not match.",
+			"acceptTerms": "Accepting terms",
+			"weakPassword": "Password is too weak",
+			"registerSuccess": "Registration successful.",
+			"alreadyExists": "This email address is already in use."
+		},
+		"fields": {
+			"email": "Email",
+			"name": "Name",
+			"lastName": "Last name",
+			"password": "Password",
+			"confirmPassword": "Password confirmation",
+			"dob": "Date of birth",
+			"terms": "TBA"
+		},
+		"placeholders": {
+			"email": "pyta@pyta.com",
+			"name": "Name",
+			"lastName": "Last name",
+			"password": "Password",
+			"confirmPassword": "Password confirmation",
+			"dob": "Date of birth",
+			"terms": "Terms"
+		},
+		"labels": {
+			"email": "Email",
+			"name": "Name",
+			"lastName": "Last name",
+			"password": "Password",
+			"confirmPassword": "Password confirmation",
+			"dob": "Date of birth",
+			"terms": "I accept the terms."
+		},
+		"Calendar": {
+			"dobLabel": "Date of birth",
+			"pickDate": "Pick a date",
+			"january": "January",
+			"february": "February",
+			"march": "March",
+			"april": "April",
+			"may": "May",
+			"june": "June",
+			"july": "July",
+			"august": "August",
+			"september": "September",
+			"october": "October",
+			"november": "November",
+			"december": "December"
+		}
+	},
+	"SignInForm": {
+		"notAnEmailError": "Surely does not look like an email.",
+		"passwordTooShortError": "Password too short.",
+		"passwordTooLongError": "Password too long.",
+		"loginButtonText": "Sign In",
+		"emailInputLabel": "Your Email",
+		"passwordInputLabel": "Password",
+		"emailPlaceHolder": "Email",
+		"passwordPlaceHolder": "Password"
+	},
+	"ModeToggler": {
+		"changeMode": "Toggle theme",
+		"system": "System",
+		"dark": "Dark",
+		"light": "Light"
+	}
 }

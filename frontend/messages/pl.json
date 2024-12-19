@@ -17,7 +17,9 @@
 			"tooOld": "Prawdopodobnie jesteś za stary, aby żyć. Czy ta data jest poprawna?",
 			"noPasswordMatchError": "Hasła nie pasują.",
 			"acceptTerms": "Zaakceptowanie regulaminu",
-			"weakPassword": "Hasło jest zbyt słabe."
+			"weakPassword": "Hasło jest zbyt słabe.",
+			"registerSuccess": "Pomyślnie zarejestrowano.",
+			"alreadyExists": "Adres email już jest zajęty.."
 		},
 		"fields": {
 			"email": "Email",

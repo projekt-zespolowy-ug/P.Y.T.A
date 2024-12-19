@@ -1,9 +1,5 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { FormProvider, useForm } from "react-hook-form";
-import { z } from "zod";
-
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -15,13 +11,20 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "@/i18n/routing";
+import { useSignupUser } from "@/query/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
 import moment from "moment";
 import { useTranslations } from "next-intl";
+import { FormProvider, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 import { passwordRegex } from "../../../../lib/regex";
 import { DatePicker } from "./DatePicker";
 
 const SignUpForm = () => {
 	const t = useTranslations("SignUpForm");
+	const router = useRouter();
 	const now = new Date();
 	const minBirthDate = new Date(now);
 	const minAge = 18;
@@ -78,126 +81,160 @@ const SignUpForm = () => {
 			confirmPassword: "",
 			lastName: "",
 			name: "",
-			dateOfBirth: undefined,
+			dateOfBirth: "",
 			termsChecked: false,
 		},
 	});
 	const {
 		formState: { isDirty, isValid },
 	} = form;
-	function onSubmit(values: z.infer<typeof registerFormSchema>) {
-		console.log(values);
-	}
+
+	const signUpUser = useSignupUser();
+
+	const onSubmit = async (values: z.infer<typeof registerFormSchema>) => {
+		const {
+			dateOfBirth: date_of_birth,
+			email,
+			lastName: last_name,
+			name,
+			password,
+		} = values;
+		try {
+			signUpUser.mutate(
+				{ date_of_birth, email, last_name, name, password },
+				{
+					onSuccess: async () => {
+						toast(t("messages.registerSuccess"));
+						await setTimeout(() => {
+							router.push("/auth/sign-in");
+						}, 2000);
+					},
+					onError: (e) => {
+						console.log(e);
+						// TODO: handle all errors when backend docs are ready
+						toast(t("messages.alreadyExists"));
+					},
+				},
+			);
+		} catch (e) {}
+	};
+
 	return (
 		<FormProvider {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-				<FormField
-					control={form.control}
-					name="email"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>{t("labels.email")}</FormLabel>
-							<FormControl>
-								<Input
-									autoComplete="email"
-									placeholder={t("placeholders.email")}
-									{...field}
-								/>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name="name"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>{t("labels.name")}</FormLabel>
-							<FormControl>
-								<Input
-									autoComplete="name"
-									placeholder={t("placeholders.name")}
-									{...field}
-								/>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name="lastName"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>{t("labels.lastName")}</FormLabel>
-							<FormControl>
-								<Input
-									autoComplete="family-name"
-									placeholder={t("placeholders.lastName")}
-									{...field}
-								/>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name="password"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>{t("labels.password")}</FormLabel>
-							<FormControl>
-								<Input
-									autoComplete="current-password"
-									type="password"
-									placeholder={t("placeholders.password")}
-									{...field}
-								/>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name="confirmPassword"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>{t("labels.confirmPassword")}</FormLabel>
-							<FormControl>
-								<Input
-									autoComplete="current-password"
-									type="password"
-									placeholder={t("placeholders.confirmPassword")}
-									{...field}
-								/>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<DatePicker fromDate={maxBirthDate} toDate={minBirthDate} />
-				<FormField
-					control={form.control}
-					name="termsChecked"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>{t("labels.terms")}</FormLabel>
-							<FormControl>
-								<Checkbox
-									checked={field.value}
-									onCheckedChange={field.onChange}
-								/>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<Button disabled={!isDirty || !isValid} type="submit">
-					{t("registerButtonText")}
-				</Button>
+				<>
+					<FormField
+						control={form.control}
+						name="email"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>{t("labels.email")}</FormLabel>
+								<FormControl>
+									<Input
+										autoComplete="email"
+										placeholder={t("placeholders.email")}
+										{...field}
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="password"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>{t("labels.password")}</FormLabel>
+								<FormControl>
+									<Input
+										autoComplete="current-password"
+										type="password"
+										placeholder={t("placeholders.password")}
+										{...field}
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="confirmPassword"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>{t("labels.confirmPassword")}</FormLabel>
+								<FormControl>
+									<Input
+										autoComplete="current-password"
+										type="password"
+										placeholder={t("placeholders.confirmPassword")}
+										{...field}
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="name"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>{t("labels.name")}</FormLabel>
+								<FormControl>
+									<Input
+										autoComplete="name"
+										placeholder={t("placeholders.name")}
+										{...field}
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					<FormField
+						control={form.control}
+						name="lastName"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>{t("labels.lastName")}</FormLabel>
+								<FormControl>
+									<Input
+										autoComplete="family-name"
+										placeholder={t("placeholders.lastName")}
+										{...field}
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					<DatePicker fromDate={maxBirthDate} toDate={minBirthDate} />
+					<FormField
+						control={form.control}
+						name="termsChecked"
+						render={({ field }) => (
+							<FormItem className="flex gap-2 items-center">
+								<FormControl>
+									<Checkbox
+										checked={field.value}
+										onCheckedChange={field.onChange}
+									/>
+								</FormControl>
+								<FormLabel className="text-md">{t("labels.terms")}</FormLabel>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<div className="control-buttons flex justify-between">
+						<Button disabled={!isDirty || !isValid} type="submit">
+							{t("registerButtonText")}
+						</Button>
+					</div>
+				</>
 			</form>
 		</FormProvider>
 	);
