@@ -10,3 +10,4 @@ class User(BaseTable, table=True):
 	name: str
 	last_name: str
 	date_of_birth: date = Field(sa_column=Column(DATE, nullable=False))
+	balance: float = Field(default=0.0)
