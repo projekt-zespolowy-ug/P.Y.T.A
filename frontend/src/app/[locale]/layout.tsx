@@ -1,7 +1,9 @@
+// "use client";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "../globals.css";
 import { routing } from "@/i18n/routing";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -52,7 +54,12 @@ export default async function LocaleLayout({
 						enableSystem
 						disableTransitionOnChange
 					>
-						<QueryProvider>{children}</QueryProvider>
+						<QueryProvider>
+							{children}
+							{process.env.NODE_ENV === "development" ? (
+								<ReactQueryDevtools />
+							) : null}
+						</QueryProvider>
 					</ThemeProvider>
 				</NextIntlClientProvider>
 			</body>
