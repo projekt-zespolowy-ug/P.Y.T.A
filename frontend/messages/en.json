@@ -19,7 +19,9 @@
 			"acceptTerms": "Accepting terms",
 			"weakPassword": "Password is too weak",
 			"registerSuccess": "Registration successful.",
-			"alreadyExists": "This email address is already in use."
+			"alreadyExists": "This email address is already in use.",
+			"validationErr": "Data validation error.",
+			"serverErr": "Server error."
 		},
 		"fields": {
 			"email": "Email",

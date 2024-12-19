@@ -19,7 +19,9 @@
 			"acceptTerms": "Zaakceptowanie regulaminu",
 			"weakPassword": "Hasło jest zbyt słabe.",
 			"registerSuccess": "Pomyślnie zarejestrowano.",
-			"alreadyExists": "Adres email już jest zajęty.."
+			"alreadyExists": "Adres email już jest zajęty..",
+			"validationErr": "Błąd walidacji danych.",
+			"serverErr": "Błąd serwera."
 		},
 		"fields": {
 			"email": "Email",

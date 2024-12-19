@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "@/i18n/routing";
 import { useSignupUser } from "@/query/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { AxiosError } from "axios";
 import moment from "moment";
 import { useTranslations } from "next-intl";
 import { FormProvider, useForm } from "react-hook-form";
@@ -110,9 +111,14 @@ const SignUpForm = () => {
 						}, 2000);
 					},
 					onError: (e) => {
-						console.log(e);
-						// TODO: handle all errors when backend docs are ready
-						toast(t("messages.alreadyExists"));
+						const { status } = e as AxiosError;
+						if (status === 400) {
+							toast(t("messages.alreadyExists"));
+						} else if (status === 422) {
+							toast(t("messages.validationErr"));
+						} else {
+							toast(t("messages.serverErr"));
+						}
 					},
 				},
 			);
