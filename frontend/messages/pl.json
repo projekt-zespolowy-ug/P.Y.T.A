@@ -1,66 +1,82 @@
 {
-  "AuthPage": {
-    "signIn": "Zaloguj się",
-    "signUp": "Zarejestruj się"
-  },
-  "Header": {
-    "logoAlt": "Logo aplikacji"
-  },
-  "SignUpForm": {
-    "registerButtonText": "Zarejestruj",
+	"AuthPage": {
+		"signIn": "Zaloguj się",
+		"signUp": "Zarejestruj się"
+	},
+	"Header": {
+		"logoAlt": "Logo aplikacji"
+	},
+	"SignUpForm": {
+		"registerButtonText": "Zarejestruj",
 
-    "messages": {
-      "required": "{field} jest wymagane.",
-      "tooLong": "{field} jest za długie.",
-      "notAnEmail": "To na pewno nie wygląda na email.",
-      "tooYoung": "Jesteś za młody, aby korzystać z aplikacji.",
-      "tooOld": "Prawdopodobnie jesteś za stary, aby żyć. Czy ta data jest poprawna?",
-      "noPasswordMatchError": "Hasła nie pasują.",
-      "acceptTerms": "Zaakceptowanie regulaminu",
-      "weakPassword": "Hasło jest zbyt słabe."
-    },
-    "fields": {
-      "email": "Email",
-      "name": "Imię",
-      "lastName": "Nazwisko",
-      "password": "Hasło",
-      "confirmPassword": "Potwierdzenie hasła",
-      "dob": "Data urodzenia",
-      "terms": "Regulamin"
-    },
-    "placeholders": {
-      "email": "pyta@pyta.com",
-      "name": "Imię",
-      "lastName": "Nazwisko",
-      "password": "Hasło",
-      "confirmPassword": "Potwierdzenie hasła",
-      "dob": "Data urodzenia",
-      "terms": "Regulamin"
-    },
-    "labels": {
-      "email": "Email",
-      "name": "Imię",
-      "lastName": "Nazwisko",
-      "password": "Hasło",
-      "confirmPassword": "Potwierdzenie hasła",
-      "dob": "Data urodzenia",
-      "terms": "Akceptuję regulamin."
-    },
-    "Calendar": {
-      "dobLabel": "Data urodzenia",
-      "pickDate": "Wybierz datę",
-      "january": "Styczeń",
-      "february": "Luty",
-      "march": "Marzec",
-      "april": "Kwiecień",
-      "may": "Maj",
-      "june": "Czerwiec",
-      "july": "Lipiec",
-      "august": "Sierpień",
-      "september": "Wrzesień",
-      "october": "Październik",
-      "november": "Listopad",
-      "december": "Grudzień"
-    }
-  }
+		"messages": {
+			"required": "{field} jest wymagane.",
+			"tooLong": "{field} jest za długie.",
+			"notAnEmail": "To na pewno nie wygląda na email.",
+			"tooYoung": "Jesteś za młody, aby korzystać z aplikacji.",
+			"tooOld": "Prawdopodobnie jesteś za stary, aby żyć. Czy ta data jest poprawna?",
+			"noPasswordMatchError": "Hasła nie pasują.",
+			"acceptTerms": "Zaakceptowanie regulaminu",
+			"weakPassword": "Hasło jest zbyt słabe."
+		},
+		"fields": {
+			"email": "Email",
+			"name": "Imię",
+			"lastName": "Nazwisko",
+			"password": "Hasło",
+			"confirmPassword": "Potwierdzenie hasła",
+			"dob": "Data urodzenia",
+			"terms": "Regulamin"
+		},
+		"placeholders": {
+			"email": "pyta@pyta.com",
+			"name": "Imię",
+			"lastName": "Nazwisko",
+			"password": "Hasło",
+			"confirmPassword": "Potwierdzenie hasła",
+			"dob": "Data urodzenia",
+			"terms": "Regulamin"
+		},
+		"labels": {
+			"email": "Email",
+			"name": "Imię",
+			"lastName": "Nazwisko",
+			"password": "Hasło",
+			"confirmPassword": "Potwierdzenie hasła",
+			"dob": "Data urodzenia",
+			"terms": "Akceptuję regulamin."
+		},
+		"Calendar": {
+			"dobLabel": "Data urodzenia",
+			"pickDate": "Wybierz datę",
+			"january": "Styczeń",
+			"february": "Luty",
+			"march": "Marzec",
+			"april": "Kwiecień",
+			"may": "Maj",
+			"june": "Czerwiec",
+			"july": "Lipiec",
+			"august": "Sierpień",
+			"september": "Wrzesień",
+			"october": "Październik",
+			"november": "Listopad",
+			"december": "Grudzień"
+		}
+	},
+	"SignInForm": {
+		"notAnEmailError": "Wprowadź poprawny adres email.",
+		"passwordTooShortError": "Zbyt krótkie hasło.",
+		"passwordTooLongError": "Hasło jest zbyt długie.",
+		"loginButtonText": "Zaloguj się",
+		"emailInputLabel": "Twój email",
+		"passwordInputLabel": "Hasło",
+		"emailPlaceHolder": "Email",
+		"passwordPlaceHolder": "Hasło"
+	},
+	"ModeToggler": {
+		"changeMode": "Zmień motyw",
+		"system": "System",
+		"dark": "Ciemny",
+		"light": "Jasny"
+	}
 }
