@@ -9,7 +9,7 @@ const LocaleSwitcher = () => {
 	return (
 		<LocaleSwitcherSelect defaultValue={locale} label={t("label")}>
 			{routing.locales.map((cur) => (
-				<option key={cur} value={cur}>
+				<option className="bg-secondary" key={cur} value={cur}>
 					{t("locale", { locale: cur })}
 				</option>
 			))}
