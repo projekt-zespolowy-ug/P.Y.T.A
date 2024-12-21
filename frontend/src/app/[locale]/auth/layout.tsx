@@ -9,14 +9,12 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 	const pathname = usePathname();
 	const locale = useLocale();
 
-	const activeTab =
-		pathname === `/${locale}/auth/sign-up` ? "signUp" : "signIn";
+	const activeTab = pathname.endsWith("sign-up") ? "signUp" : "signIn";
 
 	return (
 		<div className="flex items-center justify-center h-svh">
 			<div className="w-[400px] mx-2">
 				<div className="flex border-b border-gray-200 mb-4">
-					{/* Links replacing Tabs */}
 					<Link
 						href={`/${locale}/auth/sign-in`}
 						className={`px-4 py-2 ${

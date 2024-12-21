@@ -28,7 +28,6 @@ import { useLocale, useTranslations } from "next-intl";
 import * as React from "react";
 import { useFormContext } from "react-hook-form";
 
-// Import the necessary locales from date-fns
 import { enUS, pl } from "date-fns/locale";
 
 interface DatePickerProps {
@@ -153,7 +152,7 @@ export function DatePicker({ fromDate, toDate }: DatePickerProps) {
 								initialFocus
 								month={date}
 								onMonthChange={setDate}
-								locale={calendarLocale} // Pass the locale to the Calendar component
+								locale={calendarLocale}
 							/>
 						</PopoverContent>
 					</Popover>

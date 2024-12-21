@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "@/i18n/routing";
+import { passwordRegex } from "@/lib/regex";
 import { useSignupUser } from "@/query/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { AxiosError } from "axios";
@@ -20,23 +21,22 @@ import { useTranslations } from "next-intl";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { passwordRegex } from "../../../../lib/regex";
+
 import { DatePicker } from "./DatePicker";
 
 const SignUpForm = () => {
 	const t = useTranslations("SignUpForm");
 	const router = useRouter();
-	const now = new Date();
-	const minBirthDate = new Date(now);
+	const minBirthDate = new Date();
 	const minAge = 18;
 	const maxAge = 140;
 
 	// Calculate the minBirthDate (18 years ago)
-	minBirthDate.setFullYear(now.getFullYear() - minAge);
+	minBirthDate.setFullYear(minBirthDate.getFullYear() - minAge);
 
 	// Calculate the maxBirthDate (140 years ago)
-	const maxBirthDate = new Date(now);
-	maxBirthDate.setFullYear(now.getFullYear() - maxAge);
+	const maxBirthDate = new Date();
+	maxBirthDate.setFullYear(maxBirthDate.getFullYear() - maxAge);
 
 	const registerFormSchema = z
 		.object({

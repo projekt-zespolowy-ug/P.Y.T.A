@@ -7,15 +7,14 @@
 		"logoAlt": "Logo aplikacji"
 	},
 	"SignUpForm": {
-		"registerButtonText": "Zarejestruj",
-
+		"registerButton": "Zarejestruj",
 		"messages": {
 			"required": "{field} jest wymagane.",
 			"tooLong": "{field} jest za długie.",
 			"notAnEmail": "To na pewno nie wygląda na email.",
 			"tooYoung": "Jesteś za młody, aby korzystać z aplikacji.",
 			"tooOld": "Prawdopodobnie jesteś za stary, aby żyć. Czy ta data jest poprawna?",
-			"noPasswordMatchError": "Hasła nie pasują.",
+			"noPasswordMatchError": "Hasła nie są identyczne.",
 			"acceptTerms": "Zaakceptowanie regulaminu",
 			"weakPassword": "Hasło jest zbyt słabe.",
 			"registerSuccess": "Pomyślnie zarejestrowano.",
@@ -29,11 +28,10 @@
 			"lastName": "Nazwisko",
 			"password": "Hasło",
 			"confirmPassword": "Potwierdzenie hasła",
-			"dob": "Data urodzenia",
-			"terms": "Regulamin"
+			"dob": "Data urodzenia"
 		},
 		"placeholders": {
-			"email": "pyta@pyta.com",
+			"email": "pyta@pyta.app",
 			"name": "Imię",
 			"lastName": "Nazwisko",
 			"password": "Hasło",

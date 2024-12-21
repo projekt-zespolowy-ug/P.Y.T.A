@@ -11,7 +11,7 @@ const Page = () => {
 		if (path === "/auth") {
 			router.push("/auth/sign-in");
 		}
-	}, [path, router]); // Dependencies to ensure useEffect runs on path change
+	}, [path, router]);
 
 	return <SignInForm />;
 };

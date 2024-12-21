@@ -7,15 +7,14 @@
 		"logoAlt": "App logo"
 	},
 	"SignUpForm": {
-		"registerButtonText": "Register",
-
+		"registerButton": "Register",
 		"messages": {
 			"required": "{field} is required.",
 			"tooLong": "{field} is too long.",
 			"notAnEmail": "Surely does not look like an email.",
 			"tooYoung": "You are too young to use the application.",
 			"tooOld": "You are probably too old to be alive, is that date correct?",
-			"noPasswordMatchError": "The passwords did not match.",
+			"noPasswordMatchError": "The passwords do not match.",
 			"acceptTerms": "Accepting terms",
 			"weakPassword": "Password is too weak",
 			"registerSuccess": "Registration successful.",
@@ -29,11 +28,10 @@
 			"lastName": "Last name",
 			"password": "Password",
 			"confirmPassword": "Password confirmation",
-			"dob": "Date of birth",
-			"terms": "TBA"
+			"dob": "Date of birth"
 		},
 		"placeholders": {
-			"email": "pyta@pyta.com",
+			"email": "pyta@pyta.app",
 			"name": "Name",
 			"lastName": "Last name",
 			"password": "Password",

@@ -1,3 +1,3 @@
-export interface ISignupResponse {
+export interface SignupResponse {
 	session_id: string;
 }
