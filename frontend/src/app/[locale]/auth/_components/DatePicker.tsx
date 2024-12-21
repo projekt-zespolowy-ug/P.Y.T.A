@@ -45,19 +45,19 @@ export function DatePicker({ fromDate, toDate }: DatePickerProps) {
 	const calendarLocale = locale === "pl" ? pl : enUS;
 
 	const months = [
-		t("january"),
-		t("february"),
-		t("march"),
-		t("april"),
-		t("may"),
-		t("june"),
-		t("july"),
-		t("august"),
-		t("september"),
-		t("october"),
-		t("november"),
-		t("december"),
-	];
+		"january",
+		"february",
+		"march",
+		"april",
+		"may",
+		"june",
+		"july",
+		"august",
+		"september",
+		"october",
+		"november",
+		"december",
+	].map((el) => t(el));
 
 	const years = Array.from(
 		{ length: toDate.getFullYear() - fromDate.getFullYear() + 1 },

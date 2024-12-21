@@ -237,7 +237,7 @@ const SignUpForm = () => {
 					/>
 					<div className="control-buttons flex justify-between">
 						<Button disabled={!isDirty || !isValid} type="submit">
-							{t("registerButtonText")}
+							{t("registerButton")}
 						</Button>
 					</div>
 				</>
