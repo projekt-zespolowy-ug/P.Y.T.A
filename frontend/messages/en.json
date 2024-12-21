@@ -15,7 +15,7 @@
 			"tooYoung": "You are too young to use the application.",
 			"tooOld": "You are probably too old to be alive, is that date correct?",
 			"noPasswordMatchError": "The passwords do not match.",
-			"acceptTerms": "Accepting terms",
+			"acceptTerms": "Accepting terms is required.",
 			"weakPassword": "Password is too weak",
 			"registerSuccess": "Registration successful.",
 			"alreadyExists": "This email address is already in use.",

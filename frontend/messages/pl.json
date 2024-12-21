@@ -15,7 +15,7 @@
 			"tooYoung": "Jesteś za młody, aby korzystać z aplikacji.",
 			"tooOld": "Prawdopodobnie jesteś za stary, aby żyć. Czy ta data jest poprawna?",
 			"noPasswordMatchError": "Hasła nie są identyczne.",
-			"acceptTerms": "Zaakceptowanie regulaminu",
+			"acceptTerms": "Zaakceptowanie regulaminu jest obowiązkowe.",
 			"weakPassword": "Hasło jest zbyt słabe.",
 			"registerSuccess": "Pomyślnie zarejestrowano.",
 			"alreadyExists": "Adres email już jest zajęty..",
