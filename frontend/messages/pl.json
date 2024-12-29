@@ -14,7 +14,7 @@
 		},
 		"RightTabs": {
 			"LocaleSwitcher": {
-				"label": "Change language",
+				"label": "Wybierz język",
 				"locale": "{locale, select, pl {🇵🇱} en {🇺🇸} other {Unknown}}"
 			},
 			"Avatar": {
