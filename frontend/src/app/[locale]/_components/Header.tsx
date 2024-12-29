@@ -24,6 +24,7 @@ const Header = () => {
 				<div className="left">
 					<div className="logo">
 						<Image
+							className="p-2"
 							width={100}
 							height={100}
 							src={logoPath}
