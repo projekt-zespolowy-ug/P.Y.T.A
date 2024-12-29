@@ -3,8 +3,26 @@
 		"signIn": "Sign In",
 		"signUp": "Sign Up"
 	},
+	"Footer": {
+		"authorInfo": "Created by:"
+	},
 	"Header": {
-		"logoAlt": "App logo"
+		"logoAlt": "App logo",
+		"LeftTabs": {
+			"browseStocks": "Browse stocks",
+			"portfolio": "Portfolio"
+		},
+		"RightTabs": {
+			"LocaleSwitcher": {
+				"label": "Change language",
+				"locale": "{locale, select, pl {🇵🇱} en {🇺🇸} other {Unknown}}"
+			},
+			"Avatar": {
+				"profile": "Settings",
+				"signOut": "Sign out"
+			},
+			"signIn": "Sign in"
+		}
 	},
 	"SignUpForm": {
 		"registerButton": "Register",

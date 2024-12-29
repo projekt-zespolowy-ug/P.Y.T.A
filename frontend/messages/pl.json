@@ -3,8 +3,26 @@
 		"signIn": "Zaloguj się",
 		"signUp": "Zarejestruj się"
 	},
+	"Footer": {
+		"authorInfo": "Stworzone przez:"
+	},
 	"Header": {
-		"logoAlt": "Logo aplikacji"
+		"logoAlt": "Logo aplikacji",
+		"LeftTabs": {
+			"browseStocks": "Przeglądaj aktywa",
+			"portfolio": "Portfolio"
+		},
+		"RightTabs": {
+			"LocaleSwitcher": {
+				"label": "Wybierz język",
+				"locale": "{locale, select, pl {🇵🇱} en {🇺🇸} other {Unknown}}"
+			},
+			"Avatar": {
+				"profile": "Ustawienia",
+				"signOut": "Wyloguj się"
+			},
+			"signIn": "Zaloguj"
+		}
 	},
 	"SignUpForm": {
 		"registerButton": "Zarejestruj",

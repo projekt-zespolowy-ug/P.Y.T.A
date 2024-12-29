@@ -1,4 +1,3 @@
-// "use client";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "../globals.css";
@@ -8,8 +7,10 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Toaster } from "sonner";
+import Footer from "./_components/Footer";
+import Header from "./_components/Header";
 import QueryProvider from "./_components/QueryProvider";
-import { ThemeProvider } from "./_components/theme-provider";
+import { ThemeProvider } from "./_components/ThemeProvider";
 
 const geistSans = localFont({
 	src: "../fonts/GeistVF.woff",
@@ -52,12 +53,14 @@ export default async function LocaleLayout({
 					<ThemeProvider
 						attribute="class"
 						defaultTheme="system"
-						enableSystem
 						disableTransitionOnChange
+						enableSystem
 					>
 						<QueryProvider>
+							<Header />
 							{children}
 							<Toaster />
+							<Footer />
 							{process.env.NODE_ENV === "development" ? (
 								<ReactQueryDevtools />
 							) : null}
