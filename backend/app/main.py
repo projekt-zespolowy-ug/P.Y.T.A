@@ -13,7 +13,7 @@ from app.core.logger import configure_logging
 from app.core.settings import Settings
 from app.core.simulation.simulator import StockPriceManager
 from app.core.utils.init_db import InitDB
-from app.v1.auth import auth_router, stocks_router, user_router
+from app.v1 import auth_router, stocks_router, user_router
 
 configure_logging()
 setting = Settings()
