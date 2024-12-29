@@ -1,4 +1,3 @@
-// "use client";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "../globals.css";
@@ -11,7 +10,7 @@ import { Toaster } from "sonner";
 import Footer from "./_components/Footer";
 import Header from "./_components/Header";
 import QueryProvider from "./_components/QueryProvider";
-import { ThemeProvider } from "./_components/theme-provider";
+import { ThemeProvider } from "./_components/ThemeProvider";
 
 const geistSans = localFont({
 	src: "../fonts/GeistVF.woff",
@@ -53,9 +52,9 @@ export default async function LocaleLayout({
 				<NextIntlClientProvider messages={messages}>
 					<ThemeProvider
 						attribute="class"
-						defaultTheme="system"
-						enableSystem
+						defaultTheme="dark"
 						disableTransitionOnChange
+						enableSystem
 					>
 						<QueryProvider>
 							<Header />
