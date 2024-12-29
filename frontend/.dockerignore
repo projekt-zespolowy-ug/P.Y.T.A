@@ -1,0 +1,8 @@
+.env*
+.vscode/
+node_modules/
+.gitignore
+biome.json
+README.md
+.next/
+Dockerfile
