@@ -30,7 +30,7 @@ services:
     ports:
       - "${ADMINER_PORT}:8080"
 
-  app:
+  backend:
     restart: always
     depends_on:
       - db
@@ -48,10 +48,13 @@ services:
     build:
       context: ./frontend/.
       dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
     env_file:
       - ./frontend/.env
     ports:
       - "${FRONTEND_PORT}:3000"
+      
 
 # volumes:
 #   db_vol:

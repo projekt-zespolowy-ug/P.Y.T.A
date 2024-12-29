@@ -1,5 +1,6 @@
 FROM oven/bun:latest AS base
 FROM base AS builder
+ARG NEXT_PUBLIC_API_URL
 
 WORKDIR /app
 
