@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { DatePicker } from "./DatePicker";
+import { PasswordInput } from "./PasswordInput";
 
 const SignUpForm = () => {
 	const t = useTranslations("SignUpForm");
@@ -153,9 +154,8 @@ const SignUpForm = () => {
 							<FormItem>
 								<FormLabel>{t("labels.password")}</FormLabel>
 								<FormControl>
-									<Input
+									<PasswordInput
 										autoComplete="current-password"
-										type="password"
 										placeholder={t("placeholders.password")}
 										{...field}
 									/>
@@ -171,9 +171,8 @@ const SignUpForm = () => {
 							<FormItem>
 								<FormLabel>{t("labels.confirmPassword")}</FormLabel>
 								<FormControl>
-									<Input
+									<PasswordInput
 										autoComplete="current-password"
-										type="password"
 										placeholder={t("placeholders.confirmPassword")}
 										{...field}
 									/>

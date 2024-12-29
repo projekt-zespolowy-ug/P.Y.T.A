@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "@/i18n/routing";
 import { useMutation } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
+import { PasswordInput } from "./PasswordInput";
 
 const SignInForm = () => {
 	const t = useTranslations("SignInForm");
@@ -86,9 +87,8 @@ const SignInForm = () => {
 						<FormItem>
 							<FormLabel>{t("passwordInputLabel")}</FormLabel>
 							<FormControl>
-								<Input
+								<PasswordInput
 									placeholder={t("passwordPlaceHolder")}
-									type="password"
 									{...field}
 								/>
 							</FormControl>
