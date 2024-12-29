@@ -7,17 +7,63 @@
 		"logoAlt": "App logo"
 	},
 	"SignUpForm": {
-		"notAnEmailError": "Surely does not look like an email.",
-		"passwordTooShortError": "Password too short.",
-		"passwordTooLongError": "Password too long.",
-		"noPasswordMatchError": "The passwords did not match.",
-		"registerButtonText": "Sign Up",
-		"emailInputLabel": "Your Email",
-		"passwordInputLabel": "Password",
-		"confirmPasswordInputLabel": "Confirm Password",
-		"emailPlaceHolder": "Email",
-		"passwordPlaceHolder": "Password",
-		"confirmPasswordPlaceHolder": "Password"
+		"registerButton": "Register",
+		"messages": {
+			"required": "{field} is required.",
+			"tooLong": "{field} is too long.",
+			"notAnEmail": "Surely does not look like an email.",
+			"tooYoung": "You are too young to use the application.",
+			"tooOld": "You are probably too old to be alive, is that date correct?",
+			"noPasswordMatchError": "The passwords do not match.",
+			"acceptTerms": "Accepting terms is required.",
+			"weakPassword": "Password is too weak",
+			"registerSuccess": "Registration successful.",
+			"alreadyExists": "This email address is already in use.",
+			"validationErr": "Data validation error.",
+			"serverErr": "Server error."
+		},
+		"fields": {
+			"email": "Email",
+			"name": "Name",
+			"lastName": "Last name",
+			"password": "Password",
+			"confirmPassword": "Password confirmation",
+			"dob": "Date of birth"
+		},
+		"placeholders": {
+			"email": "pyta@pyta.app",
+			"name": "Name",
+			"lastName": "Last name",
+			"password": "Password",
+			"confirmPassword": "Password confirmation",
+			"dob": "Date of birth",
+			"terms": "Terms"
+		},
+		"labels": {
+			"email": "Email",
+			"name": "Name",
+			"lastName": "Last name",
+			"password": "Password",
+			"confirmPassword": "Password confirmation",
+			"dob": "Date of birth",
+			"terms": "I accept the terms."
+		},
+		"Calendar": {
+			"dobLabel": "Date of birth",
+			"pickDate": "Pick a date",
+			"january": "January",
+			"february": "February",
+			"march": "March",
+			"april": "April",
+			"may": "May",
+			"june": "June",
+			"july": "July",
+			"august": "August",
+			"september": "September",
+			"october": "October",
+			"november": "November",
+			"december": "December"
+		}
 	},
 	"SignInForm": {
 		"notAnEmailError": "Surely does not look like an email.",

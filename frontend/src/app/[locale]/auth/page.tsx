@@ -1,13 +1,19 @@
 "use client";
-import React from "react";
-import AuthLayout from "./_components/AuthLayout";
+import { usePathname, useRouter } from "@/i18n/routing";
+import React, { useEffect } from "react";
+import SignInForm from "./_components/SignInForm";
 
 const Page = () => {
-	return (
-		<div className="flex items-center justify-center h-svh">
-			<AuthLayout />
-		</div>
-	);
+	const router = useRouter();
+	const path = usePathname();
+
+	useEffect(() => {
+		if (path === "/auth") {
+			router.push("/auth/sign-in");
+		}
+	}, [path, router]);
+
+	return <SignInForm />;
 };
 
 export default Page;
