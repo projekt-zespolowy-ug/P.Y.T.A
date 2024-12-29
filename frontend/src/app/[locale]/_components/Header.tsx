@@ -16,7 +16,6 @@ const Header = () => {
 		resolvedTheme === "light"
 			? "/static/pyta-black-simple.svg"
 			: "/static/pyta-white-simple.svg";
-	console.log(resolvedTheme);
 
 	const { isAuthenticated } = useUserStore();
 	return (
