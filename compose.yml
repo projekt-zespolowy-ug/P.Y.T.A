@@ -21,12 +21,14 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+    # volumes:
+    #   - db_vol
 
   adminer:
     image: adminer
     restart: always
     ports:
-      - 8080:8080
+      - "${ADMINER_PORT}:8080"
 
   app:
     restart: always
@@ -38,5 +40,18 @@ services:
         - SKIP_TESTS=true
     env_file:
       - ./backend/.env
+    
     ports:
-      - 8000:8000
+      - "${BACKEND_PORT}:8000"
+
+  frontend:
+    build:
+      context: ./frontend/.
+      dockerfile: Dockerfile
+    env_file:
+      - ./frontend/.env
+    ports:
+      - "${FRONTEND_PORT}:3000"
+
+# volumes:
+#   db_vol:
