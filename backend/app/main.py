@@ -13,8 +13,7 @@ from app.core.logger import configure_logging
 from app.core.settings import Settings
 from app.core.simulation.simulator import StockPriceManager
 from app.core.utils.init_db import InitDB
-from app.v1.auth import auth_router
-from app.v1.user import user_router
+from app.v1.auth import auth_router, stocks_router, user_router
 
 configure_logging()
 setting = Settings()
@@ -29,6 +28,7 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
 	stock_manager = StockPriceManager()
 	asyncio.create_task(stock_manager.generate_prices())
+	app.state.stock_manager = stock_manager
 
 	yield
 
@@ -45,6 +45,7 @@ def get_application() -> FastAPI:
 	)
 
 	_app.include_router(auth_router)
+	_app.include_router(stocks_router)
 	_app.include_router(user_router)
 
 	return _app
