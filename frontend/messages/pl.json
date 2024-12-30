@@ -24,18 +24,21 @@
 			"signIn": "Zaloguj"
 		}
 	},
-	"SignUpForm": {
-		"registerButton": "Zarejestruj",
+	"AuthForm": {
 		"messages": {
 			"required": "{field} jest wymagane.",
 			"tooLong": "{field} jest za długie.",
 			"notAnEmail": "To na pewno nie wygląda na email.",
 			"tooYoung": "Jesteś za młody, aby korzystać z aplikacji.",
 			"tooOld": "Prawdopodobnie jesteś za stary, aby żyć. Czy ta data jest poprawna?",
+			"passwordTooShort": "Hasło jest zbyt krótkie.",
 			"noPasswordMatchError": "Hasła nie są identyczne.",
 			"acceptTerms": "Zaakceptowanie regulaminu jest obowiązkowe.",
 			"weakPassword": "Hasło jest zbyt słabe.",
 			"registerSuccess": "Pomyślnie zarejestrowano.",
+			"loginSuccess": "Pomyślnie zalagowano.",
+			"invalidCredentials": "Nieprawidłowe dane logowania.",
+			"userNotFound": "Użytkownik nie istnieje.",
 			"alreadyExists": "Adres email już jest zajęty..",
 			"validationErr": "Błąd walidacji danych.",
 			"serverErr": "Błąd serwera."
@@ -47,6 +50,10 @@
 			"password": "Hasło",
 			"confirmPassword": "Potwierdzenie hasła",
 			"dob": "Data urodzenia"
+		},
+		"buttons": {
+			"signUp": "Zarejestruj",
+			"signIn": "Zaloguj"
 		},
 		"placeholders": {
 			"email": "pyta@pyta.app",
@@ -82,16 +89,6 @@
 			"november": "Listopad",
 			"december": "Grudzień"
 		}
-	},
-	"SignInForm": {
-		"notAnEmailError": "Wprowadź poprawny adres email.",
-		"passwordTooShortError": "Zbyt krótkie hasło.",
-		"passwordTooLongError": "Hasło jest zbyt długie.",
-		"loginButtonText": "Zaloguj się",
-		"emailInputLabel": "Twój email",
-		"passwordInputLabel": "Hasło",
-		"emailPlaceHolder": "Email",
-		"passwordPlaceHolder": "Hasło"
 	},
 	"ModeToggler": {
 		"changeMode": "Zmień motyw",

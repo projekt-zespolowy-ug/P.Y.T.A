@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useRouter } from "@/i18n/routing";
 import { passwordRegex } from "@/lib/regex";
-import { useSignupUser } from "@/query/auth";
+import { useSignUpUser } from "@/query/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { AxiosError } from "axios";
 import moment from "moment";
@@ -26,7 +26,7 @@ import { DatePicker } from "./DatePicker";
 import { PasswordInput } from "./PasswordInput";
 
 const SignUpForm = () => {
-	const t = useTranslations("SignUpForm");
+	const t = useTranslations("AuthForm");
 	const router = useRouter();
 	const minBirthDate = new Date();
 	const minAge = 18;
@@ -91,7 +91,7 @@ const SignUpForm = () => {
 		formState: { isDirty, isValid },
 	} = form;
 
-	const signUpUser = useSignupUser();
+	const signUpUser = useSignUpUser();
 
 	const onSubmit = async (values: z.infer<typeof registerFormSchema>) => {
 		const {
@@ -107,9 +107,8 @@ const SignUpForm = () => {
 				{
 					onSuccess: async () => {
 						toast(t("messages.registerSuccess"));
-						await setTimeout(() => {
-							router.push("/auth/sign-in");
-						}, 2000);
+
+						router.push("/");
 					},
 					onError: (e) => {
 						const { status } = e as AxiosError;
@@ -236,7 +235,7 @@ const SignUpForm = () => {
 					/>
 					<div className="control-buttons flex justify-between">
 						<Button disabled={!isDirty || !isValid} type="submit">
-							{t("registerButton")}
+							{t("buttons.signUp")}
 						</Button>
 					</div>
 				</>

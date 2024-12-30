@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/routing";
 import { useUserStore } from "@/store/userStore";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
@@ -40,7 +41,9 @@ const Header = () => {
 								<UserAvatarMenu />
 							</div>
 						) : (
-							<Button>{tHeader("RightTabs.signIn")}</Button>
+							<Link href={"/auth/sign-in"}>
+								<Button>{tHeader("RightTabs.signIn")}</Button>
+							</Link>
 						)}
 						<BarMenu />
 					</div>

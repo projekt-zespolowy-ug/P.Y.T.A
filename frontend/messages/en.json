@@ -24,18 +24,21 @@
 			"signIn": "Sign in"
 		}
 	},
-	"SignUpForm": {
-		"registerButton": "Register",
+	"AuthForm": {
 		"messages": {
 			"required": "{field} is required.",
 			"tooLong": "{field} is too long.",
 			"notAnEmail": "Surely does not look like an email.",
 			"tooYoung": "You are too young to use the application.",
 			"tooOld": "You are probably too old to be alive, is that date correct?",
+			"passwordTooShort": "Password is too short.",
 			"noPasswordMatchError": "The passwords do not match.",
 			"acceptTerms": "Accepting terms is required.",
 			"weakPassword": "Password is too weak",
 			"registerSuccess": "Registration successful.",
+			"loginSuccess": "Login successful.",
+			"invalidCredentials": "Invalid credentials.",
+			"userNotFound": "User not found.",
 			"alreadyExists": "This email address is already in use.",
 			"validationErr": "Data validation error.",
 			"serverErr": "Server error."
@@ -47,6 +50,10 @@
 			"password": "Password",
 			"confirmPassword": "Password confirmation",
 			"dob": "Date of birth"
+		},
+		"buttons": {
+			"signUp": "Sign Up",
+			"signIn": "Sign In"
 		},
 		"placeholders": {
 			"email": "pyta@pyta.app",
@@ -82,16 +89,6 @@
 			"november": "November",
 			"december": "December"
 		}
-	},
-	"SignInForm": {
-		"notAnEmailError": "Surely does not look like an email.",
-		"passwordTooShortError": "Password too short.",
-		"passwordTooLongError": "Password too long.",
-		"loginButtonText": "Sign In",
-		"emailInputLabel": "Your Email",
-		"passwordInputLabel": "Password",
-		"emailPlaceHolder": "Email",
-		"passwordPlaceHolder": "Password"
 	},
 	"ModeToggler": {
 		"changeMode": "Toggle theme",
