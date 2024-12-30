@@ -2,11 +2,14 @@ import asyncio
 import logging
 import time
 
-from fastapi import APIRouter, Request, WebSocket
+from fastapi import APIRouter, HTTPException, Request, WebSocket
 
 from app.core.models.company import Company
 from app.core.models.exchange import Exchange
 from app.core.models.industry import Industry
+from app.core.schemas.exchange import Exchange as ExchangeSchema
+from app.core.schemas.industry import Industry as IndustrySchema
+from app.core.schemas.stock_details import StockDetails
 from app.core.schemas.stock_list import Stock, StockList
 from app.core.settings import Settings
 from app.core.utils.querying_utils import QueryingUtils
@@ -73,3 +76,26 @@ async def stock_updates(ticker: str, websocket: WebSocket) -> None:
 			- (time.time() % settings.simulation_step_time_s)
 			+ 0.1 * settings.simulation_step_time_s
 		)
+
+
+@stocks_router.get("/{ticker}")
+async def get_stock(ticker: str, request: Request) -> StockDetails:
+	result = QueryingUtils.get_stock_details([ticker])
+
+	if not result:
+		raise HTTPException(status_code=404, detail="Stock not found")
+
+	stock, industry, exchange = result[0]
+
+	return StockDetails(
+		name=stock.name,
+		description=stock.description,
+		ticker=stock.ticker,
+		industry=IndustrySchema(name=industry.name),
+		exchange=ExchangeSchema(
+			name=exchange.name,
+			time_open=exchange.time_open,
+			time_close=exchange.time_close,
+			currency=exchange.currency,
+		),
+	)
