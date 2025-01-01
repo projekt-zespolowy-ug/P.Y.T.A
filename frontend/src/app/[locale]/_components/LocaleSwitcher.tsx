@@ -1,18 +1,36 @@
-import { routing } from "@/i18n/routing";
+import { SelectGroup, SelectItem, SelectLabel } from "@/components/ui/select";
 import { useLocale, useTranslations } from "next-intl";
+
+import { routing } from "@/i18n/routing";
+import { SelectContent } from "@radix-ui/react-select";
 import LocaleSwitcherSelect from "./LocaleSwitcherSelect";
 
 const LocaleSwitcher = () => {
 	const t = useTranslations("Header.RightTabs.LocaleSwitcher");
 	const locale = useLocale();
 
+	const localeNames: Map<string, string> = new Map([
+		["en", "English"],
+		["pl", "Polski"],
+	]);
+
+	const getLocaleNameFull = (cur: string) => {
+		return `${t("locale", { locale: cur })} ${localeNames.get(cur) || "unknown"}`;
+	};
+
 	return (
-		<LocaleSwitcherSelect defaultValue={locale} label={t("label")}>
-			{routing.locales.map((cur) => (
-				<option className="bg-secondary" key={cur} value={cur}>
-					{t("locale", { locale: cur })}
-				</option>
-			))}
+		<LocaleSwitcherSelect defaultValue={locale}>
+			<SelectContent>
+				{routing.locales.map((cur) => (
+					<SelectItem
+						className="bg-primary-foreground [&:not(:last-child)]:rounded-b-none [&:not(:first-child)]:rounded-t-none"
+						key={cur}
+						value={cur}
+					>
+						{getLocaleNameFull(cur)}
+					</SelectItem>
+				))}
+			</SelectContent>
 		</LocaleSwitcherSelect>
 	);
 };
