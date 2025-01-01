@@ -18,10 +18,10 @@ const Footer = () => {
 			<div className="w-full lg:w-1/3">
 				<PytaLogo className="w-24 h-8 fill-primary" />
 				<div className="footerInfo text-muted text-sm my-2">
-					Online paper trading platform
+					{t("appShortDesc")}
 				</div>
 				<div>
-					Check out the source code on
+					{t("sourceCodeInfo")}
 					<a
 						href="https://github.com/projekt-zespolowy-ug/P.Y.T.A/"
 						target="_blank"
@@ -29,7 +29,7 @@ const Footer = () => {
 						className="text-primary font-bold"
 					>
 						{" "}
-						GitHub
+						{t("platform")}
 					</a>
 				</div>
 			</div>

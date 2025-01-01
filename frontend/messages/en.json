@@ -4,7 +4,10 @@
 		"signUp": "Sign Up"
 	},
 	"Footer": {
-		"authorInfo": "Created by"
+		"authorInfo": "Created by",
+		"sourceCodeInfo": "Check out the source code on",
+		"platform": "Github",
+		"appShortDesc": "Online paper trading platform"
 	},
 	"Header": {
 		"logoAlt": "App logo",

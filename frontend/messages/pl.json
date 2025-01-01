@@ -4,7 +4,10 @@
 		"signUp": "Zarejestruj się"
 	},
 	"Footer": {
-		"authorInfo": "Autorzy"
+		"authorInfo": "Autorzy",
+		"sourceCodeInfo": "Obejrzyj kod źródłowy na",
+		"platform": "Githubie",
+		"appShortDesc": "Internetowa platforma do handlu papierowego"
 	},
 	"Header": {
 		"logoAlt": "Logo aplikacji",
