@@ -1,8 +1,7 @@
-import { SelectGroup, SelectItem, SelectLabel } from "@/components/ui/select";
+import { SelectContent, SelectItem } from "@/components/ui/select";
 import { useLocale, useTranslations } from "next-intl";
 
 import { routing } from "@/i18n/routing";
-import { SelectContent } from "@radix-ui/react-select";
 import LocaleSwitcherSelect from "./LocaleSwitcherSelect";
 
 const LocaleSwitcher = () => {
