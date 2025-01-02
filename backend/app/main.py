@@ -28,8 +28,6 @@ logging.info("settings: %s", setting.model_dump())
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:  # pragma: no cover
-	print("Starting lifespan")
-
 	stock_manager = StockPriceManager()
 	asyncio.create_task(stock_manager.generate_prices())
 	app.state.stock_manager = stock_manager

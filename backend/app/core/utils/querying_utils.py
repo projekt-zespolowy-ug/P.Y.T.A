@@ -33,9 +33,6 @@ db = database_manager
 class QueryingUtils:
 	@staticmethod
 	def get_default_role_id(session: Session) -> str:
-		print(session.exec(select(Role)).all())
-		print("kurwa")
-
 		if default_role := session.exec(select(Role).where(Role.role == RoleType.USER)).first():
 			return default_role.id
 		else:  # pragma: no cover

@@ -51,6 +51,5 @@ else:
 	db_url = "sqlite:///:memory:"
 
 logging.info(f"db_url: {db_url}")
-print(f"db_url: {db_url}")
 
 database_manager = DatabaseManager(db_url)
