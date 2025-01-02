@@ -97,7 +97,7 @@ class QueryingUtils:
 		with db.get_session() as session:
 			if user_session := session.exec(
 				select(SessionModel).where(SessionModel.id == session_id)
-			):
+			).first():
 				session.delete(user_session)
 			else:
 				return
