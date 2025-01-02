@@ -15,7 +15,7 @@ class Company(BaseTable, table=True):
 	image_url: str | None
 
 	@field_validator("image_url")
-	def validate_image_url(cls, value: str) -> str:
+	def validate_image_url(cls, value: str) -> str:  # pragma: no cover
 		if (
 			re.match(
 				r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+",

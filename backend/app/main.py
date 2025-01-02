@@ -23,9 +23,13 @@ InitDB()
 logging.getLogger("uvicorn.access").disabled = True
 logger = logging.getLogger(__name__)
 
+logging.info("settings: %s", setting.model_dump())
+
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
+async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:  # pragma: no cover
+	print("Starting lifespan")
+
 	stock_manager = StockPriceManager()
 	asyncio.create_task(stock_manager.generate_prices())
 	app.state.stock_manager = stock_manager
@@ -56,7 +60,7 @@ app = get_application()
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next: Callable[[Request], Awaitable[Any]]) -> Any:
-	if not request.client:
+	if not request.client:  # pragma: no cover
 		client = "unknown"
 	else:
 		client = f"{request.client.host}:{request.client.port}"

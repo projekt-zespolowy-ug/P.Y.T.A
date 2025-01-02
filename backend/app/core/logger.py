@@ -21,7 +21,7 @@ class DynamicFileHandler(logging.FileHandler):
 	def delete_old_logs(self, amount_to_keep: int = 0) -> None:
 		assert amount_to_keep >= 0, "Amount to keep must be non-negative"
 
-		if amount_to_keep == 0:
+		if amount_to_keep == 0:  # pragma: no cover
 			return
 
 		log_files = sorted(

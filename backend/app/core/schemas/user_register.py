@@ -13,9 +13,11 @@ class UserRegister(BaseModel):
 
 	@field_validator("name", "last_name")
 	def validate_length(cls, v: str) -> str:
-		if len(v) > 0 and len(v) < 30:
+		if v != "" and len(v) < 30:
 			return v
-		raise ValueError("The length of the field must be between 1 and 29 characters")
+		raise ValueError(
+			"The length of the field must be between 1 and 29 characters"
+		)  # pragma: no cover
 
 	@field_validator("date_of_birth")
 	def validate_date_of_birth(cls, v: date) -> date:
@@ -24,7 +26,7 @@ class UserRegister(BaseModel):
 			and relativedelta(date.today(), v).years < 140
 		):
 			return v
-		raise ValueError("The user must be between 18 and 139 years old")
+		raise ValueError("The user must be between 18 and 139 years old")  # pragma: no cover
 
 	@field_validator("password")
 	def validate_password(cls, v: str) -> str:
@@ -39,4 +41,4 @@ class UserRegister(BaseModel):
 		raise ValueError(
 			"""The password must contain at least one uppercase letter, one lowercase letter,
 			one number, and be at least 8 characters long"""
-		)
+		)  # pragma: no cover

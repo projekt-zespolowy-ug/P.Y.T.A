@@ -18,7 +18,7 @@ COPY . .
 FROM base AS test
 
 ARG SKIP_TESTS=false
-RUN if [ "$SKIP_TESTS" = "false" ]; then poetry run pytest; fi
+RUN if [ "$SKIP_TESTS" = "false" ]; then poetry run coverage run -m pytest && poetry run coverage report --fail-under=100; fi
 
 FROM base AS prod
 

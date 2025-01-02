@@ -19,4 +19,6 @@ class Settings(BaseSettings):
 		simulation_database_snapshot_time_s // simulation_step_time_s
 	)
 
+	testing: bool = False
+
 	model_config = SettingsConfigDict(env_file=".env.local")
