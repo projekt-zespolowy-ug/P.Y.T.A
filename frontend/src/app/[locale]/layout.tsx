@@ -11,6 +11,7 @@ import Footer from "./_components/Footer";
 import Header from "./_components/Header";
 import QueryProvider from "./_components/QueryProvider";
 import { ThemeProvider } from "./_components/ThemeProvider";
+import UserProvider from "./_components/UserProvider";
 
 const geistSans = localFont({
 	src: "../fonts/GeistVF.woff",
@@ -57,13 +58,15 @@ export default async function LocaleLayout({
 						enableSystem
 					>
 						<QueryProvider>
-							<Header />
-							{children}
-							<Toaster />
-							<Footer />
-							{process.env.NODE_ENV === "development" ? (
-								<ReactQueryDevtools />
-							) : null}
+							<UserProvider>
+								<Header />
+								{children}
+								<Toaster />
+								<Footer />
+								{process.env.NODE_ENV === "development" ? (
+									<ReactQueryDevtools />
+								) : null}
+							</UserProvider>
 						</QueryProvider>
 					</ThemeProvider>
 				</NextIntlClientProvider>
