@@ -38,7 +38,7 @@ interface DatePickerProps {
 export function DatePicker({ fromDate, toDate }: DatePickerProps) {
 	const [date, setDate] = React.useState<Date>(toDate);
 
-	const t = useTranslations("SignUpForm.Calendar");
+	const t = useTranslations("AuthForm.Calendar");
 
 	const locale = useLocale();
 

@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
 	Form,
@@ -16,42 +15,20 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "@/i18n/routing";
-import { useMutation } from "@tanstack/react-query";
+import { useSignInUser } from "@/query/auth";
+import type { AxiosError } from "axios";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { PasswordInput } from "./PasswordInput";
 
 const SignInForm = () => {
-	const t = useTranslations("SignInForm");
+	const t = useTranslations("AuthForm");
 	const router = useRouter();
-	const { mutate, error, isError } = useMutation({
-		mutationFn: async (formData: z.infer<typeof formSchema>) => {
-			const response = await fetch(
-				`${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify(formData),
-					credentials: "include",
-				},
-			);
-			const data = await response.json();
-
-			if (!response.ok) {
-				throw new Error(data.detail);
-			}
-
-			router.push("/");
-		},
-	});
+	const { mutate } = useSignInUser();
 
 	const formSchema = z.object({
-		email: z.string().email({ message: t("notAnEmailError") }),
-		password: z
-			.string()
-			.min(7, { message: t("passwordTooShortError") })
-			.max(64, { message: t("passwordTooLongError") }),
+		email: z.string().email({ message: t("messages.notAnEmail") }),
+		password: z.string().min(8, { message: t("messages.passwordTooShort") }),
 	});
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -60,9 +37,28 @@ const SignInForm = () => {
 			password: "",
 		},
 	});
+	const {
+		formState: { isDirty, isValid },
+	} = form;
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
-		mutate(values);
+		mutate(values, {
+			onSuccess: async () => {
+				toast(t("messages.loginSuccess"));
+
+				router.push("/");
+			},
+			onError: (e) => {
+				const { status } = e as AxiosError;
+				if (status === 401) {
+					toast(t("messages.invalidCredentials"));
+				} else if (status === 404) {
+					toast(t("messages.userNotFound"));
+				} else {
+					toast(t("messages.serverErr"));
+				}
+			},
+		});
 	}
 	return (
 		<Form {...form}>
@@ -72,9 +68,13 @@ const SignInForm = () => {
 					name="email"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>{t("emailInputLabel")}</FormLabel>
+							<FormLabel>{t("labels.email")}</FormLabel>
 							<FormControl>
-								<Input placeholder={t("emailPlaceHolder")} {...field} />
+								<Input
+									autoComplete="email"
+									placeholder={t("placeholders.email")}
+									{...field}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -85,10 +85,11 @@ const SignInForm = () => {
 					name="password"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>{t("passwordInputLabel")}</FormLabel>
+							<FormLabel>{t("labels.password")}</FormLabel>
 							<FormControl>
 								<PasswordInput
-									placeholder={t("passwordPlaceHolder")}
+									autoComplete="current-password"
+									placeholder={t("placeholders.password")}
 									{...field}
 								/>
 							</FormControl>
@@ -96,12 +97,9 @@ const SignInForm = () => {
 						</FormItem>
 					)}
 				/>
-				<Button type="submit">{t("loginButtonText")}</Button>
-				{isError && (
-					<Alert variant="destructive">
-						<AlertDescription>{error.message}</AlertDescription>
-					</Alert>
-				)}
+				<Button disabled={!isDirty || !isValid} type="submit">
+					{t("buttons.signIn")}
+				</Button>
 			</form>
 		</Form>
 	);
