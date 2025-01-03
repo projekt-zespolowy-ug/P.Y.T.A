@@ -68,7 +68,7 @@ async def logout(request: Request, response: Response) -> dict[str, str]:
 			raise UserNotLoggedInError
 
 		QueryingUtils.logout(session_id)
-		response.delete_cookie("session_id")  # pragma: no cover # figure why we don't hit this
+		response.delete_cookie("session_id")
 	except Exception as _:
 		logger.error("Failed to logout", exc_info=True)
 
