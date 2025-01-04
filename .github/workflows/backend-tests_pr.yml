@@ -1,0 +1,26 @@
+name: Python Tests
+
+on: [pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-node@v3
+      with:
+        python-version: '3.12'
+
+    - name: Install Poetry
+      run: |
+        pip install poetry
+
+    - name: Install dependencies
+      run: poetry --directory ./backend install
+
+    - name: Run tests with coverage
+      run: |
+        poetry --directory ./backend run coverage run -m pytest
+        poetry --directory ./backend run coverage report --fail-under=100
