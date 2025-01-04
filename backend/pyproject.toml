@@ -30,6 +30,7 @@ omit = [
     "*/querying_utils.py",
     "*/__init__.py",
     "*/database.py",
+    "*/logger.py",
     ]
 
 [tool.coverage.report]
