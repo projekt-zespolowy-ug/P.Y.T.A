@@ -3,7 +3,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { routing } from "./i18n/routing";
 import { axiosInstance } from "./query/http";
 
-const publicPages = ["/", "/auth", "/auth/sign-in", "/auth/sign-up"];
+const publicPages = ["", "/", "/auth", "/auth/sign-in", "/auth/sign-up"];
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -35,9 +35,7 @@ async function authMiddleware(req: NextRequest) {
 
 export default async function middleware(req: NextRequest) {
 	const publicPathnameRegex = RegExp(
-		`^(/(${routing.locales.join("|")}))?(${publicPages
-			.flatMap((p) => (p === "/" ? ["", "/"] : p))
-			.join("|")})/?$`,
+		`^(/(${routing.locales.join("|")}))?(${publicPages.join("|")})/?$`,
 		"i",
 	);
 	const isPublicPage = publicPathnameRegex.test(req.nextUrl.pathname);

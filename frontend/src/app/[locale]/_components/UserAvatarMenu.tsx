@@ -10,15 +10,18 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "@/i18n/routing";
 import { useSignOutUser } from "@/query/auth";
-import { useUserStore } from "@/store/userStore";
+import type { User } from "@/types/user";
 import { avataaars } from "@dicebear/collection";
 import { createAvatar } from "@dicebear/core";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 
-const UserAvatarMenu = () => {
-	const { firstName, balance, hashedEmail, resetUser } = useUserStore();
+type Props = {
+	user: User;
+};
+
+const UserAvatarMenu = ({ user }: Props) => {
 	const { mutate } = useSignOutUser();
 	const locale = useLocale();
 	const router = useRouter();
@@ -28,10 +31,10 @@ const UserAvatarMenu = () => {
 	const formattedBalance = new Intl.NumberFormat(currencyLocale, {
 		style: "currency",
 		currency,
-	}).format(balance);
+	}).format(user.balance);
 
 	const avatarUri = createAvatar(avataaars, {
-		seed: hashedEmail,
+		seed: user.hashedEmail,
 	}).toDataUri();
 
 	function handleSignOut() {
@@ -65,7 +68,7 @@ const UserAvatarMenu = () => {
 					{formattedBalance}
 				</DropdownMenuItem>
 				<DropdownMenuItem className="text-md italic font">
-					{firstName}
+					{user.firstName}
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem>{t("RightTabs.Avatar.profile")}</DropdownMenuItem>

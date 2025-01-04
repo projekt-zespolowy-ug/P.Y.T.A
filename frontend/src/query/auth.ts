@@ -60,12 +60,10 @@ export const useGetUser = () =>
 
 const getUser = async () => {
 	const res = await axiosInstance.get("/user/me");
-
 	return {
 		balance: res.data.balance,
 		firstName: res.data.first_name,
 		lastName: res.data.last_name,
 		hashedEmail: res.data.hashed_email,
-		isAuthenticated: true,
 	} as User;
 };
