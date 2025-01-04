@@ -52,7 +52,7 @@ async def login(user: UserLogin, request: Request, response: Response) -> Sessio
 
 	except InvalidCredentialsError as _:
 		logger.info(f"Invalid credentials for {user.email}")
-		raise HTTPException(status_code=404, detail="Invalid credentials") from None
+		raise HTTPException(status_code=401, detail="Invalid credentials") from None
 
 	except UserNotFoundError as _:  # pragma: no cover
 		logger.info(f"User not found: {user.email}")

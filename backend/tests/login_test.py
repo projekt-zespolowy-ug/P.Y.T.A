@@ -45,7 +45,7 @@ def test_login_invalid_password(client, register_user):
 		json={"email": register_user["email"], "password": "invalid_password"},
 	)
 
-	assert response.status_code == 404
+	assert response.status_code == 401
 	assert "session_id" not in response.cookies
 
 
@@ -55,4 +55,4 @@ def test_login_invalid_email(client, register_user):
 		json={"email": "invalid@email.com", "password": register_user["password"]},
 	)
 
-	assert response.status_code == 404
+	assert response.status_code == 401
