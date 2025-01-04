@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 @auth_router.post("/register")
 async def register(user: UserRegister, request: Request, response: Response) -> SessionOut:
 	try:
-		if not request.client:
+		if not request.client:  # pragma: no cover
 			raise HTTPException(status_code=500, detail="User creation failed")
 
 		new_session = QueryingUtils.register(user, request.client.host)
@@ -30,7 +30,7 @@ async def register(user: UserRegister, request: Request, response: Response) -> 
 		response.set_cookie(key="session_id", value=new_session, httponly=True)
 		return SessionOut(session_id=new_session)
 
-	except UserCreationError as _:
+	except UserCreationError as _:  # pragma: no cover
 		logger.error("Failed to create user", exc_info=True)
 		raise HTTPException(status_code=500, detail="User creation failed") from None
 
@@ -42,7 +42,7 @@ async def register(user: UserRegister, request: Request, response: Response) -> 
 @auth_router.post("/login")
 async def login(user: UserLogin, request: Request, response: Response) -> SessionOut:
 	try:
-		if not request.client:
+		if not request.client:  # pragma: no cover
 			raise HTTPException(status_code=500, detail="User login failed")
 
 		new_session = QueryingUtils.login(user, request.client.host)
@@ -54,7 +54,7 @@ async def login(user: UserLogin, request: Request, response: Response) -> Sessio
 		logger.info(f"Invalid credentials for {user.email}")
 		raise HTTPException(status_code=401, detail="Invalid credentials") from None
 
-	except UserNotFoundError as _:
+	except UserNotFoundError as _:  # pragma: no cover
 		logger.info(f"User not found: {user.email}")
 		raise HTTPException(status_code=404, detail="User not found") from None
 

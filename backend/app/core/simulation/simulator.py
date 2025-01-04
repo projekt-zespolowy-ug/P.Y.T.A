@@ -2,16 +2,18 @@ import asyncio
 import logging
 import time
 
-from collections.abc import Sequence
-
 import numpy as np
+
+from sqlmodel import select
 
 from app.core.models.company import Company
 from app.core.settings import Settings
 from app.core.utils.querying_utils import QueryingUtils
+from app.database import database_manager
 
 logger = logging.getLogger(__name__)
 settings = Settings()
+db = database_manager
 
 
 class Stock:
@@ -50,7 +52,7 @@ class StockPriceSimulator:
 			size=1,
 		)
 
-		return float(self.current_price), float(sell_price)
+		return float(self.current_price), float(sell_price[0])
 
 
 class StockPriceManager:
@@ -68,13 +70,8 @@ class StockPriceManager:
 			stock.simulator = StockPriceSimulator(stock.get_latest_price(), 0.2, 0.4)
 
 	def create_stock_list(self) -> list[Stock]:
-		stocks = []
-		for stock in self.get_ticker_list():
-			stocks.append(Stock(stock.ticker, stock.id))
-		return stocks
-
-	def get_ticker_list(self) -> Sequence[Company]:
-		return QueryingUtils.get_stocks()
+		with db.get_session() as session:
+			return [Stock(stock.ticker, stock.id) for stock in session.exec(select(Company)).all()]
 
 	async def generate_prices(self) -> None:
 		while True:

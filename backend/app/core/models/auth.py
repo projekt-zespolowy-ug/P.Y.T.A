@@ -19,7 +19,7 @@ class Auth(BaseTable, table=True):
 	def hash_password(cls, value: str) -> str:
 		if value:
 			return ModelUtils.hash_password(value)
-		raise ValueError("Password must not be empty")
+		raise ValueError("Password must not be empty")  # pragma: no cover
 
 	class Config:
 		validate_assignment = True

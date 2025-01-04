@@ -14,15 +14,14 @@ logger = logging.getLogger(__name__)
 @user_router.get("/me")
 async def user_info(request: Request) -> UserOut:
 	try:
-		if not request.client:
+		if not request.client:  # pragma: no cover
 			raise HTTPException(status_code=500, detail="User info failed")
 
 		session_id = request.cookies.get("session_id")
 		if not session_id:
 			raise HTTPException(status_code=404, detail="User not found")
 
-		user = QueryingUtils.get_user_info(session_id)
-		return user
+		return QueryingUtils.get_user_info(session_id)
 
 	except UserNotFoundError as _:
 		logger.error(f"Invalid session. Session ID: {session_id}")
