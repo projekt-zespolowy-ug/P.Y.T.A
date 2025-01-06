@@ -8,7 +8,7 @@ import {
 	SheetTrigger,
 } from "@/components/ui/sheet";
 import { Link } from "@/i18n/routing";
-import { useUserStore } from "@/store/userStore";
+import { useGetUser } from "@/query/auth";
 import { Menu } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
@@ -16,7 +16,7 @@ import Image from "next/image";
 import { ModeToggle } from "./ModeToggle";
 
 const BarMenu = () => {
-	const { isAuthenticated } = useUserStore();
+	const { isSuccess: isAuthenticated } = useGetUser();
 	const tLeftTabs = useTranslations("Header.LeftTabs");
 	const tHeader = useTranslations("Header");
 	const { resolvedTheme } = useTheme();

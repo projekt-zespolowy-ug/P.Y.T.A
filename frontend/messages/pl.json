@@ -10,6 +10,10 @@
 		"appShortDesc": "Internetowa platforma do handlu papierowego"
 	},
 	"Header": {
+		"messages": {
+			"signOutSuccess": "Pomyślnie wylogowano.",
+			"signOutError": "Błąd wylogowania."
+		},
 		"logoAlt": "Logo aplikacji",
 		"LeftTabs": {
 			"browseStocks": "Przeglądaj aktywa",

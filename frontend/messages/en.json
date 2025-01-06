@@ -10,6 +10,10 @@
 		"appShortDesc": "Online paper trading platform"
 	},
 	"Header": {
+		"messages": {
+			"signOutSuccess": "Sign out successful.",
+			"signOutError": "Sign out error."
+		},
 		"logoAlt": "App logo",
 		"LeftTabs": {
 			"browseStocks": "Browse stocks",

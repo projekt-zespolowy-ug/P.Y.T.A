@@ -8,29 +8,55 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useUserStore } from "@/store/userStore";
+import { useRouter } from "@/i18n/routing";
+import { useSignOutUser } from "@/query/auth";
+import type { User } from "@/types/user";
+import { avataaars } from "@dicebear/collection";
+import { createAvatar } from "@dicebear/core";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { useLocale, useTranslations } from "next-intl";
+import { toast } from "sonner";
 
-const UserAvatarMenu = () => {
-	const { name, balance } = useUserStore();
+type Props = {
+	user: User;
+};
+
+const UserAvatarMenu = ({ user }: Props) => {
+	const { mutate } = useSignOutUser();
 	const locale = useLocale();
+	const router = useRouter();
+	const t = useTranslations("Header");
 	const currencyLocale = locale === "pl" ? "pl-PL" : "en-EN";
 	const currency = locale === "pl" ? "PLN" : "USD";
 	const formattedBalance = new Intl.NumberFormat(currencyLocale, {
 		style: "currency",
 		currency,
-	}).format(balance);
+	}).format(user.balance);
 
-	const t = useTranslations("Header.RightTabs.Avatar");
+	const avatarUri = createAvatar(avataaars, {
+		seed: user.hashedEmail,
+	}).toDataUri();
+
+	function handleSignOut() {
+		mutate(undefined, {
+			onSuccess: () => {
+				toast(t("messages.signOutSuccess"));
+
+				router.push("/");
+			},
+			onError: () => {
+				toast(t("messages.signOutError"));
+			},
+		});
+	}
+
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger className="rounded-full">
 				<Avatar>
 					<AvatarImage
 						className="w-[3rem] h-[3rem] rounded-full"
-						// TODO: use dicebear image from hash from store
-						src="https://github.com/shadcn.png"
+						src={avatarUri}
 					/>
 					<AvatarFallback>
 						<Skeleton className="w-[3rem] h-[3rem] rounded-full" />
@@ -42,12 +68,14 @@ const UserAvatarMenu = () => {
 					{formattedBalance}
 				</DropdownMenuItem>
 				<DropdownMenuItem className="text-md italic font">
-					{name}
+					{user.firstName}
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem>{t("profile")}</DropdownMenuItem>
+				<DropdownMenuItem>{t("RightTabs.Avatar.profile")}</DropdownMenuItem>
 				<DropdownMenuItem>
-					<Button>{t("signOut")}</Button>
+					<Button onClick={handleSignOut}>
+						{t("RightTabs.Avatar.signOut")}
+					</Button>
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>

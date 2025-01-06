@@ -1,13 +1,9 @@
 "use client";
-
-import React, { useEffect, useState } from "react";
-
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "@/i18n/routing";
-import { useUserStore } from "@/store/userStore";
+import { useGetUser } from "@/query/auth";
 import { useTranslations } from "next-intl";
-import { useTheme } from "next-themes";
-import Image from "next/image";
 import BarMenu from "./BarMenu";
 import LocaleSwitcher from "./LocaleSwitcher";
 import PytaLogo from "./PytaLogo";
@@ -16,7 +12,13 @@ import UserAvatarMenu from "./UserAvatarMenu";
 const Header = () => {
 	const tHeader = useTranslations("Header");
 
-	const { isAuthenticated } = useUserStore();
+	const {
+		isSuccess: isAuthenticated,
+		isError,
+		isLoading,
+		data: user,
+	} = useGetUser();
+
 	return (
 		<>
 			<header className="flex justify-between items-center bg-secondary">
@@ -28,11 +30,15 @@ const Header = () => {
 				<div className="right">
 					<div className="flex items-center gap-2 mr-2">
 						<LocaleSwitcher />
-						{isAuthenticated ? (
+						{isLoading && (
+							<Skeleton className="w-[3rem] h-[3rem] rounded-full" />
+						)}
+						{isAuthenticated && (
 							<div className="avatar flex flex-col items-center">
-								<UserAvatarMenu />
+								<UserAvatarMenu user={user} />
 							</div>
-						) : (
+						)}
+						{isError && (
 							<Link href={"/auth/sign-in"}>
 								<Button>{tHeader("RightTabs.signIn")}</Button>
 							</Link>
