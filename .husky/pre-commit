@@ -1,7 +1,7 @@
 #!/bin/sh
-poetry --directory ./backend run ruff check $(git diff --name-only --cached --diff-filter=ACM -- '*.py') --config ./backend/pyproject.toml --fix
-poetry --directory ./backend run ruff format ./backend/.
-poetry --directory ./backend run mypy . --config-file ./backend/pyproject.toml
+poetry --directory ./backend run ruff check $(git diff --name-only --cached --diff-filter=ACM -- '*.py') --fix
+poetry --directory ./backend run ruff format
+poetry --directory ./backend run mypy .
 
 npx @biomejs/biome check --config-path "./frontend/biome.json" --staged --files-ignore-unknown=true --no-errors-on-unmatched --fix
 

@@ -18,10 +18,9 @@ jobs:
         pip install poetry
 
     - name: Install dependencies
-      run: poetry --directory ./backend install
+      run: poetry --directory ./backend install --no-root
 
     - name: Run tests with coverage
       run: |
-        export COVERAGE_RCFILE=./backend/pyproject.toml
         poetry --directory ./backend run coverage run -m pytest
         poetry --directory ./backend run coverage report --fail-under=100
