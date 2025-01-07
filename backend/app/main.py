@@ -58,7 +58,9 @@ app = get_application()
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next: Callable[[Request], Awaitable[Any]]) -> Any:
-	if not request.client:  # pragma: no cover
+	if request.headers.get("CF-Connecting-IP"):  # pragma: no cover
+		client = f"{request.headers.get('CF-Connecting-IP')}"
+	elif not request.client:  # pragma: no cover
 		client = "unknown"
 	else:
 		client = f"{request.client.host}:{request.client.port}"
