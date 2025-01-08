@@ -39,19 +39,23 @@ async def list_stocks(
 			)
 		)
 
-		stock_list: dict[str, Stock] = {}
+		stock_list: list[Stock] = []
 
 		for stock, industry_obj, exchange_obj in stocks:
 			price = list(
 				filter(lambda x: x.ticker == stock.ticker, request.app.state.stock_manager.stocks)
 			)[0].price_history[-1]
 
-			stock_list[stock.name] = Stock(
-				name=stock.name,
-				industry=industry_obj.name,  # Use .name attribute of industry object
-				exchange=exchange_obj.name,  # Use .name attribute of exchange object
-				buy=price[0],
-				sell=price[1],
+			stock_list.append(
+				Stock(
+					name=stock.name,
+					industry=industry_obj.name,
+					ticker=stock.ticker,
+					exchange=exchange_obj.name,
+					image_url=stock.image_url,
+					buy=price[0],
+					sell=price[1],
+				)
 			)
 
 		return StockList(
