@@ -8,13 +8,14 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useFormatCurrency } from "@/hooks/useFormatCurrency";
 import { useRouter } from "@/i18n/routing";
 import { useSignOutUser } from "@/query/auth";
 import type { User } from "@/types/user";
 import { avataaars } from "@dicebear/collection";
 import { createAvatar } from "@dicebear/core";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 type Props = {
@@ -23,15 +24,9 @@ type Props = {
 
 const UserAvatarMenu = ({ user }: Props) => {
 	const { mutate } = useSignOutUser();
-	const locale = useLocale();
 	const router = useRouter();
 	const t = useTranslations("Header");
-	const currencyLocale = locale === "pl" ? "pl-PL" : "en-EN";
-	const currency = locale === "pl" ? "PLN" : "USD";
-	const formattedBalance = new Intl.NumberFormat(currencyLocale, {
-		style: "currency",
-		currency,
-	}).format(user.balance);
+	const formattedBalance = useFormatCurrency(user.balance);
 
 	const avatarUri = createAvatar(avataaars, {
 		seed: user.hashedEmail,

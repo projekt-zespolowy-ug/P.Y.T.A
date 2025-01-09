@@ -45,7 +45,7 @@ const BarMenu = () => {
 					<div className="tabs flex flex-col">
 						<ul className="flex flex-col list-none gap-2 text-lg text-start">
 							<li className="hover:text-primary">
-								<Link href="/market">{tLeftTabs("browseStocks")}</Link>
+								<Link href="/">{tLeftTabs("browseStocks")}</Link>
 							</li>
 							{isAuthenticated && (
 								<li>
