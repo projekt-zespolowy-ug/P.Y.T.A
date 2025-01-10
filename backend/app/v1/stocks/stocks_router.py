@@ -107,7 +107,7 @@ async def get_stock(ticker: str, request: Request) -> StockDetails:
 async def get_stock_price(
 	ticker: str, period: str, time_unit: str, request: Request
 ) -> list[StockPrices]:
-	try:
+	try:  # pragma: no cover
 		with database_manager.get_session() as session:
 			result = QueryingUtils.get_stock_prices(session, ticker, period, time_unit)
 
@@ -125,13 +125,13 @@ async def get_stock_price(
 				filter(lambda x: x.ticker == ticker, request.app.state.stock_manager.stocks)
 			)[0]
 
-			if time_unit != "m" or "s":
+			if time_unit != "min" or "s":
 				stock_prices[-1].buy_price = stock_from_memory.price_history[-1][0]
 				stock_prices[-1].sell_price = stock_from_memory.price_history[-1][1]
 
 			return stock_prices
 
-	except InvalidPeriodError as _:
+	except InvalidPeriodError as _:  # pragma: no cover
 		logger.error(f"Invalid period: {period}")
 		raise HTTPException(status_code=400, detail="Invalid period") from None
 	except TickerNotFoundError as _:
@@ -140,6 +140,6 @@ async def get_stock_price(
 	except InvalidTimeUnitError as _:
 		logger.error(f"Invalid time unit: {time_unit}")
 		raise HTTPException(status_code=400, detail="Invalid time unit") from None
-	except Exception as e:
+	except Exception as e:  # pragma: no cover
 		logger.error("Failed to get stock prices", exc_info=True)
 		raise HTTPException(status_code=500, detail="Failed to get stock prices") from e

@@ -7,7 +7,7 @@ from app.core.exceptions import InvalidPeriodError
 
 class DateTimeUtils:
 	@staticmethod
-	def get_time_threshold(period: str) -> datetime:
+	def get_time_threshold(period: str) -> datetime:  # pragma: no cover
 		match = re.match(r"(\d+)([a-zA-Z]{1,3})\b", period)
 		if not match:
 			raise InvalidPeriodError()

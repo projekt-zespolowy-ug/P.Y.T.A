@@ -28,9 +28,12 @@ def client():
 
 def test_stock_price_invalid_period():
 	with TestClient(app) as client:
-		response = client.get("/api/stocks/price/DOOR", params={"period": "1ddd", "time_unit": "m"})
+		response = client.get(
+			"/api/stocks/price/DOOR", params={"period": "d1ddd", "time_unit": "min"}
+		)
 
 		assert response.status_code == 400
+		assert response.json() == {"detail": "Invalid period"}
 
 
 def test_stock_price_invalid_time_unit():
@@ -38,6 +41,7 @@ def test_stock_price_invalid_time_unit():
 		response = client.get("/api/stocks/price/DOOR", params={"period": "1d", "time_unit": "mmm"})
 
 		assert response.status_code == 400
+		assert response.json() == {"detail": "Invalid time unit"}
 
 
 def test_stock_price_ticker_not_found():
@@ -47,3 +51,4 @@ def test_stock_price_ticker_not_found():
 		)
 
 		assert response.status_code == 404
+		assert response.json() == {"detail": "Ticker not found"}
