@@ -1,16 +1,22 @@
 import hashlib
+import re
 
 from collections.abc import Sequence
+from datetime import datetime, timedelta
 from typing import Any
 
 import bcrypt
 
-from sqlalchemy import Row, func
+from sqlalchemy import Row, RowMapping, func
 from sqlmodel import Session, and_, select
 
+from app.core.enums.time_unit import TimeUnit
 from app.core.exceptions import (
 	EmailAlreadyExistsError,
 	InvalidCredentialsError,
+	InvalidPeriodError,
+	InvalidTimeUnitError,
+	TickerNotFoundError,
 	UserCreationError,
 	UserNotFoundError,
 )
@@ -194,3 +200,56 @@ class QueryingUtils:
 		query = query.limit(limit).offset((page - 1) * limit)
 
 		return list(session.execute(query).all())
+
+	@staticmethod
+	def get_stock_prices(
+		session: Session, ticker: str, period: str, group_period: str
+	) -> Sequence[RowMapping]:
+		stock = session.exec(select(Company).where(Company.ticker == ticker)).first()
+		if not stock:
+			raise TickerNotFoundError()
+
+		time_threshold = None
+
+		for unit in TimeUnit:
+			if group_period == unit.value:
+				break
+		else:
+			raise InvalidTimeUnitError()
+
+		if re.match(r"\d+[a-zA-Z]{1,3}\b", period):
+			period_value = int("".join(filter(str.isdigit, period)))
+			period_unit = "".join(filter(str.isalpha, period)).lower()
+
+			if period_unit == "min":
+				time_threshold = datetime.utcnow() - timedelta(minutes=period_value)
+			elif period_unit == "h":
+				time_threshold = datetime.utcnow() - timedelta(hours=period_value)
+			elif period_unit == "d":
+				time_threshold = datetime.utcnow() - timedelta(days=period_value)
+			elif period_unit == "w":
+				time_threshold = datetime.utcnow() - timedelta(weeks=period_value)
+			elif period_unit == "mth":
+				time_threshold = datetime.utcnow() - timedelta(days=30 * period_value)
+			elif period_unit == "y":
+				time_threshold = datetime.utcnow() - timedelta(days=365 * period_value)
+			else:
+				raise InvalidPeriodError()
+		else:
+			raise InvalidPeriodError()
+
+		query = (
+			select(
+				func.date_trunc(group_period, StockHistory.timestamp).label("timestamp"),
+				func.avg(StockHistory.buy).label("average_buy_price"),
+				func.avg(StockHistory.sell).label("average_sell_price"),
+			)
+			.where(
+				StockHistory.company_id == stock.id,
+				StockHistory.timestamp >= time_threshold,
+			)
+			.group_by(func.date_trunc(group_period, StockHistory.timestamp))
+			.order_by(func.date_trunc(group_period, StockHistory.timestamp))
+		)
+
+		return session.execute(query).mappings().all()

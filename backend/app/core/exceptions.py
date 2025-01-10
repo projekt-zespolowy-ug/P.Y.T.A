@@ -16,3 +16,15 @@ class UserNotFoundError(Exception):
 
 class UserNotLoggedInError(Exception):
 	pass
+
+
+class TickerNotFoundError(Exception):
+	pass
+
+
+class InvalidPeriodError(Exception):
+	pass
+
+
+class InvalidTimeUnitError(Exception):
+	pass

@@ -4,10 +4,12 @@ import time
 
 from fastapi import APIRouter, HTTPException, Request, WebSocket
 
+from app.core.exceptions import InvalidPeriodError, InvalidTimeUnitError, TickerNotFoundError
 from app.core.schemas.exchange import Exchange as ExchangeSchema
 from app.core.schemas.industry import Industry as IndustrySchema
 from app.core.schemas.stock_details import StockDetails
 from app.core.schemas.stock_list import Stock, StockList
+from app.core.schemas.stock_prices import StockPrices
 from app.core.settings import Settings
 from app.core.utils.querying_utils import QueryingUtils
 from app.database import database_manager
@@ -99,3 +101,37 @@ async def get_stock(ticker: str, request: Request) -> StockDetails:
 				currency=exchange.currency,
 			),
 		)
+
+
+@stocks_router.get("/price/{ticker}")
+async def get_stock_price(
+	ticker: str, period: str, time_unit: str, request: Request
+) -> list[StockPrices]:
+	try:
+		with database_manager.get_session() as session:
+			result = QueryingUtils.get_stock_prices(session, ticker, period, time_unit)
+
+			prices = [
+				StockPrices(
+					timestamp=stock["timestamp"],
+					average_buy_price=stock["average_buy_price"],
+					average_sell_price=stock["average_buy_price"],
+					ticker=ticker,
+				)
+				for stock in result
+			]
+
+			return prices
+
+	except InvalidPeriodError as _:
+		logger.error(f"Invalid period: {period}")
+		raise HTTPException(status_code=400, detail="Invalid period") from None
+	except TickerNotFoundError as _:
+		logger.error(f"Ticker not found: {ticker}")
+		raise HTTPException(status_code=404, detail="Ticker not found") from None
+	except InvalidTimeUnitError as _:
+		logger.error(f"Invalid time unit: {time_unit}")
+		raise HTTPException(status_code=400, detail="Invalid time unit") from None
+	except Exception as e:
+		logger.error("Failed to get stock prices", exc_info=True)
+		raise HTTPException(status_code=500, detail="Failed to get stock prices") from e
