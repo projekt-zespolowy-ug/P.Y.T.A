@@ -16,9 +16,7 @@ def client():
 
 def test_stock_price():
 	with TestClient(app) as client:
-		response = client.get(
-			"/api/stocks/price/DOOR", params={"period": "1d", "time_unit": "minute"}
-		)
+		response = client.get("/api/stocks/price/DOOR", params={"period": "1y", "time_unit": "day"})
 
 		assert response.status_code == 200
 		assert "timestamp" in response.json()
