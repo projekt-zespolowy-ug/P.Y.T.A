@@ -5,6 +5,6 @@ from pydantic import BaseModel
 
 class StockPrices(BaseModel):
 	timestamp: datetime
-	buy_price: float
-	sell_price: float
+	buy: float
+	sell: float
 	ticker: str

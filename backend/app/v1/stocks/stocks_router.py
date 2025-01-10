@@ -114,8 +114,8 @@ async def get_stock_price(
 			stock_prices = [
 				StockPrices(
 					timestamp=stock.timestamp,
-					buy_price=stock.buy,
-					sell_price=stock.sell,
+					buy=stock.buy,
+					sell=stock.sell,
 					ticker=ticker,
 				)
 				for stock in result
@@ -125,9 +125,9 @@ async def get_stock_price(
 				filter(lambda x: x.ticker == ticker, request.app.state.stock_manager.stocks)
 			)[0]
 
-			if time_unit != "min" or "s":
-				stock_prices[-1].buy_price = stock_from_memory.price_history[-1][0]
-				stock_prices[-1].sell_price = stock_from_memory.price_history[-1][1]
+			if time_unit != "min" and "s":
+				stock_prices[-1].buy = stock_from_memory.price_history[-1][0]
+				stock_prices[-1].sell = stock_from_memory.price_history[-1][1]
 
 			return stock_prices
 
