@@ -111,17 +111,25 @@ async def get_stock_price(
 		with database_manager.get_session() as session:
 			result = QueryingUtils.get_stock_prices(session, ticker, period, time_unit)
 
-			prices = [
+			stock_prices = [
 				StockPrices(
-					timestamp=stock["timestamp"],
-					average_buy_price=stock["average_buy_price"],
-					average_sell_price=stock["average_buy_price"],
+					timestamp=stock.timestamp,
+					buy_price=stock.buy,
+					sell_price=stock.sell,
 					ticker=ticker,
 				)
 				for stock in result
 			]
 
-			return prices
+			stock_from_memory = list(
+				filter(lambda x: x.ticker == ticker, request.app.state.stock_manager.stocks)
+			)[0]
+
+			if time_unit != "m" or "s":
+				stock_prices[-1].buy_price = stock_from_memory.price_history[-1][0]
+				stock_prices[-1].sell_price = stock_from_memory.price_history[-1][1]
+
+			return stock_prices
 
 	except InvalidPeriodError as _:
 		logger.error(f"Invalid period: {period}")

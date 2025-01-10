@@ -1,20 +1,17 @@
 import hashlib
-import re
 
 from collections.abc import Sequence
-from datetime import datetime, timedelta
 from typing import Any
 
 import bcrypt
 
-from sqlalchemy import Row, RowMapping, func
+from sqlalchemy import Row, func
 from sqlmodel import Session, and_, select
 
-from app.core.enums.time_unit import TimeUnit
+from app.core.constants.time import UNIT_TIME
 from app.core.exceptions import (
 	EmailAlreadyExistsError,
 	InvalidCredentialsError,
-	InvalidPeriodError,
 	InvalidTimeUnitError,
 	TickerNotFoundError,
 	UserCreationError,
@@ -31,6 +28,7 @@ from app.core.models.user import User
 from app.core.schemas.user_login import UserLogin
 from app.core.schemas.user_out import UserOut
 from app.core.schemas.user_register import UserRegister
+from app.core.utils.datetime_utils import DateTimeUtils
 from app.database import database_manager
 
 db = database_manager
@@ -204,52 +202,33 @@ class QueryingUtils:
 	@staticmethod
 	def get_stock_prices(
 		session: Session, ticker: str, period: str, group_period: str
-	) -> Sequence[RowMapping]:
+	) -> Sequence[Row[Any]]:
 		stock = session.exec(select(Company).where(Company.ticker == ticker)).first()
 		if not stock:
 			raise TickerNotFoundError()
 
-		time_threshold = None
-
-		for unit in TimeUnit:
-			if group_period == unit.value:
-				break
-		else:
+		if group_period not in UNIT_TIME:
 			raise InvalidTimeUnitError()
 
-		if re.match(r"\d+[a-zA-Z]{1,3}\b", period):
-			period_value = int("".join(filter(str.isdigit, period)))
-			period_unit = "".join(filter(str.isalpha, period)).lower()
-
-			if period_unit == "min":
-				time_threshold = datetime.utcnow() - timedelta(minutes=period_value)
-			elif period_unit == "h":
-				time_threshold = datetime.utcnow() - timedelta(hours=period_value)
-			elif period_unit == "d":
-				time_threshold = datetime.utcnow() - timedelta(days=period_value)
-			elif period_unit == "w":
-				time_threshold = datetime.utcnow() - timedelta(weeks=period_value)
-			elif period_unit == "mth":
-				time_threshold = datetime.utcnow() - timedelta(days=30 * period_value)
-			elif period_unit == "y":
-				time_threshold = datetime.utcnow() - timedelta(days=365 * period_value)
-			else:
-				raise InvalidPeriodError()
-		else:
-			raise InvalidPeriodError()
+		time_threshold = DateTimeUtils.get_time_threshold(period)
 
 		query = (
 			select(
-				func.date_trunc(group_period, StockHistory.timestamp).label("timestamp"),
-				func.avg(StockHistory.buy).label("average_buy_price"),
-				func.avg(StockHistory.sell).label("average_sell_price"),
+				func.date_trunc(UNIT_TIME[group_period], StockHistory.timestamp).label("timestamp"),
+				StockHistory.buy,
+				StockHistory.sell,
 			)
 			.where(
 				StockHistory.company_id == stock.id,
 				StockHistory.timestamp >= time_threshold,
 			)
-			.group_by(func.date_trunc(group_period, StockHistory.timestamp))
-			.order_by(func.date_trunc(group_period, StockHistory.timestamp))
+			.order_by(
+				func.date_trunc(UNIT_TIME[group_period], StockHistory.timestamp).label("timestamp"),
+				func.date_trunc(UNIT_TIME[group_period], StockHistory.timestamp).desc(),
+			)
+			.distinct(
+				func.date_trunc(UNIT_TIME[group_period], StockHistory.timestamp).label("timestamp"),
+			)
 		)
 
-		return session.execute(query).mappings().all()
+		return session.execute(query).fetchall()
