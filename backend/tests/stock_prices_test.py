@@ -16,7 +16,7 @@ def client():
 
 def test_stock_price():
 	with TestClient(app) as client:
-		response = client.get("/api/stocks/prices/DOOR", params={"period": "1d", "time_unit": "1m"})
+		response = client.get("/api/stocks/price/DOOR", params={"period": "1d", "time_unit": "1m"})
 
 		assert response.status_code == 200
 		assert "timestamp" in response.json()
@@ -28,7 +28,7 @@ def test_stock_price():
 def test_stock_price_invalid_period():
 	with TestClient(app) as client:
 		response = client.get(
-			"/api/stocks/prices/DOOR", params={"period": "1ddd", "time_unit": "1m"}
+			"/api/stocks/price/DOOR", params={"period": "1ddd", "time_unit": "1m"}
 		)
 
 		assert response.status_code == 400
@@ -37,7 +37,7 @@ def test_stock_price_invalid_period():
 def test_stock_price_invalid_time_unit():
 	with TestClient(app) as client:
 		response = client.get(
-			"/api/stocks/prices/DOOR", params={"period": "1d", "time_unit": "1mmm"}
+			"/api/stocks/price/DOOR", params={"period": "1d", "time_unit": "1mmm"}
 		)
 
 		assert response.status_code == 400
@@ -46,7 +46,7 @@ def test_stock_price_invalid_time_unit():
 def test_stock_price_ticker_not_found():
 	with TestClient(app) as client:
 		response = client.get(
-			"/api/stocks/prices/DOORRR", params={"period": "1d", "time_unit": "1m"}
+			"/api/stocks/price/DOORRR", params={"period": "1d", "time_unit": "1m"}
 		)
 
 		assert response.status_code == 404
