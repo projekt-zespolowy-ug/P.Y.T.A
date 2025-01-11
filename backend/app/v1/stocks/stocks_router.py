@@ -137,13 +137,13 @@ async def get_stock_price(
 
 	except InvalidPeriodError as _:
 		logger.error(f"Invalid period: {period}")
-		raise HTTPException(status_code=400, detail="Invalid period") from None
+		raise HTTPException(status_code=422, detail="Invalid period") from None
 	except TickerNotFoundError as _:
 		logger.error(f"Ticker not found: {ticker}")
 		raise HTTPException(status_code=404, detail="Ticker not found") from None
 	except InvalidTimeUnitError as _:
 		logger.error(f"Invalid time unit: {time_unit}")
-		raise HTTPException(status_code=400, detail="Invalid time unit") from None
+		raise HTTPException(status_code=422, detail="Invalid time unit") from None
 	except Exception as e:  # pragma: no cover
 		logger.error("Failed to get stock prices", exc_info=True)
 		raise HTTPException(status_code=500, detail="Failed to get stock prices") from e
