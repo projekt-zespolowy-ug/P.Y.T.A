@@ -35,7 +35,7 @@ def test_stock_price_invalid_time_unit():
 def test_stock_price_ticker_not_found():
 	with TestClient(app) as client:
 		response = client.get(
-			"/api/stocks/price/DOORRR", params={"period": "1d", "time_unit": "1m"}
+			"/api/stocks/price/DOORRR", params={"period": "1d", "time_unit": "min"}
 		)
 
 		assert response.status_code == 404
