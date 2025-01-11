@@ -2,7 +2,8 @@ import asyncio
 import logging
 import time
 
-from fastapi import APIRouter, HTTPException, Request, WebSocket
+from fastapi import APIRouter, HTTPException, Request, WebSocket, WebSocketDisconnect
+from fastapi.websockets import WebSocketState
 
 from app.core.constants.time import UNIT_TIME
 from app.core.exceptions import InvalidPeriodError, InvalidTimeUnitError, TickerNotFoundError
@@ -68,14 +69,21 @@ async def list_stocks(
 
 @stocks_router.websocket("/updates/{ticker}")
 async def stock_updates(ticker: str, websocket: WebSocket) -> None:
+	stock = list(filter(lambda x: x.ticker == ticker, websocket.app.state.stock_manager.stocks))
+
+	if not stock:
+		await websocket.close(code=1008, reason="Invalid ticker")
+		return
+
 	await websocket.accept()
 
-	while True:
-		price = list(
-			filter(lambda x: x.ticker == ticker, websocket.app.state.stock_manager.stocks)
-		)[0].price_history[-1]
+	price_history = stock[0].price_history
 
-		await websocket.send_json({"buy": price[0], "sell": price[1]})
+	while websocket.client_state != WebSocketState.DISCONNECTED:
+		try:
+			await websocket.send_json({"buy": price_history[-1][0], "sell": price_history[-1][1]})
+		except WebSocketDisconnect as _:  # pragma: no cover
+			break
 
 		await asyncio.sleep(
 			1
