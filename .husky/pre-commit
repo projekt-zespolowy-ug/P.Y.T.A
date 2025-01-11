@@ -1,5 +1,5 @@
 #!/bin/sh
-poetry --directory ./backend run ruff check $(git diff --name-only --cached --diff-filter=ACM -- '*.py') --fix
+poetry --project ./backend run ruff check $(git diff --name-only --cached --diff-filter=ACM -- '*.py') --fix
 poetry --directory ./backend run ruff format
 poetry --directory ./backend run mypy .
 
