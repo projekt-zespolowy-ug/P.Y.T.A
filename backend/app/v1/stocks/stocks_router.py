@@ -4,10 +4,13 @@ import time
 
 from fastapi import APIRouter, HTTPException, Request, WebSocket
 
+from app.core.constants.time import UNIT_TIME
+from app.core.exceptions import InvalidPeriodError, InvalidTimeUnitError, TickerNotFoundError
 from app.core.schemas.exchange import Exchange as ExchangeSchema
 from app.core.schemas.industry import Industry as IndustrySchema
 from app.core.schemas.stock_details import StockDetails
 from app.core.schemas.stock_list import Stock, StockList
+from app.core.schemas.stock_prices import StockPrices
 from app.core.settings import Settings
 from app.core.utils.querying_utils import QueryingUtils
 from app.database import database_manager
@@ -103,3 +106,48 @@ async def get_stock(ticker: str, request: Request) -> StockDetails:
 				currency=exchange.currency,
 			),
 		)
+
+
+@stocks_router.get("/price/{ticker}")
+async def get_stock_price(
+	ticker: str, period: str, time_unit: str, request: Request
+) -> list[StockPrices]:
+	try:  # pragma: no cover
+		with database_manager.get_session() as session:
+			if time_unit not in UNIT_TIME:
+				raise InvalidTimeUnitError()
+
+			result = QueryingUtils.get_stock_prices(session, ticker, period, time_unit)
+
+			stock_prices = [
+				StockPrices(
+					timestamp=stock.timestamp,
+					buy=stock.buy,
+					sell=stock.sell,
+					ticker=ticker,
+				)
+				for stock in result
+			]
+
+			stock_from_memory = list(
+				filter(lambda x: x.ticker == ticker, request.app.state.stock_manager.stocks)
+			)[0]
+
+			if time_unit != "min" or time_unit != "s":
+				stock_prices[-1].buy = stock_from_memory.price_history[-1][0]
+				stock_prices[-1].sell = stock_from_memory.price_history[-1][1]
+
+			return stock_prices
+
+	except InvalidPeriodError as _:
+		logger.error(f"Invalid period: {period}")
+		raise HTTPException(status_code=422, detail="Invalid period") from None
+	except TickerNotFoundError as _:
+		logger.error(f"Ticker not found: {ticker}")
+		raise HTTPException(status_code=404, detail="Ticker not found") from None
+	except InvalidTimeUnitError as _:
+		logger.error(f"Invalid time unit: {time_unit}")
+		raise HTTPException(status_code=422, detail="Invalid time unit") from None
+	except Exception as e:  # pragma: no cover
+		logger.error("Failed to get stock prices", exc_info=True)
+		raise HTTPException(status_code=500, detail="Failed to get stock prices") from e

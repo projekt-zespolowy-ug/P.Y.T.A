@@ -8,9 +8,11 @@ import bcrypt
 from sqlalchemy import Row, func
 from sqlmodel import Session, and_, select
 
+from app.core.constants.time import UNIT_TIME
 from app.core.exceptions import (
 	EmailAlreadyExistsError,
 	InvalidCredentialsError,
+	TickerNotFoundError,
 	UserCreationError,
 	UserNotFoundError,
 )
@@ -25,6 +27,7 @@ from app.core.models.user import User
 from app.core.schemas.user_login import UserLogin
 from app.core.schemas.user_out import UserOut
 from app.core.schemas.user_register import UserRegister
+from app.core.utils.datetime_utils import DateTimeUtils
 from app.database import database_manager
 
 db = database_manager
@@ -194,3 +197,35 @@ class QueryingUtils:
 		query = query.limit(limit).offset((page - 1) * limit)
 
 		return list(session.execute(query).all())
+
+	@staticmethod
+	def get_stock_prices(
+		session: Session, ticker: str, period: str, group_period: str
+	) -> Sequence[Row[Any]]:
+		stock = session.exec(select(Company).where(Company.ticker == ticker)).first()
+
+		if not stock:
+			raise TickerNotFoundError()
+
+		time_threshold = DateTimeUtils.get_time_threshold(period)
+
+		query = (
+			select(
+				func.date_trunc(UNIT_TIME[group_period], StockHistory.timestamp).label("timestamp"),
+				StockHistory.buy,
+				StockHistory.sell,
+			)
+			.where(
+				StockHistory.company_id == stock.id,
+				StockHistory.timestamp >= time_threshold,
+			)
+			.order_by(
+				func.date_trunc(UNIT_TIME[group_period], StockHistory.timestamp).label("timestamp"),
+				func.date_trunc(UNIT_TIME[group_period], StockHistory.timestamp).desc(),
+			)
+			.distinct(
+				func.date_trunc(UNIT_TIME[group_period], StockHistory.timestamp).label("timestamp"),
+			)
+		)
+
+		return session.execute(query).fetchall()

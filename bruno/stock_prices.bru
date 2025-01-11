@@ -1,0 +1,16 @@
+meta {
+  name: Stock prices
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{base_url}}/api/stocks/price/DOOR?period=1mth&time_unit=day
+  body: none
+  auth: none
+}
+
+params:query {
+  period: 1mth
+  time_unit: day
+}
