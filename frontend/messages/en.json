@@ -102,5 +102,22 @@
 		"system": "System",
 		"dark": "Dark",
 		"light": "Light"
+	},
+	"StockTable": {
+		"headers": {
+			"logo": "Logo",
+			"ticker": "Ticker",
+			"name": "Name",
+			"buy": "Buy",
+			"sell": "Sell",
+			"asc": "Ascending",
+			"desc": "Descending",
+			"reset": "Reset",
+			"search": "Search"
+		},
+		"selects": {
+			"industry": "Industry",
+			"exchange": "Exchange"
+		}
 	}
 }

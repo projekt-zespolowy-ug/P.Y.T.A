@@ -102,5 +102,22 @@
 		"system": "System",
 		"dark": "Ciemny",
 		"light": "Jasny"
+	},
+	"StockTable": {
+		"headers": {
+			"logo": "Logo",
+			"ticker": "Ticker",
+			"name": "Nazwa",
+			"buy": "Kup",
+			"sell": "Sprzedaj",
+			"asc": "Rosnąco",
+			"desc": "Malejąco",
+			"reset": "Przywróć",
+			"search": "Szukaj"
+		},
+		"selects": {
+			"industry": "Branża",
+			"exchange": "Giełda"
+		}
 	}
 }
