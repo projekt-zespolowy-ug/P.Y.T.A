@@ -125,13 +125,13 @@ async def get_stock_price(
 				filter(lambda x: x.ticker == ticker, request.app.state.stock_manager.stocks)
 			)[0]
 
-			if time_unit != "min" and "s":
+			if time_unit != "min" or time_unit != "s":
 				stock_prices[-1].buy = stock_from_memory.price_history[-1][0]
 				stock_prices[-1].sell = stock_from_memory.price_history[-1][1]
 
 			return stock_prices
 
-	except InvalidPeriodError as _:  # pragma: no cover
+	except InvalidPeriodError as _:
 		logger.error(f"Invalid period: {period}")
 		raise HTTPException(status_code=400, detail="Invalid period") from None
 	except TickerNotFoundError as _:

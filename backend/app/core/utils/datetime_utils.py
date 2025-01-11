@@ -1,9 +1,9 @@
 import re
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from app.core.constants.time import UNIT_TIME
-from app.core.exceptions import InvalidPeriodError  # pragma: no cover
+from app.core.exceptions import InvalidPeriodError
 
 
 class DateTimeUtils:
@@ -20,28 +20,23 @@ class DateTimeUtils:
 			raise InvalidPeriodError()
 
 		if period_unit == "min":
-			time_threshold = datetime.now(timezone(timedelta(hours=-1))) - timedelta(
-				minutes=period_value
-			)
+			time_threshold = datetime.now(UTC) - timedelta(minutes=period_value)
 		elif period_unit == "h":
-			time_threshold = datetime.now(timezone(timedelta(hours=-1))) - timedelta(
-				hours=period_value
-			)
+			time_threshold = datetime.now(UTC) - timedelta(hours=period_value)
 		elif period_unit == "d":
-			time_threshold = datetime.now(timezone(timedelta(hours=-1))) - timedelta(
-				days=period_value
-			)
+			time_threshold = datetime.now(UTC) - timedelta(days=period_value)
 		elif period_unit == "w":
-			time_threshold = datetime.now(timezone(timedelta(hours=-1))) - timedelta(
-				weeks=period_value
-			)
+			time_threshold = datetime.now(UTC) - timedelta(weeks=period_value)
 		elif period_unit == "mth":
-			time_threshold = datetime.now(timezone(timedelta(hours=-1))) - timedelta(
-				days=30 * period_value
-			)
+			if (time := datetime.now(UTC).month - period_value) <= 0:
+				time_threshold = datetime.now(UTC).replace(
+					month=12 - (abs(time) % 12),
+					year=datetime.now(UTC).year - abs(time // 12) - 1,
+				)
+			else:
+				time_threshold = datetime.now(UTC).replace(
+					month=datetime.now(UTC).month - period_value
+				)
 		elif period_unit == "y":
-			time_threshold = datetime.now(timezone(timedelta(hours=-1))) - timedelta(
-				days=365 * period_value
-			)
-
+			time_threshold = datetime.now(UTC).replace(year=datetime.now(UTC).year - period_value)
 		return time_threshold
