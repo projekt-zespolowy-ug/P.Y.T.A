@@ -12,7 +12,6 @@ from app.core.constants.time import UNIT_TIME
 from app.core.exceptions import (
 	EmailAlreadyExistsError,
 	InvalidCredentialsError,
-	InvalidTimeUnitError,
 	TickerNotFoundError,
 	UserCreationError,
 	UserNotFoundError,
@@ -204,11 +203,9 @@ class QueryingUtils:
 		session: Session, ticker: str, period: str, group_period: str
 	) -> Sequence[Row[Any]]:
 		stock = session.exec(select(Company).where(Company.ticker == ticker)).first()
+
 		if not stock:
 			raise TickerNotFoundError()
-
-		if group_period not in UNIT_TIME:
-			raise InvalidTimeUnitError()
 
 		time_threshold = DateTimeUtils.get_time_threshold(period)
 

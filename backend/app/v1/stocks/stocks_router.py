@@ -4,6 +4,7 @@ import time
 
 from fastapi import APIRouter, HTTPException, Request, WebSocket
 
+from app.core.constants.time import UNIT_TIME
 from app.core.exceptions import InvalidPeriodError, InvalidTimeUnitError, TickerNotFoundError
 from app.core.schemas.exchange import Exchange as ExchangeSchema
 from app.core.schemas.industry import Industry as IndustrySchema
@@ -109,6 +110,9 @@ async def get_stock_price(
 ) -> list[StockPrices]:
 	try:  # pragma: no cover
 		with database_manager.get_session() as session:
+			if time_unit not in UNIT_TIME:
+				raise InvalidTimeUnitError()
+
 			result = QueryingUtils.get_stock_prices(session, ticker, period, time_unit)
 
 			stock_prices = [
