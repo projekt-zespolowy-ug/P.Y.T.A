@@ -12,8 +12,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 	const activeTab = pathname.endsWith("sign-up") ? "signUp" : "signIn";
 
 	return (
-		<div className="flex items-center justify-center h-svh">
-			<div className="w-[400px] mx-2">
+		<div className="flex items-center justify-center">
+			<div className="mx-2 my-10">
 				<div className="flex border-b border-gray-200 mb-4">
 					<Link
 						href={`/${locale}/auth/sign-in`}
@@ -36,7 +36,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 						{t("signUp")}
 					</Link>
 				</div>
-				{children}
+				<div className="children my-10">{children}</div>
 			</div>
 		</div>
 	);
