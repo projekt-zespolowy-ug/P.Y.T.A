@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import random
 import time
 
 import numpy as np
@@ -62,16 +63,24 @@ class StockPriceManager:
 
 		newest_price_for_all_stocks = QueryingUtils.get_newest_price_for_all_stocks()
 
+		random.seed(42069)
+
 		for stock in self.stocks:
+			price = random.randint(50, 150)
 			last_known_price = newest_price_for_all_stocks.get(
-				stock.ticker, {"buy": 100, "sell": 100}
+				stock.ticker, {"buy": price, "sell": price}
 			)
 			stock.price_history = [(last_known_price["buy"], last_known_price["sell"])]
-			stock.simulator = StockPriceSimulator(stock.get_latest_price(), 0.2, 0.4)
+			mu = random.uniform(-0.4, 0.4)
+			sigma = random.uniform(0.1, 0.5)
+			stock.simulator = StockPriceSimulator(stock.get_latest_price(), mu, sigma)
 
 	def create_stock_list(self) -> list[Stock]:
 		with db.get_session() as session:
-			return [Stock(stock.ticker, stock.id) for stock in session.exec(select(Company)).all()]
+			return [
+				Stock(stock.ticker, stock.id)
+				for stock in session.exec(select(Company).order_by(Company.name)).all()
+			]
 
 	async def generate_prices(self) -> None:
 		while True:
