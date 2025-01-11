@@ -1,10 +1,7 @@
-import os
-
 import pytest
 
 from fastapi.testclient import TestClient
-
-os.environ["TESTING"] = "true"
+from starlette.websockets import WebSocketDisconnect
 
 from app.main import app
 
@@ -63,3 +60,13 @@ def test_stock_websocket():
 			assert "sell" in data
 			assert isinstance(data["buy"], float)
 			assert isinstance(data["sell"], float)
+
+
+def test_stock_updates_invalid_ticker():
+	with TestClient(app) as client:
+		with pytest.raises(WebSocketDisconnect) as e:
+			with client.websocket_connect("/api/stocks/updates/KUUURWA") as websocket:
+				websocket.receive_json()
+
+		assert e.value.code == 1008
+		assert e.value.reason == "Invalid ticker"

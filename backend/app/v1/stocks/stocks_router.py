@@ -69,19 +69,20 @@ async def list_stocks(
 
 @stocks_router.websocket("/updates/{ticker}")
 async def stock_updates(ticker: str, websocket: WebSocket) -> None:
-	price_history = list(
-		filter(lambda x: x.ticker == ticker, websocket.app.state.stock_manager.stocks)
-	)[0].price_history
+	stock = list(filter(lambda x: x.ticker == ticker, websocket.app.state.stock_manager.stocks))
 
-	if not price_history:
-		raise HTTPException(status_code=404, detail="Stock not found")
+	if not stock:
+		await websocket.close(code=1008, reason="Invalid ticker")
+		return
 
 	await websocket.accept()
+
+	price_history = stock[0].price_history
 
 	while websocket.client_state != WebSocketState.DISCONNECTED:
 		try:
 			await websocket.send_json({"buy": price_history[-1][0], "sell": price_history[-1][1]})
-		except WebSocketDisconnect as _:
+		except WebSocketDisconnect as _:  # pragma: no cover
 			break
 
 		await asyncio.sleep(
