@@ -5,7 +5,7 @@ from typing import Any
 
 import bcrypt
 
-from sqlalchemy import Row, func
+from sqlalchemy import Row, RowMapping, func
 from sqlmodel import Session, and_, select
 
 from app.core.constants.time import UNIT_TIME
@@ -201,7 +201,7 @@ class QueryingUtils:
 	@staticmethod
 	def get_stock_prices(
 		session: Session, ticker: str, period: str, group_period: str
-	) -> Sequence[Row[Any]]:
+	) -> Sequence[RowMapping]:
 		stock = session.exec(select(Company).where(Company.ticker == ticker)).first()
 
 		if not stock:
@@ -212,20 +212,41 @@ class QueryingUtils:
 		query = (
 			select(
 				func.date_trunc(UNIT_TIME[group_period], StockHistory.timestamp).label("timestamp"),
-				StockHistory.buy,
-				StockHistory.sell,
+				func.min(StockHistory.buy)
+				.over(
+					partition_by=func.date_trunc(UNIT_TIME[group_period], StockHistory.timestamp),
+					order_by=StockHistory.timestamp,  # type: ignore[arg-type]
+				)
+				.label("min"),
+				func.max(StockHistory.buy)
+				.over(
+					partition_by=func.date_trunc(UNIT_TIME[group_period], StockHistory.timestamp),
+					order_by=StockHistory.timestamp,  # type: ignore[arg-type]
+				)
+				.label("max"),
+				func.first_value(StockHistory.buy)
+				.over(
+					partition_by=func.date_trunc(UNIT_TIME[group_period], StockHistory.timestamp),
+					order_by=StockHistory.timestamp,  # type: ignore[arg-type]
+				)
+				.label("open"),
+				func.last_value(StockHistory.buy)
+				.over(
+					partition_by=func.date_trunc(UNIT_TIME[group_period], StockHistory.timestamp),
+					order_by=StockHistory.timestamp,  # type: ignore[arg-type]
+				)
+				.label("close"),
+			)  # type: ignore
+			.distinct(
+				func.date_trunc(UNIT_TIME[group_period], StockHistory.timestamp).label("timestamp")
 			)
 			.where(
 				StockHistory.company_id == stock.id,
 				StockHistory.timestamp >= time_threshold,
 			)
 			.order_by(
-				func.date_trunc(UNIT_TIME[group_period], StockHistory.timestamp).label("timestamp"),
-				func.date_trunc(UNIT_TIME[group_period], StockHistory.timestamp).desc(),
-			)
-			.distinct(
-				func.date_trunc(UNIT_TIME[group_period], StockHistory.timestamp).label("timestamp"),
+				func.date_trunc(UNIT_TIME[group_period], StockHistory.timestamp),
+				StockHistory.timestamp.desc(),  # type: ignore
 			)
 		)
-
-		return session.execute(query).fetchall()
+		return session.execute(query).mappings().all()
