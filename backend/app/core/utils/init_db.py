@@ -3,7 +3,7 @@ import random
 
 import requests
 
-from sqlmodel import select
+from sqlmodel import select, text
 
 from app.core.models import (
 	Auth,
@@ -14,12 +14,18 @@ from app.core.models import (
 	User,
 )
 from app.core.models.role import RoleType
+from app.core.settings import Settings
 from app.database import database_manager
+
+settings = Settings()
 
 
 class InitDB:
 	def __init__(self) -> None:
 		self.db = database_manager
+
+		if not settings.testing:  # pragma: no cover
+			self.add_extensions()
 
 		self.add_role_data()
 		self.add_auth_data()
@@ -27,6 +33,10 @@ class InitDB:
 		self.add_dummy_data("https://pastebin.com/raw/cmwnjrBf", Exchange, [])
 		self.add_dummy_data("https://pastebin.com/raw/HH5uPbia", Industry, [])
 		self.add_dummy_data("https://pastebin.com/raw/fmbJktwU", Company, [Exchange, Industry])
+
+	def add_extensions(self) -> None:  # pragma: no cover
+		with self.db.get_session() as session:
+			session.execute(text("CREATE EXTENSION IF NOT EXISTS pg_trgm;"))
 
 	def add_dummy_data(
 		self,
