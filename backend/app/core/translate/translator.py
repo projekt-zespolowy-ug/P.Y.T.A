@@ -6,18 +6,19 @@ from typing import Any
 class Translator:
 	_instances: dict[str, "Translator"] = {}
 
-	def __new__(cls, lang: str) -> "Translator":
-		if lang not in cls._instances:
-			cls._instances[lang] = super().__new__(cls)
-		return cls._instances[lang]
+	def __new__(cls, lang: str, file_key: str) -> "Translator":
+		if f"{lang}.{file_key}" not in cls._instances:
+			cls._instances[f"{lang}.{file_key}"] = super().__new__(cls)
+		return cls._instances[f"{lang}.{file_key}"]
 
-	def __init__(self, lang: str):
+	def __init__(self, lang: str, file_key: str) -> None:
 		self.lang = lang
+		self.file_key = file_key
+		self.locale_module = importlib.import_module(f"app.lang.{self.lang}.{self.file_key}")
 
 	def t(self, key: str, **kwargs: dict[str, Any]) -> str:
-		file_key, *translation_keys = key.split(".")
-		locale_module = importlib.import_module(f"app.lang.{self.lang}.{file_key}")
-		translation = locale_module.locale
+		translation_keys = key.split(".")
+		translation = self.locale_module.locale
 
 		for translation_key in translation_keys:
 			translation = translation.get(translation_key, None)

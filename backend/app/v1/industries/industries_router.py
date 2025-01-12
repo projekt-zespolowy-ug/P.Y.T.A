@@ -14,9 +14,9 @@ async def get_industries(request: Request) -> list[IndustrySchema]:
 	with database_manager.get_session() as session:
 		industries = session.exec(select(Industry)).all()
 
-		t = Translator(request.state.locale).t
+		t = Translator(request.state.locale, "industry").t
 
 		return [
-			IndustrySchema(name=industry.name, locale_name=t(f"industry.{industry.name}"))
+			IndustrySchema(name=industry.name, locale_name=t(industry.name))
 			for industry in industries
 		]
