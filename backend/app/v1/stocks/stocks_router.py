@@ -106,8 +106,6 @@ async def get_stock(ticker: str, request: Request) -> StockDetails:
 		if not result:
 			raise HTTPException(status_code=404, detail="Stock not found")
 
-		print(result)
-
 		stock, industry, exchange = result
 
 		return StockDetails(
