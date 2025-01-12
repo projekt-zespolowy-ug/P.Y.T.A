@@ -25,7 +25,7 @@ settings = Settings()
 logger = logging.getLogger(__name__)
 
 
-@stocks_router.get("/")
+@stocks_router.get("")
 async def list_stocks(
 	request: Request,
 	limit: int = 50,
