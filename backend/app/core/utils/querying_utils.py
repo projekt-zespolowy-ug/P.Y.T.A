@@ -200,14 +200,6 @@ class QueryingUtils:
 			.join(Exchange, Exchange.id == Company.exchange_id)  # type: ignore[arg-type]
 		)
 
-		order_by_types = ["name", "price"]
-		if order_by and order_by not in order_by_types:
-			raise ValueError("Invalid order_by type ", order_by)
-
-		order_types = ["asc", "desc"]
-		if order and order not in order_types:
-			raise ValueError("Invalid order type ", order)
-
 		if order_by == "price":
 			latest_timestamps = (
 				select(
