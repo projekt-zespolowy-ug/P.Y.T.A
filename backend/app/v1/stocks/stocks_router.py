@@ -3,6 +3,7 @@ import logging
 import time
 
 from fastapi import APIRouter, HTTPException, Request, WebSocket, WebSocketDisconnect
+from fastapi.params import Depends
 from fastapi.websockets import WebSocketState
 
 from app.core.constants.time import UNIT_TIME
@@ -11,6 +12,7 @@ from app.core.schemas.exchange import Exchange as ExchangeSchema
 from app.core.schemas.industry import Industry as IndustrySchema
 from app.core.schemas.stock_details import StockDetails
 from app.core.schemas.stock_list import Stock, StockList
+from app.core.schemas.stock_list_order import StockListOrder
 from app.core.schemas.stock_prices import StockPrices
 from app.core.settings import Settings
 from app.core.utils.querying_utils import QueryingUtils
@@ -23,21 +25,25 @@ settings = Settings()
 logger = logging.getLogger(__name__)
 
 
-@stocks_router.get("/")
+@stocks_router.get("")
 async def list_stocks(
 	request: Request,
 	limit: int = 50,
 	page: int = 1,
 	industry: str = "",
 	exchange: str = "",
+	name: str = "",
+	order_params: StockListOrder = Depends(),  # type: ignore[assignment]
 ) -> StockList:
 	with database_manager.get_session() as session:
 		stocks = list(
-			QueryingUtils.get_stock_details(
+			QueryingUtils.get_stock_list(
 				session,
-				[stock.ticker for stock in request.app.state.stock_manager.stocks],
 				industry,
 				exchange,
+				order_params.order_by,
+				order_params.order,
+				name,
 				limit,
 				page,
 			)
@@ -95,12 +101,12 @@ async def stock_updates(ticker: str, websocket: WebSocket) -> None:
 @stocks_router.get("/{ticker}")
 async def get_stock(ticker: str, request: Request) -> StockDetails:
 	with database_manager.get_session() as session:
-		result = QueryingUtils.get_stock_details(session, [ticker])
+		result = QueryingUtils.get_stock_details(session, ticker)
 
 		if not result:
 			raise HTTPException(status_code=404, detail="Stock not found")
 
-		stock, industry, exchange = result[0]
+		stock, industry, exchange = result
 
 		return StockDetails(
 			name=stock.name,

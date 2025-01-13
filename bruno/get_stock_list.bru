@@ -5,11 +5,14 @@ meta {
 }
 
 get {
-  url: {{base_url}}/api/stocks?limit=20
+  url: {{base_url}}/api/stocks?limit=20&order_by=price&name=Spen&order=as
   body: none
   auth: none
 }
 
 params:query {
-  limit: 2
+  limit: 20
+  order_by: price
+  name: Spen
+  order: as
 }

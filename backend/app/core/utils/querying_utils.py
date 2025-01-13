@@ -6,7 +6,7 @@ from typing import Any
 import bcrypt
 
 from sqlalchemy import Row, RowMapping, func
-from sqlmodel import Session, and_, select
+from sqlmodel import Session, and_, or_, select
 
 from app.core.constants.time import UNIT_TIME
 from app.core.exceptions import (
@@ -173,11 +173,24 @@ class QueryingUtils:
 			return {stock.ticker: {"buy": stock.buy, "sell": stock.sell} for stock in stock_prices}
 
 	@staticmethod
-	def get_stock_details(
+	def get_stock_details(session: Session, ticker: str) -> Row[Any] | None:
+		query = (
+			select(Company, Industry, Exchange)
+			.join(Industry, Industry.id == Company.industry_id)  # type: ignore[arg-type]
+			.join(Exchange, Exchange.id == Company.exchange_id)  # type: ignore[arg-type]
+			.where(Company.ticker == ticker)
+		)
+
+		return session.execute(query).first()
+
+	@staticmethod
+	def get_stock_list(
 		session: Session,
-		tickers: list[str],
 		industry: str | None = None,
 		exchange: str | None = None,
+		order_by: str | None = None,
+		order: str | None = None,
+		name: str | None = None,
 		limit: int = 50,
 		page: int = 1,
 	) -> Sequence[Row[Any]]:
@@ -185,14 +198,62 @@ class QueryingUtils:
 			select(Company, Industry, Exchange)
 			.join(Industry, Industry.id == Company.industry_id)  # type: ignore[arg-type]
 			.join(Exchange, Exchange.id == Company.exchange_id)  # type: ignore[arg-type]
-			.where(Company.ticker.in_(tickers))  # type: ignore[attr-defined]
 		)
+
+		if order_by == "price":
+			latest_timestamps = (
+				select(
+					StockHistory.company_id, func.max(StockHistory.timestamp).label("max_timestamp")
+				)
+				.group_by(StockHistory.company_id)
+				.subquery()
+			)
+
+			latest_buy = (
+				select(StockHistory.company_id, StockHistory.buy)
+				.join(
+					latest_timestamps,
+					(StockHistory.company_id == latest_timestamps.c.company_id)  # type: ignore[arg-type]
+					& (StockHistory.timestamp == latest_timestamps.c.max_timestamp),
+				)
+				.subquery()
+			)
+
+			query = query.join(
+				latest_buy,
+				Company.id == latest_buy.c.company_id,  # type: ignore[arg-type]
+			)
+
+			order_by_query = latest_buy.c.buy
+
+		else:
+			order_by_query = Company.name  # type: ignore[assignment]
+
+		if order:
+			order_by_query = order_by_query.desc() if order == "desc" else order_by_query.asc()  # type: ignore[assignment]
+
+		if order_by:
+			query = query.order_by(order_by_query)
 
 		if industry:
 			query = query.where(Industry.name == industry)
 
 		if exchange:
 			query = query.where(Exchange.name == exchange)
+
+		if name:
+			query = query.where(
+				or_(
+					or_(
+						func.similarity(Company.name, name) > 0.6,
+						func.similarity(Company.ticker, name) > 0.6,
+					),
+					or_(
+						Company.name.ilike(f"%{name}%"),  # type: ignore[attr-defined]
+						Company.ticker.ilike(f"%{name}%"),  # type: ignore[attr-defined]
+					),
+				)
+			)
 
 		query = query.limit(limit).offset((page - 1) * limit)
 

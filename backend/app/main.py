@@ -8,6 +8,8 @@ from typing import Any
 from fastapi import FastAPI, Request
 from fastapi.concurrency import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from pydantic import ValidationError
 
 from app.core.logger import configure_logging
 from app.core.settings import Settings
@@ -74,6 +76,19 @@ async def log_requests(request: Request, call_next: Callable[[Request], Awaitabl
 	logger.info(f"C: {request.method} {request.url} [{response.status_code}] {process_time:.4f}ms")
 
 	return response
+
+
+@app.exception_handler(ValidationError)
+async def validation_exception_handler(request: Request, exc: ValidationError) -> JSONResponse:
+	errors = exc.errors()[0]
+
+	details = {
+		"loc": errors["loc"],
+		"msg": errors["msg"],
+		"type": errors["type"],
+	}
+
+	return JSONResponse(status_code=422, content={"detail": details})
 
 
 if __name__ == "__main__":
