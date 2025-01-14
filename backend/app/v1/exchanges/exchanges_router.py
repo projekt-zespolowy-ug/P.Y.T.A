@@ -8,7 +8,7 @@ from app.database import database_manager
 exchanges_router = APIRouter(prefix="/exchanges")
 
 
-@exchanges_router.get("/")
+@exchanges_router.get("")
 async def get_industries(request: Request) -> list[ExchangeSchema]:
 	with database_manager.get_session() as session:
 		exchanges = session.exec(select(Exchange)).all()

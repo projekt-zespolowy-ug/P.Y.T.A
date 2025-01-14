@@ -11,7 +11,7 @@ def client():
 
 
 def test_exchange_list(client):
-	response = client.get("/api/exchanges/")
+	response = client.get("/api/exchanges")
 
 	assert response.status_code == 200
 	assert "name" in response.json()[0]

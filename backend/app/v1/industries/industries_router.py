@@ -9,7 +9,7 @@ from app.database import database_manager
 industries_router = APIRouter(prefix="/industries")
 
 
-@industries_router.get("/")
+@industries_router.get("")
 async def get_industries(request: Request) -> list[IndustrySchema]:
 	with database_manager.get_session() as session:
 		industries = session.exec(select(Industry)).all()

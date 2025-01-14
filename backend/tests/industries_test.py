@@ -11,7 +11,7 @@ def client():
 
 
 def test_industries_list(client):
-	response = client.get("/api/industries/")
+	response = client.get("/api/industries")
 
 	client.cookies["NEXT_LOCALE"] = "en"
 
