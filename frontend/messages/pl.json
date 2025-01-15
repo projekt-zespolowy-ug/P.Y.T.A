@@ -119,5 +119,11 @@
 			"industry": "Branża",
 			"exchange": "Giełda"
 		}
+	},
+	"StockDetails": {
+		"buttons": {
+			"buy": "Kup",
+			"sell": "Sprzedaj"
+		}
 	}
 }
