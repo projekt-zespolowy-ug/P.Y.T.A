@@ -27,7 +27,9 @@ def test_user_me():
 
 		assert register_res.status_code == 200
 
-		response = client.get("/api/user/me", cookies={"session_id": session_id})
+		client.cookies["session_id"] = session_id
+		response = client.get("/api/user/me")
+		client.cookies.clear()
 
 		assert response.status_code == 200
 		assert "balance" in response.json()
@@ -45,6 +47,7 @@ def test_user_me_not_logged_in():
 
 def test_user_me_invalid_session():
 	with TestClient(app) as client:
-		response = client.get("/api/user/me", cookies={"session_id": "invalid"})
+		client.cookies["session_id"] = "invalid_session_id"
+		response = client.get("/api/user/me")
 
 		assert response.status_code == 404
