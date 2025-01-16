@@ -15,10 +15,12 @@ from app.core.logger import configure_logging
 from app.core.settings import Settings
 from app.core.simulation.simulator import StockPriceManager
 from app.core.utils.init_db import InitDB
-from app.v1 import auth_router, stocks_router, user_router
+from app.core.utils.translation_utils import get_possible_translation_languages
+from app.v1 import auth_router, exchanges_router, industries_router, stocks_router, user_router
 
 configure_logging()
 setting = Settings()
+available_translations = get_possible_translation_languages()
 
 InitDB()
 
@@ -26,6 +28,7 @@ logging.getLogger("uvicorn.access").disabled = True
 logger = logging.getLogger(__name__)
 
 logging.info("settings: %s", setting.model_dump())
+logging.info("available_translations: %s", available_translations)
 
 
 @asynccontextmanager
@@ -51,11 +54,21 @@ def get_application() -> FastAPI:
 	_app.include_router(auth_router)
 	_app.include_router(stocks_router)
 	_app.include_router(user_router)
+	_app.include_router(industries_router)
+	_app.include_router(exchanges_router)
 
 	return _app
 
 
 app = get_application()
+
+
+@app.middleware("http")
+async def set_locale(request: Request, call_next: Callable[[Request], Awaitable[Any]]) -> Any:
+	locale = request.cookies.get("NEXT_LOCALE", "en")
+
+	request.state.locale = "en" if locale not in available_translations else locale
+	return await call_next(request)
 
 
 @app.middleware("http")
