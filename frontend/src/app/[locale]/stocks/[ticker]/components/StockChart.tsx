@@ -1,4 +1,5 @@
 "use client";
+
 import { candleChartOptions, candleChartSeries } from "@/data/chart-options";
 import {
 	getFormatCurrency,
@@ -7,15 +8,13 @@ import {
 import { useGetStockHistory } from "@/query/stock-details";
 import * as echarts from "echarts";
 import moment from "moment";
-import { useLocale } from "next-intl";
-import React, { useEffect, useMemo, useRef } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import React, { useEffect, useRef, useMemo } from "react";
 
 const StockChart = ({ ticker }: { ticker: string }) => {
-	// const [period, setPeriod] = useState("100y");
-	// const [timeUnit, setTimeUnit] = useState("h");
 	const period = "100y";
 	const timeUnit = "h";
-
+	const t = useTranslations("StockDetails.tooltip");
 	const chartRef = useRef<HTMLDivElement | null>(null);
 	const { data, error, isLoading } = useGetStockHistory(
 		ticker,
@@ -24,50 +23,71 @@ const StockChart = ({ ticker }: { ticker: string }) => {
 	);
 	const locale = useLocale();
 
-	const yAxisFormatter = (value: number) =>
-		getFormatCurrencyString(value, locale);
+	const yAxisFormatter = useMemo(
+		() => (value: number) => getFormatCurrencyString(value, locale),
+		[locale],
+	);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: yAxisFormatter should not be in useEffect because locale is there already
-	useEffect(() => {
-		if (!chartRef.current || !data || data.length === 0) return;
+	const transformChartData = useMemo(() => {
+		if (!data || data.length === 0) return { timestamps: [], prices: [] };
 
-		const [timestamps, prices] = data.reduce<[string[], number[][]]>(
-			([timestampAcc, pricesAcc], curr) => {
-				const { timestamp, close, max, min, open } = curr;
+		return data.reduce<{
+			timestamps: string[];
+			prices: number[][];
+		}>(
+			(acc, { timestamp, open, close, min, max }) => {
+				const formattedDate = moment(timestamp).format("YYYY-MM-DD");
 
-				const formattedDate = moment(timestamp).format("YYYY-MM-DD HH:mm");
+				const formattedPrices = [open, close, min, max].map(
+					(price) => Math.round(getFormatCurrency(price, locale) * 100) / 100,
+				);
 
-				const formattedPrices = [open, close, min, max].map((pc) => {
-					const formattedToCurrency = getFormatCurrency(pc, locale);
-					return Math.round(formattedToCurrency * 100) / 100;
-				});
+				acc.timestamps.push(formattedDate);
+				acc.prices.push(formattedPrices);
 
-				return [
-					[...timestampAcc, formattedDate],
-					[...pricesAcc, formattedPrices],
-				];
+				return acc;
 			},
-			[[], []],
+			{ timestamps: [], prices: [] },
 		);
+	}, [data, locale]);
+
+	useEffect(() => {
+		if (!chartRef.current || !transformChartData.timestamps.length) return;
 
 		const chart = echarts.init(chartRef.current);
 		const series = {
 			...candleChartSeries,
-			data: prices,
+			data: transformChartData.prices,
 		} as echarts.SeriesOption;
+
 		const newOptions: echarts.EChartsOption = {
 			...candleChartOptions,
 			title: { ...candleChartOptions.title, text: ticker },
-			xAxis: { ...candleChartOptions.xAxis, data: timestamps },
+			xAxis: {
+				...candleChartOptions.xAxis,
+				data: transformChartData.timestamps,
+			},
 			yAxis: {
 				...candleChartOptions.yAxis,
-				type: "time",
+				type: "value",
 				boundaryGap: ["0%", "0%"],
 				axisLabel: {
 					formatter: yAxisFormatter,
 				},
 			},
+			tooltip: {
+				formatter: (params) => {
+					// @ts-expect-error: echarts provide value property, but it does not exist in the type.
+					const [open, close, lowest, highest] = params.value;
 
+					return `
+					${t("open")}: ${yAxisFormatter(open)}<br/>
+					${t("close")}: ${yAxisFormatter(close)}<br/>
+					${t("low")}: ${yAxisFormatter(lowest)}<br/>
+					${t("High")}: ${yAxisFormatter(highest)}
+				  `;
+				},
+			},
 			series: [series],
 		};
 
@@ -76,10 +96,10 @@ const StockChart = ({ ticker }: { ticker: string }) => {
 		return () => {
 			chart.dispose();
 		};
-	}, [data, locale, ticker]);
+	}, [transformChartData, ticker, yAxisFormatter, t]);
 
-	if (isLoading) return "Loading...";
-	if (error) return error.message;
+	if (isLoading) return;
+	if (error) return <div className="error">{error.message}</div>;
 
 	return <div className="chart w-full h-96 px-1" ref={chartRef} />;
 };

@@ -125,6 +125,12 @@
 		"buttons": {
 			"buy": "Buy",
 			"sell": "Sell"
+		},
+		"tooltip": {
+			"open": "Open",
+			"close": "Close",
+			"low": "Low",
+			"High": "High"
 		}
 	}
 }

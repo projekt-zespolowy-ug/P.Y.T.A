@@ -124,6 +124,12 @@
 		"buttons": {
 			"buy": "Kup",
 			"sell": "Sprzedaj"
+		},
+		"tooltip": {
+			"open": "Otwarcie",
+			"close": "Zamkniecie",
+			"low": "Minimum",
+			"High": "Maksimum"
 		}
 	}
 }
