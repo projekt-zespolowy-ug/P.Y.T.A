@@ -103,6 +103,7 @@
 		"dark": "Dark",
 		"light": "Light"
 	},
+
 	"StockTable": {
 		"headers": {
 			"logo": "Logo",
@@ -118,6 +119,18 @@
 		"selects": {
 			"industry": "Industry",
 			"exchange": "Exchange"
+		}
+	},
+	"StockDetails": {
+		"buttons": {
+			"buy": "Buy",
+			"sell": "Sell"
+		},
+		"tooltip": {
+			"open": "Open",
+			"close": "Close",
+			"low": "Low",
+			"High": "High"
 		}
 	}
 }

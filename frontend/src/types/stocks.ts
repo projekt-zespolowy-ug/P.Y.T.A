@@ -7,3 +7,8 @@ export type Stock = {
 	buy: number;
 	sell: number;
 };
+
+export interface StockPriceMessage {
+	buy: number;
+	sell: number;
+}
