@@ -149,10 +149,9 @@ async def get_stock_price(
 			)[0]
 
 			if (
-				time_unit != "min"
-				and time_unit != "s"
+				time_unit not in ["min", "s"]
 				and len(stock_from_memory.price_history) > 0
-				and len(stock_prices) > 0
+				and stock_prices
 			):
 				stock_prices[-1].close = stock_from_memory.price_history[-1][0]
 				if min(stock_from_memory.price_history[-1]) < stock_prices[-1].min:
