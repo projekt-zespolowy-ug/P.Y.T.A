@@ -148,7 +148,12 @@ async def get_stock_price(
 				filter(lambda x: x.ticker == ticker, request.app.state.stock_manager.stocks)
 			)[0]
 
-			if time_unit != "min" or time_unit != "s":
+			if (
+				time_unit != "min"
+				and time_unit != "s"
+				and len(stock_from_memory.price_history) > 0
+				and len(stock_prices) > 0
+			):
 				stock_prices[-1].close = stock_from_memory.price_history[-1][0]
 				if min(stock_from_memory.price_history[-1]) < stock_prices[-1].min:
 					stock_prices[-1].min = min(stock_from_memory.price_history[-1])

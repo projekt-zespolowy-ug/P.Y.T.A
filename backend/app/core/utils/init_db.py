@@ -3,6 +3,7 @@ import random
 
 import requests
 
+from sqlalchemy import or_
 from sqlmodel import select, text
 
 from app.core.models import (
@@ -30,9 +31,9 @@ class InitDB:
 		self.add_role_data()
 		self.add_auth_data()
 		self.add_user_data()
-		self.add_dummy_data("https://pastebin.com/raw/cmwnjrBf", Exchange, [])
-		self.add_dummy_data("https://pastebin.com/raw/HH5uPbia", Industry, [])
-		self.add_dummy_data("https://pastebin.com/raw/fmbJktwU", Company, [Exchange, Industry])
+		self.add_dummy_data("https://pastebin.com/raw/RG9rD8kS", Exchange, [])
+		self.add_dummy_data("https://pastebin.com/raw/tW9ALLid", Industry, [])
+		self.add_dummy_data("https://pastebin.com/raw/z9iiJFaB", Company, [Exchange, Industry])
 
 	def add_extensions(self) -> None:  # pragma: no cover
 		with self.db.get_session() as session:
@@ -62,9 +63,9 @@ class InitDB:
 				new_obj = model(
 					**record,
 					**{
-						f"{key.__name__.lower()}_id": random.choice(
-							session.exec(select(key)).all()
-						).id
+						f"{key.__name__.lower()}_id": select(key.id).where(
+							or_(key.name == record["industry"], key.name == record["exchange"])
+						)
 						for key in foreign_keys
 					},
 				)
