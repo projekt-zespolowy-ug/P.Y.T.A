@@ -1,5 +1,8 @@
 import datetime
+import json
 import random
+
+from pathlib import Path
 
 import requests
 
@@ -31,9 +34,13 @@ class InitDB:
 		self.add_role_data()
 		self.add_auth_data()
 		self.add_user_data()
-		self.add_dummy_data("https://pastebin.com/raw/RG9rD8kS", Exchange, [])
-		self.add_dummy_data("https://pastebin.com/raw/tW9ALLid", Industry, [])
-		self.add_dummy_data("https://pastebin.com/raw/z9iiJFaB", Company, [Exchange, Industry])
+		self.add_dummy_data(Path("datasets").joinpath("exchange.json"), Exchange, [])
+		self.add_dummy_data(Path("datasets").joinpath("industry.json"), Industry, [])
+		self.add_dummy_data(
+			Path("datasets").joinpath("company.json"),
+			Company,
+			[Exchange, Industry],
+		)
 
 	def add_extensions(self) -> None:  # pragma: no cover
 		with self.db.get_session() as session:
@@ -41,7 +48,7 @@ class InitDB:
 
 	def add_dummy_data(
 		self,
-		url: str,
+		file_path: Path,
 		model: type[Company] | type[Exchange] | type[Industry],
 		foreign_keys: list[type[Exchange] | type[Industry]],
 	) -> None:
@@ -49,7 +56,8 @@ class InitDB:
 			if session.exec(select(model)).first():  # pragma: no cover
 				return
 
-			data = requests.get(url, timeout=5).json()
+			with open(file_path) as file:
+				data = json.load(file)
 
 			for record in data:
 				if "time_open" in record:

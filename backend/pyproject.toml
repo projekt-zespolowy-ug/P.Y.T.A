@@ -4,6 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["Your Name <you@example.com>"]
 readme = "README.md"
+packages = [{include ="scripts"}]
 
 [tool.poetry.dependencies]
 python = "^3.12"
@@ -23,6 +24,11 @@ numpy = "^2.1.3"
 pip = "^24.3.1"
 coverage = "^7.6.10"
 anyio = "^4.8.0"
+pandas = "^2.2.3"
+pandas-stubs = "^2.2.3.241126"
+
+[tool.poetry.scripts]
+company_preprocessing = "scripts.company_preprocessing:main"
 
 [tool.coverage.run]
 omit = [
@@ -85,4 +91,4 @@ fixable = ["ALL"]
 unfixable = []
 
 isort.lines-between-types = 1
-isort.known-local-folder = ["app"]
+isort.known-local-folder = ["app", "datasets"]
