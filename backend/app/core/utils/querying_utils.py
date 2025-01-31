@@ -358,3 +358,11 @@ class QueryingUtils:
 		portfolio.amount += amount if buy else -amount
 
 		session.add(portfolio)
+
+	@staticmethod
+	def get_user_portfolio(session: Session, user_id: str, stock_id: str) -> Portfolio:
+		query = select(Portfolio).where(
+			Portfolio.user_id == user_id and Portfolio.company_id == stock_id
+		)
+
+		return session.exec(query).one()

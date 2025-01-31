@@ -17,11 +17,11 @@ from app.core.exceptions import (
 from app.core.models.transaction import Transaction
 from app.core.schemas.exchange import Exchange as ExchangeSchema
 from app.core.schemas.industry import Industry as IndustrySchema
-from app.core.schemas.stock_buy import StockBuy
 from app.core.schemas.stock_buy_out import StockBuyOut
 from app.core.schemas.stock_details import StockDetails
 from app.core.schemas.stock_list import Stock, StockList
 from app.core.schemas.stock_list_order import StockListOrder
+from app.core.schemas.stock_order import StockOrder
 from app.core.schemas.stock_prices import StockPrices
 from app.core.settings import Settings
 from app.core.utils.querying_utils import QueryingUtils
@@ -196,7 +196,7 @@ async def get_stock_price(
 @stocks_router.post("/{ticker}/buy")
 async def buy_stock(
 	ticker: str,
-	stock_buy: StockBuy,
+	stock_buy: StockOrder,
 	request: Request,
 	user: Any = Depends(get_user_from_token),
 ) -> StockBuyOut:
@@ -228,4 +228,44 @@ async def buy_stock(
 	return StockBuyOut(
 		amount=stock_buy.amount,
 		unit_price=unit_buy_price,
+	)
+
+
+@stocks_router.post("/{ticker}/sell")
+async def sell_stock(
+	ticker: str,
+	stock_buy: StockOrder,
+	request: Request,
+	user: Any = Depends(get_user_from_token),
+) -> StockBuyOut:
+	stock = list(filter(lambda x: x.ticker == ticker, request.app.state.stock_manager.stocks))[0]
+
+	if not stock:
+		raise HTTPException(status_code=404, detail="Stock not found")
+
+	unit_sell_price = stock.price_history[-1][1]
+	transaction_cost = unit_sell_price * stock_buy.amount
+
+	with database_manager.get_session() as session:
+		user_portfolio = QueryingUtils.get_user_portfolio(session, user["id"], stock.id)
+
+		if user_portfolio.amount < stock_buy.amount:
+			raise HTTPException(status_code=402, detail="Insufficient stocks")
+
+		new_transaction = Transaction(
+			user_id=user["id"],
+			company_id=stock.id,
+			amount=stock_buy.amount,
+			unit_price=unit_sell_price,
+			transaction_type="sell",
+		)
+
+		session.add(new_transaction)
+
+		QueryingUtils.update_user_balance(session, user["id"], transaction_cost)
+		QueryingUtils.update_user_portfolio(session, user["id"], stock.id, stock_buy.amount, False)
+
+	return StockBuyOut(
+		amount=stock_buy.amount,
+		unit_price=unit_sell_price,
 	)
