@@ -1,0 +1,17 @@
+meta {
+  name: buy_stock
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{base_url}}/api/stocks/DOOR/buy
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "amount": 1.22
+  }
+}

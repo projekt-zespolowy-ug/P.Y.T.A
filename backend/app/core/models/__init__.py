@@ -2,6 +2,7 @@ from app.core.models.auth import Auth
 from app.core.models.company import Company
 from app.core.models.exchange import Exchange
 from app.core.models.industry import Industry
+from app.core.models.portfolio import Portfolio
 from app.core.models.role import Role
 from app.core.models.session import Session
 from app.core.models.stock_history import StockHistory
@@ -18,4 +19,5 @@ __all__ = [
 	"Transaction",
 	"User",
 	"Session",
+	"Portfolio",
 ]

@@ -2,14 +2,23 @@ import asyncio
 import logging
 import time
 
+from typing import Any
+
 from fastapi import APIRouter, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.params import Depends
 from fastapi.websockets import WebSocketState
 
 from app.core.constants.time import UNIT_TIME
-from app.core.exceptions import InvalidPeriodError, InvalidTimeUnitError, TickerNotFoundError
+from app.core.exceptions import (
+	InvalidPeriodError,
+	InvalidTimeUnitError,
+	TickerNotFoundError,
+)
+from app.core.models.transaction import Transaction
 from app.core.schemas.exchange import Exchange as ExchangeSchema
 from app.core.schemas.industry import Industry as IndustrySchema
+from app.core.schemas.stock_buy import StockBuy
+from app.core.schemas.stock_buy_out import StockBuyOut
 from app.core.schemas.stock_details import StockDetails
 from app.core.schemas.stock_list import Stock, StockList
 from app.core.schemas.stock_list_order import StockListOrder
@@ -23,6 +32,19 @@ stocks_router = APIRouter(prefix="/stocks")
 settings = Settings()
 
 logger = logging.getLogger(__name__)
+
+
+def get_user_from_token(request: Request) -> dict[str, Any]:
+	token = request.cookies.get("session_id")
+
+	if not token:
+		raise HTTPException(status_code=401, detail="Unauthorized")
+
+	with database_manager.get_session() as session:
+		if user := QueryingUtils.get_user_from_token(session, token):
+			return user
+		else:
+			raise HTTPException(status_code=401, detail="Unauthorized")
 
 
 @stocks_router.get("")
@@ -169,3 +191,41 @@ async def get_stock_price(
 	except Exception as e:  # pragma: no cover
 		logger.error("Failed to get stock prices", exc_info=True)
 		raise HTTPException(status_code=500, detail="Failed to get stock prices") from e
+
+
+@stocks_router.post("/{ticker}/buy")
+async def buy_stock(
+	ticker: str,
+	stock_buy: StockBuy,
+	request: Request,
+	user: Any = Depends(get_user_from_token),
+) -> StockBuyOut:
+	stock = list(filter(lambda x: x.ticker == ticker, request.app.state.stock_manager.stocks))[0]
+
+	if not stock:
+		raise HTTPException(status_code=404, detail="Stock not found")
+
+	unit_buy_price = stock.price_history[-1][0]
+	transaction_cost = unit_buy_price * stock_buy.amount
+
+	if user["balance"] < transaction_cost:
+		raise HTTPException(status_code=402, detail="Insufficient funds")
+
+	with database_manager.get_session() as session:
+		new_transaction = Transaction(
+			user_id=user["id"],
+			company_id=stock.id,
+			amount=stock_buy.amount,
+			unit_price=unit_buy_price,
+			transaction_type="buy",
+		)
+
+		session.add(new_transaction)
+
+		QueryingUtils.update_user_balance(session, user["id"], -transaction_cost)
+		QueryingUtils.update_user_portfolio(session, user["id"], stock.id, stock_buy.amount, True)
+
+	return StockBuyOut(
+		amount=stock_buy.amount,
+		unit_price=unit_buy_price,
+	)
