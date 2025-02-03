@@ -5,7 +5,7 @@ from typing import Any
 
 import bcrypt
 
-from sqlalchemy import Row, RowMapping, func
+from sqlalchemy import Row, RowMapping, func, update
 from sqlmodel import Session, and_, or_, select
 
 from app.core.constants.time import UNIT_TIME
@@ -20,6 +20,7 @@ from app.core.models.auth import Auth
 from app.core.models.company import Company
 from app.core.models.exchange import Exchange
 from app.core.models.industry import Industry
+from app.core.models.portfolio import Portfolio
 from app.core.models.role import Role, RoleType
 from app.core.models.session import Session as SessionModel
 from app.core.models.stock_history import StockHistory
@@ -127,6 +128,16 @@ class QueryingUtils:
 				)
 			else:
 				raise UserNotFoundError
+
+	@staticmethod
+	def get_user_from_token(session: Session, session_id: str) -> dict[str, Any] | None:
+		user = session.exec(
+			select(User)
+			.where(SessionModel.id == session_id)
+			.join(SessionModel, SessionModel.user_id == User.id)  # type: ignore[arg-type]
+		).first()
+
+		return dict(user) if user else None
 
 	@staticmethod
 	def get_stocks() -> list[dict[Any, Any]]:
@@ -311,3 +322,47 @@ class QueryingUtils:
 			)
 		)
 		return session.execute(query).mappings().all()
+
+	@staticmethod
+	def get_user_balance(session: Session) -> float:
+		if balance := session.exec(select(User.balance).first()):  # type: ignore[attr-defined]
+			return balance  # type: ignore[return-value]
+		else:
+			raise UserNotFoundError
+
+	@staticmethod
+	def update_user_balance(session: Session, user_id: str, change: float) -> None:
+		session.execute(
+			update(User).where(User.id == user_id).values(balance=User.balance + change)  # type: ignore[arg-type]
+		)
+
+	@staticmethod
+	def get_or_create_portfolio(session: Session, user_id: str, company_id: str) -> Portfolio:
+		if portfolio := session.exec(
+			select(Portfolio).where(
+				and_(Portfolio.user_id == user_id, Portfolio.company_id == company_id)
+			)
+		).first():
+			return portfolio
+
+		new_portfolio = Portfolio(user_id=user_id, company_id=company_id, amount=0)
+		session.add(new_portfolio)
+		return new_portfolio
+
+	@staticmethod
+	def update_user_portfolio(
+		session: Session, user_id: str, company_id: str, amount: float, buy: bool
+	) -> None:
+		portfolio = QueryingUtils.get_or_create_portfolio(session, user_id, company_id)
+
+		portfolio.amount += amount if buy else -amount
+
+		session.add(portfolio)
+
+	@staticmethod
+	def get_user_portfolio(session: Session, user_id: str, stock_id: str) -> Portfolio:
+		query = select(Portfolio).where(
+			Portfolio.user_id == user_id and Portfolio.company_id == stock_id
+		)
+
+		return session.exec(query).one()

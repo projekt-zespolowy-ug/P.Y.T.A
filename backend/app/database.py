@@ -34,6 +34,13 @@ class DatabaseManager:
 		finally:
 			session.close()
 
+	def get_session_no_context(self) -> Any:
+		session = self.Sessionmaker()
+
+		session.exec = session.scalars  # type: ignore [attr-defined]
+
+		return session
+
 	def create_tables(self) -> None:
 		from app.core.models import Auth  # noqa: F401
 
