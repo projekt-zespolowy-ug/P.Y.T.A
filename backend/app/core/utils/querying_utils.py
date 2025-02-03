@@ -362,7 +362,31 @@ class QueryingUtils:
 	@staticmethod
 	def get_user_portfolio(session: Session, user_id: str, stock_id: str) -> Portfolio:
 		query = select(Portfolio).where(
-			Portfolio.user_id == user_id and Portfolio.company_id == stock_id
+			and_(Portfolio.user_id == user_id, Portfolio.company_id == stock_id)
 		)
 
 		return session.exec(query).one()
+
+	@staticmethod
+	def get_user_portfolios(session: Session, session_id: str) -> Sequence[Row[Any]]:
+		session_data = session.exec(
+			select(SessionModel).where(SessionModel.id == session_id)
+		).first()
+		if not session_data:
+			raise UserNotFoundError
+
+		user = session.exec(select(User).where(User.id == session_data.user_id)).first()
+		if not user:
+			raise UserNotFoundError
+
+		query = (
+			select(
+				Portfolio,
+				Company,
+			)
+		).where(
+			Portfolio.user_id == user.id,
+			Portfolio.company_id == Company.id,
+			Portfolio.amount > 0,
+		)
+		return session.execute(query).all()
