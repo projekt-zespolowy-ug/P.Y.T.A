@@ -368,24 +368,14 @@ class QueryingUtils:
 		return session.exec(query).one()
 
 	@staticmethod
-	def get_user_portfolios(session: Session, session_id: str) -> Sequence[Row[Any]]:
-		session_data = session.exec(
-			select(SessionModel).where(SessionModel.id == session_id)
-		).first()
-		if not session_data:
-			raise UserNotFoundError
-
-		user = session.exec(select(User).where(User.id == session_data.user_id)).first()
-		if not user:
-			raise UserNotFoundError
-
+	def get_user_portfolios(session: Session, user_id: str) -> Sequence[Row[Any]]:
 		query = (
 			select(
 				Portfolio,
 				Company,
 			)
 		).where(
-			Portfolio.user_id == user.id,
+			Portfolio.user_id == user_id,
 			Portfolio.company_id == Company.id,
 			Portfolio.amount > 0,
 		)
