@@ -53,21 +53,21 @@ def test_stock_list_invalid_order():
 
 def test_stock_detail():
 	with TestClient(app) as client:
-		response = client.get("/api/stocks/A")
+		response = client.get("/api/stocks/DOOR")
 
 		assert response.status_code == 200
 
 
 def test_stock_detail_not_found():
 	with TestClient(app) as client:
-		response = client.get("/api/stocks/DOOR")
+		response = client.get("/api/stocks/DOORRRR")
 
 		assert response.status_code == 404
 
 
 def test_stock_websocket():
 	with TestClient(app) as client:
-		with client.websocket_connect("/api/stocks/updates/A") as websocket:
+		with client.websocket_connect("/api/stocks/updates/DOOR") as websocket:
 			data = websocket.receive_json()
 
 			assert "buy" in data
