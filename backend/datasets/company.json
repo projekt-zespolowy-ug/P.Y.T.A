@@ -4726,5 +4726,13 @@
 		"industry": "Aerospace and Defense",
 		"image_url": "https://raw.githubusercontent.com/davidepalazzo/ticker-logos/refs/heads/main/ticker_icons/HEI.png",
 		"description": "https://www.heico.com/"
+	},
+	{
+		"ticker": "DOOR",
+		"name": "Masonite International Corp",
+		"exchange": "NEW YORK STOCK EXCHANGE, INC.",
+		"industry": "Building",
+		"image_url": "https://raw.githubusercontent.com/davidepalazzo/ticker-logos/refs/heads/main/ticker_icons/DOOR.png",
+		"description": "https://www.masonite.com/"
 	}
 ]
