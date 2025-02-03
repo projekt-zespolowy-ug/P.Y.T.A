@@ -136,5 +136,8 @@
 		"ownedAmount": "Posiadana ilość:",
 		"totalValue": "Łączna wartość:",
 		"myAssets": "Moje aktywa"
+	},
+	"Alerts": {
+		"error": "Błąd"
 	}
 }

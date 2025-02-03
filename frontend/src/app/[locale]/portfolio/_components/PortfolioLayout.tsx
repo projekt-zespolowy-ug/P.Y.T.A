@@ -1,6 +1,8 @@
 "use client";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useGetPortfolio } from "@/query/portfolio";
 import cuid2 from "@paralleldrive/cuid2";
+import { AlertCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { Spinner } from "../../_components/Spinner";
@@ -12,7 +14,14 @@ const PortfolioLayout = () => {
 	const t = useTranslations("StockDetails");
 
 	if (isLoading || !data) return <Spinner />;
-	if (error) return error.message;
+	if (error)
+		return (
+			<Alert variant="destructive">
+				<AlertCircle className="h-4 w-4" />
+				<AlertTitle>Error</AlertTitle>
+				<AlertDescription>{error.message}</AlertDescription>
+			</Alert>
+		);
 
 	return (
 		<div className="m-2">

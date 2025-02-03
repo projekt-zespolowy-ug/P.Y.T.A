@@ -24,9 +24,9 @@ const OwnedStock = ({ item }: { item: PortfolioItem }) => {
 
 	const currentPriceStyle =
 		prevValue > currentPrice
-			? "text-green-700"
+			? "text-red-700"
 			: prevValue < currentPrice
-				? "text-red-700"
+				? "text-green-700"
 				: null;
 
 	useEffect(() => {
