@@ -61,6 +61,7 @@ const StockDetailsLayout = ({ ticker }: { ticker: string }) => {
 		transactionFn: typeof buyStock | typeof sellStock,
 	) {
 		const isBuy = transactionFn === buyStock;
+		const defaultStyle = "text-white border-black";
 		transactionFn(
 			{ amount },
 			{
@@ -70,27 +71,38 @@ const StockDetailsLayout = ({ ticker }: { ticker: string }) => {
 							amount: data.amount,
 							ticker,
 							price: getFormatCurrencyString(
-								getFormatCurrency(data.unit_price, locale),
+								getFormatCurrency(data.unitPrice, locale),
 								locale,
 							),
 							action: isBuy ? t("actions.bought") : t("actions.sold"),
 						}),
+						{
+							className: `${isBuy ? "bg-green-600" : "bg-red-600"} ${defaultStyle}`,
+						},
 					);
 				},
 				onError: (e) => {
 					const { status } = e as AxiosError;
-					if (status === 402) {
-						toast(
-							isBuy
-								? t("messages.insufficientFunds")
-								: t("messages.insufficientStocks"),
-						);
+					if (status === 400) {
+						toast(t("messages.insufficientStocks"), {
+							className: `bg-red-600 ${defaultStyle}`,
+						});
+					} else if (status === 402) {
+						toast(t("messages.insufficientFunds"), {
+							className: `bg-red-600 ${defaultStyle}`,
+						});
 					} else if (status === 404) {
-						toast(t("messages.stockNotFound"));
+						toast(t("messages.stockNotFound"), {
+							className: `bg-red-600 ${defaultStyle}`,
+						});
 					} else if (status === 422) {
-						toast(t("messages.incorrectAmount"));
+						toast(t("messages.incorrectAmount"), {
+							className: `bg-red-600 ${defaultStyle}`,
+						});
 					} else {
-						toast(t("messages.serverErr"));
+						toast(t("messages.serverErr"), {
+							className: `bg-red-600 ${defaultStyle}`,
+						});
 					}
 				},
 			},

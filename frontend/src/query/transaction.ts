@@ -1,5 +1,7 @@
 import type { TransactionRequestBody } from "@/types/api-requests";
+import type { TransactionResponse } from "@/types/api-responses";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import camelCaseKeys from "camelcase-keys";
 import { axiosInstance } from "./http";
 
 export const useStockTransaction = (type: "buy" | "sell", ticker: string) => {
@@ -18,5 +20,8 @@ const stockTransaction = async (
 	ticker: string,
 	data: TransactionRequestBody,
 ) => {
-	return (await axiosInstance.post(`/stocks/${ticker}/${type}`, data)).data;
+	const responseData = (
+		await axiosInstance.post(`/stocks/${ticker}/${type}`, data)
+	).data;
+	return camelCaseKeys(responseData, { deep: true }) as TransactionResponse;
 };
