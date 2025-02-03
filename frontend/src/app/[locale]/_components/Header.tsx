@@ -20,34 +20,32 @@ const Header = () => {
 	} = useGetUser();
 
 	return (
-		<>
-			<header className="flex justify-between items-center bg-secondary">
-				<div className="left">
-					<div className="logo p-4">
+		<header className="flex justify-between items-center bg-secondary">
+			<div className="left">
+				<div className="logo">
+					<Link href="/" className="hover:text-blue-600">
 						<PytaLogo className="w-24 h-8 fill-primary" />
-					</div>
+					</Link>
 				</div>
-				<div className="right">
-					<div className="flex items-center gap-2 mr-2">
-						<LocaleSwitcher />
-						{isLoading && (
-							<Skeleton className="w-[3rem] h-[3rem] rounded-full" />
-						)}
-						{isAuthenticated && (
-							<div className="avatar flex flex-col items-center">
-								<UserAvatarMenu user={user} />
-							</div>
-						)}
-						{isError && (
-							<Link href={"/auth/sign-in"}>
-								<Button>{tHeader("RightTabs.signIn")}</Button>
-							</Link>
-						)}
-						<BarMenu />
-					</div>
+			</div>
+			<div className="right">
+				<div className="flex items-center gap-2 mr-2">
+					<LocaleSwitcher />
+					{isLoading && <Skeleton className="w-[3rem] h-[3rem] rounded-full" />}
+					{isAuthenticated && (
+						<div className="avatar flex flex-col items-center">
+							<UserAvatarMenu user={user} />
+						</div>
+					)}
+					{isError && (
+						<Link href={"/auth/sign-in"}>
+							<Button>{tHeader("RightTabs.signIn")}</Button>
+						</Link>
+					)}
+					<BarMenu />
 				</div>
-			</header>
-		</>
+			</div>
+		</header>
 	);
 };
 

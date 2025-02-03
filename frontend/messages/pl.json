@@ -131,5 +131,10 @@
 			"low": "Minimum",
 			"High": "Maksimum"
 		}
+	},
+	"Portfolio": {
+		"ownedAmount": "Posiadana ilość:",
+		"totalValue": "Łączna wartość:",
+		"myAssets": "Moje aktywa"
 	}
 }

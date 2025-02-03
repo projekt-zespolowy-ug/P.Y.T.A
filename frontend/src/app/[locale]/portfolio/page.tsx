@@ -1,7 +1,5 @@
+import PortfolioLayout from "./_components/PortfolioLayout";
+
 export default function Portfolio() {
-	return (
-		<div>
-			<h1>Portfolio</h1>
-		</div>
-	);
+	return <PortfolioLayout />;
 }
