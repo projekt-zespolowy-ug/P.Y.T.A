@@ -131,6 +131,18 @@
 			"close": "Close",
 			"low": "Low",
 			"High": "High"
+		},
+		"actions": {
+			"bought": "bought",
+			"sold": "sold"
+		},
+		"messages": {
+			"transactionSuccess": "You have {action} {amount} {ticker} for {price}.",
+			"serverErr": "Server error.",
+			"insufficientFunds": "Insufficient funds.",
+			"insufficientStocks": "Insufficient stocks.",
+			"stockNotFound": "Stock not found.",
+			"incorrectAmount": "Incorrect amount."
 		}
 	},
 	"Portfolio": {
