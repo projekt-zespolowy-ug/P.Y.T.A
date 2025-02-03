@@ -215,3 +215,25 @@ def test_sell_invalid_amount(register_user):
 		)
 
 		assert response.status_code == 422
+
+
+def test_sell_valid_amount(register_user):
+	with TestClient(app) as client:
+		client.post(
+			"/api/auth/login",
+			json={"email": register_user["email"], "password": register_user["password"]},
+		)
+
+		response = client.post(
+			"/api/stocks/DOOR/buy",
+			json={"amount": 1.00001},
+		)
+
+		assert response.status_code == 200
+
+		response = client.post(
+			"/api/stocks/DOOR/sell",
+			json={"amount": 0.00001},
+		)
+
+		assert response.status_code == 200
