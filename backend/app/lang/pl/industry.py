@@ -42,5 +42,4 @@ locale = {
 	"Industrial Conglomerates": "Konglomeraty przemysłowe",
 	"Leisure Products": "Produkty rekreacyjne",
 	"Marine": "Branża morska",
-	"Energy ": "Energia",
 }

@@ -42,5 +42,4 @@ locale = {
 	"Industrial Conglomerates": "Industrial Conglomerates",
 	"Leisure Products": "Leisure Products",
 	"Marine": "Marine",
-	"Energy ": "Energy ",
 }
