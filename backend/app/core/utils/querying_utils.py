@@ -360,9 +360,9 @@ class QueryingUtils:
 		session.add(portfolio)
 
 	@staticmethod
-	def get_user_portfolio(session: Session, user_id: str, stock_id: str) -> Portfolio:
+	def get_user_portfolio(session: Session, user_id: str, stock_id: str) -> Portfolio | None:
 		query = select(Portfolio).where(
-			Portfolio.user_id == user_id and Portfolio.company_id == stock_id
+			and_(Portfolio.user_id == user_id, Portfolio.company_id == stock_id)
 		)
 
-		return session.exec(query).one()
+		return session.exec(query).one_or_none()

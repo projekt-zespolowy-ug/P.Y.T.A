@@ -4,7 +4,7 @@ import time
 
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Request, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, HTTPException, Request, WebSocket, WebSocketDisconnect, status
 from fastapi.params import Depends
 from fastapi.websockets import WebSocketState
 
@@ -247,7 +247,7 @@ async def sell_stock(
 	stock = list(filter(lambda x: x.ticker == ticker, request.app.state.stock_manager.stocks))
 
 	if not stock:
-		raise HTTPException(status_code=404, detail="Stock not found")
+		raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Stock not found")
 
 	stock_sim: SimStock = stock[0]
 
@@ -257,8 +257,10 @@ async def sell_stock(
 	with database_manager.get_session() as session:
 		user_portfolio = QueryingUtils.get_user_portfolio(session, user["id"], stock_sim.id)
 
-		if user_portfolio.amount < stock_buy.amount:
-			raise HTTPException(status_code=402, detail="Insufficient stocks")
+		if not user_portfolio or user_portfolio.amount < stock_buy.amount:
+			raise HTTPException(
+				status_code=status.HTTP_400_BAD_REQUEST, detail="Insufficient stocks"
+			)
 
 		new_transaction = Transaction(
 			user_id=user["id"],
