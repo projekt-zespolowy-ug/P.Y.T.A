@@ -1,15 +1,17 @@
 "use client";
 
+import * as echarts from "echarts";
+
 import { candleChartOptions, candleChartSeries } from "@/data/chart-options";
 import {
 	getFormatCurrency,
 	getFormatCurrencyString,
 } from "@/hooks/useFormatCurrency";
-import { useGetStockHistory } from "@/query/stock-details";
-import * as echarts from "echarts";
-import moment from "moment";
 import { useLocale, useTranslations } from "next-intl";
-import React, { useEffect, useRef, useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
+
+import { useGetStockHistory } from "@/query/stock-details";
+import moment from "moment";
 
 const StockChart = ({ ticker }: { ticker: string }) => {
 	const period = "100y";
@@ -78,7 +80,7 @@ const StockChart = ({ ticker }: { ticker: string }) => {
 			tooltip: {
 				formatter: (params) => {
 					// @ts-expect-error: echarts provide value property, but it does not exist in the type.
-					const [open, close, lowest, highest] = params.value;
+					const [_, open, close, lowest, highest] = params.value;
 
 					return `
 					${t("open")}: ${yAxisFormatter(open)}<br/>
