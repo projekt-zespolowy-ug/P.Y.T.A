@@ -60,7 +60,7 @@ def test_stock_detail():
 
 def test_stock_detail_not_found():
 	with TestClient(app) as client:
-		response = client.get("/api/stocks/A")
+		response = client.get("/api/stocks/DOORRRR")
 
 		assert response.status_code == 404
 
