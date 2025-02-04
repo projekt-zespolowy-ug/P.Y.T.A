@@ -23,6 +23,9 @@ def main() -> None:
 	else:
 		print("image_url column not found in the file.")
 
+	data["exchange"] = data["exchange"].replace("NASDAQ NMS - GLOBAL MARKET", "NASDAQ")
+	data["exchange"] = data["exchange"].replace("NEW YORK STOCK EXCHANGE, INC.", "NYSE")
+
 	data = data.replace("", pd.NA).dropna()
 
 	data = data.drop_duplicates(subset="ticker", keep="first")

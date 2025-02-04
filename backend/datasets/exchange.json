@@ -1,12 +1,12 @@
 [
 	{
-		"name": "NEW YORK STOCK EXCHANGE, INC.",
+		"name": "NYSE",
 		"time_open": "8:50 AM",
 		"time_close": "5:50 PM",
 		"currency": "USD"
 	},
 	{
-		"name": "NASDAQ NMS - GLOBAL MARKET",
+		"name": "NASDAQ",
 		"time_open": "7:59 AM",
 		"time_close": "4:41 PM",
 		"currency": "USD"
