@@ -366,3 +366,17 @@ class QueryingUtils:
 		)
 
 		return session.exec(query).one_or_none()
+
+	@staticmethod
+	def get_user_portfolios(session: Session, user_id: str) -> Sequence[Row[Any]]:
+		query = (
+			select(
+				Portfolio,
+				Company,
+			)
+		).where(
+			Portfolio.user_id == user_id,
+			Portfolio.company_id == Company.id,
+			Portfolio.amount > 0,
+		)
+		return session.execute(query).all()
