@@ -1,4 +1,5 @@
 "use client";
+import { Spinner } from "@/app/[locale]/_components/Spinner";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -36,7 +37,7 @@ const StockDetailsLayout = ({ ticker }: { ticker: string }) => {
 		};
 	}, [ticker]);
 
-	if (isLoading || !data) return "Loading...";
+	if (isLoading || !data) return <Spinner />;
 	if (error) return error.message;
 
 	return (

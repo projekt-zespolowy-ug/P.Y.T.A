@@ -132,5 +132,13 @@
 			"low": "Low",
 			"High": "High"
 		}
+	},
+	"Portfolio": {
+		"ownedAmount": "Shares owned:",
+		"totalValue": "Total value:",
+		"myAssets": "My assets"
+	},
+	"Alerts": {
+		"error": "Error"
 	}
 }
