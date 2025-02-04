@@ -33,8 +33,6 @@ def test_buy_order(register_user):
 			json={"amount": 1},
 		)
 
-		print(response.json())
-
 		assert response.status_code == 200
 		assert "amount" in response.json()
 		assert "unit_price" in response.json()
@@ -54,8 +52,6 @@ def test_sell_order(register_user):
 			"/api/stocks/DOOR/sell",
 			json={"amount": 1},
 		)
-
-		print(response.json())
 
 		assert response.status_code == 200
 		assert "amount" in response.json()
@@ -77,8 +73,6 @@ def test_buy_order_insufficient_funds(register_user):
 			json={"amount": 100000},
 		)
 
-		print(response.json())
-
 		assert response.status_code == 402
 		assert "detail" in response.json()
 		assert response.json()["detail"] == "Insufficient funds"
@@ -95,8 +89,6 @@ def test_buy_order_invalid_stock(register_user):
 			"/api/stocks/INVALID/buy",
 			json={"amount": 1},
 		)
-
-		print(response.json())
 
 		assert response.status_code == 404
 		assert "detail" in response.json()
@@ -115,8 +107,6 @@ def test_sell_order_invalid_stock(register_user):
 			json={"amount": 1},
 		)
 
-		print(response.json())
-
 		assert response.status_code == 404
 		assert "detail" in response.json()
 		assert response.json()["detail"] == "Stock not found"
@@ -134,9 +124,7 @@ def test_sell_order_invalid_amount(register_user):
 			json={"amount": 100000},
 		)
 
-		print(response.json())
-
-		assert response.status_code == 402
+		assert response.status_code == 400
 		assert "detail" in response.json()
 		assert response.json()["detail"] == "Insufficient stocks"
 
@@ -174,3 +162,78 @@ def test_buy_expired_token(register_user):
 		assert response.status_code == 401
 		assert "detail" in response.json()
 		assert response.json()["detail"] == "Unauthorized"
+
+
+def test_sell_not_bought_stock(register_user):
+	with TestClient(app) as client:
+		client.post(
+			"/api/auth/login",
+			json={"email": register_user["email"], "password": register_user["password"]},
+		)
+
+		response = client.post(
+			"/api/stocks/DOOR/sell",
+			json={"amount": 1},
+		)
+
+		assert response.status_code == 400
+		assert "detail" in response.json()
+		assert response.json()["detail"] == "Insufficient stocks"
+
+
+def test_sell_negative_amount(register_user):
+	with TestClient(app) as client:
+		client.post(
+			"/api/auth/login",
+			json={"email": register_user["email"], "password": register_user["password"]},
+		)
+
+		response = client.post(
+			"/api/stocks/DOOR/sell",
+			json={"amount": -1},
+		)
+
+		assert response.status_code == 422
+
+
+def test_sell_invalid_amount(register_user):
+	with TestClient(app) as client:
+		client.post(
+			"/api/auth/login",
+			json={"email": register_user["email"], "password": register_user["password"]},
+		)
+
+		response = client.post(
+			"/api/stocks/DOOR/sell",
+			json={"amount": 0.000001},
+		)
+		assert response.status_code == 422
+
+		response = client.post(
+			"/api/stocks/DOOR/sell",
+			json={"amount": 1.000001},
+		)
+
+		assert response.status_code == 422
+
+
+def test_sell_valid_amount(register_user):
+	with TestClient(app) as client:
+		client.post(
+			"/api/auth/login",
+			json={"email": register_user["email"], "password": register_user["password"]},
+		)
+
+		response = client.post(
+			"/api/stocks/DOOR/buy",
+			json={"amount": 1.00001},
+		)
+
+		assert response.status_code == 200
+
+		response = client.post(
+			"/api/stocks/DOOR/sell",
+			json={"amount": 0.00001},
+		)
+
+		assert response.status_code == 200
