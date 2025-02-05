@@ -38,3 +38,15 @@ export type TransactionResponse = {
 	timestamp: string;
 	orderType: "buy" | "sell";
 };
+
+export type IndustryResponse = {
+	name: string;
+	localeName: string;
+};
+
+export type ExchangeResponse = {
+	name: string;
+	timeOpen: string;
+	timeClose: string;
+	currency: string;
+};

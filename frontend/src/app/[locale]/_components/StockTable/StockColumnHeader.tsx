@@ -10,6 +10,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { useSearchParamsStore } from "@/store/search-params";
 import { useTranslations } from "next-intl";
 
 interface DataTableColumnHeaderProps<TData, TValue>
@@ -27,6 +28,7 @@ export function StockColumnHeader<TData, TValue>({
 	if (!column.getCanSort()) {
 		return <div className={cn(className)}>{title}</div>;
 	}
+	const paramsStore = useSearchParamsStore();
 
 	return (
 		<div className={cn("flex items-center space-x-2", className)}>
@@ -48,16 +50,37 @@ export function StockColumnHeader<TData, TValue>({
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="start">
-					<DropdownMenuItem onClick={() => column.toggleSorting(false)}>
+					<DropdownMenuItem
+						onClick={() => {
+							const orderKey =
+								column.id === "buy" || column.id === "sell" ? "price" : "name";
+							paramsStore.setParam("order_by", orderKey);
+							paramsStore.setParam("order", "asc");
+							column.toggleSorting(false);
+						}}
+					>
 						<ArrowUp className="h-3.5 w-3.5 text-muted-foreground/70" />
 						{t("asc")}
 					</DropdownMenuItem>
-					<DropdownMenuItem onClick={() => column.toggleSorting(true)}>
+					<DropdownMenuItem
+						onClick={() => {
+							const orderKey =
+								column.id === "buy" || column.id === "sell" ? "price" : "name";
+							paramsStore.setParam("order_by", orderKey);
+							paramsStore.setParam("order", "desc");
+							column.toggleSorting(true);
+						}}
+					>
 						<ArrowDown className="h-3.5 w-3.5 text-muted-foreground/70" />
 						{t("desc")}
 					</DropdownMenuItem>
 					<DropdownMenuSeparator />
-					<DropdownMenuItem onClick={() => column.clearSorting()}>
+					<DropdownMenuItem
+						onClick={() => {
+							paramsStore.resetSort();
+							column.clearSorting();
+						}}
+					>
 						<ListRestart className="h-3.5 w-3.5 text-muted-foreground/70" />
 						{t("reset")}
 					</DropdownMenuItem>

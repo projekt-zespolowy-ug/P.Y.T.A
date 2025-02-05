@@ -11,7 +11,7 @@ import OwnedStock from "./OwnedStock";
 const PortfolioLayout = () => {
 	const { data, isLoading, error } = useGetPortfolio();
 
-	const t = useTranslations("StockDetails");
+	const t = useTranslations("Portfolio");
 
 	if (isLoading || !data) return <Spinner />;
 	if (error)
@@ -25,8 +25,8 @@ const PortfolioLayout = () => {
 
 	return (
 		<div className="m-2">
-			<div className="text-center">
-				<h1>{t("myAssets")}</h1>
+			<div className="text-center pb-2">
+				<h1 className="text-xl font-bold">{t("myAssets")}</h1>
 			</div>
 			<div className="flex flex-col gap-2">
 				{data.map((item) => (

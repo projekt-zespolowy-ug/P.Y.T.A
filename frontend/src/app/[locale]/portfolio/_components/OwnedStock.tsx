@@ -16,31 +16,33 @@ import React, { useEffect, useState } from "react";
 const OwnedStock = ({ item }: { item: PortfolioItem }) => {
 	const t = useTranslations("Portfolio");
 	const locale = useLocale();
-	const [currentPrice, setCurrentPrice] = useState(item.sell);
-	const [totalValue, setTotalValue] = useState(item.sell * item.amount);
+	const [currentPrice, setCurrentPrice] = useState(item.price);
+	const [prevPrice, setPrevPrice] = useState(item.price);
+	const totalValue = currentPrice * item.amount;
 	const totalValueFormatted = useFormatCurrency(totalValue);
 	const currentPriceFormatted = useFormatCurrency(currentPrice);
-	const [prevValue, setPrevValue] = useState(item.sell);
 
 	const currentPriceStyle =
-		prevValue > currentPrice
+		prevPrice > currentPrice
 			? "text-red-700"
-			: prevValue < currentPrice
+			: prevPrice < currentPrice
 				? "text-green-700"
 				: null;
 
 	useEffect(() => {
 		const socket = getTickerPrices(item.ticker, ({ data }) => {
 			const parsed = JSON.parse(data) as StockPriceMessage;
-			setPrevValue(item.sell);
-			setCurrentPrice(parsed.sell);
-			setTotalValue(currentPrice * item.amount);
+
+			setCurrentPrice((prev) => {
+				setPrevPrice(prev);
+				return parsed.sell;
+			});
 		});
 
 		return () => {
 			socket.close();
 		};
-	}, [item, currentPrice]);
+	}, [item.ticker]);
 	return (
 		<Card>
 			<CardHeader className="flex justify-between m-2">
@@ -61,7 +63,8 @@ const OwnedStock = ({ item }: { item: PortfolioItem }) => {
 					{t("ownedAmount")} {item.amount}
 				</p>
 				<p>
-					{t("totalValue")} {totalValueFormatted}
+					{t("totalValue")}{" "}
+					<span className={`${currentPriceStyle}`}>{totalValueFormatted}</span>
 				</p>
 			</CardContent>
 		</Card>
