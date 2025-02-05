@@ -126,7 +126,7 @@ OR
 
 ## License
 
-Distributed under the Pyta-license License. See `LICENSE` for more information.
+Distributed under the Pyta-license. See `LICENSE` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
