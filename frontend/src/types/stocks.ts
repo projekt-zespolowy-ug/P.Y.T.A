@@ -15,5 +15,5 @@ export interface StockPriceMessage {
 
 export type PortfolioItem = Omit<
 	Stock,
-	"industry" | "exchange" | "imageUrl" | "buy"
-> & { amount: number };
+	"industry" | "exchange" | "imageUrl" | "buy" | "sell"
+> & { amount: number; price: number };
