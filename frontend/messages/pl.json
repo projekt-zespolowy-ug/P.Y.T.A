@@ -130,6 +130,18 @@
 			"close": "Zamkniecie",
 			"low": "Minimum",
 			"High": "Maksimum"
+		},
+		"actions": {
+			"bought": "Kupiono",
+			"sold": "Sprzedano"
+		},
+		"messages": {
+			"transactionSuccess": "{action} {amount} {ticker} za {price}.",
+			"serverErr": "Błąd serwera.",
+			"insufficientFunds": "Niewystarczające środki.",
+			"insufficientStocks": "Niewystarczająca ilość akcji.",
+			"stockNotFound": "Akcje nie znalezione.",
+			"incorrectAmount": "Nieprawidłowa ilość."
 		}
 	},
 	"Portfolio": {

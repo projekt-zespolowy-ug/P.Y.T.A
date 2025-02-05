@@ -8,12 +8,21 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { useFormatCurrency } from "@/hooks/useFormatCurrency";
+import { Input } from "@/components/ui/input";
+import {
+	getFormatCurrency,
+	getFormatCurrencyString,
+	useFormatCurrency,
+} from "@/hooks/useFormatCurrency";
 import { useGetStockDetails } from "@/query/stock-details";
+import { useStockTransaction } from "@/query/transaction";
 import type { StockPriceMessage } from "@/types/stocks";
 import { getTickerPrices } from "@/ws/ticker-update";
-import { useTranslations } from "next-intl";
+import type { AxiosError } from "axios";
+import { useLocale, useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { z } from "zod";
 import StockChart from "./StockChart";
 
 const StockDetailsLayout = ({ ticker }: { ticker: string }) => {
@@ -21,9 +30,13 @@ const StockDetailsLayout = ({ ticker }: { ticker: string }) => {
 	const t = useTranslations("StockDetails");
 	const [latestBuyPrice, setLatestBuyPrice] = useState<number>(0);
 	const [latestSellPrice, setLatestSellPrice] = useState<number>(0);
+	const [amount, setAmount] = useState<number>(1);
+	const locale = useLocale();
 
 	const formattedBuyPrice = useFormatCurrency(latestBuyPrice);
 	const formattedSellPrice = useFormatCurrency(latestSellPrice);
+	const { mutate: buyStock } = useStockTransaction("buy", ticker);
+	const { mutate: sellStock } = useStockTransaction("sell", ticker);
 
 	useEffect(() => {
 		const socket = getTickerPrices(ticker, ({ data }) => {
@@ -36,6 +49,65 @@ const StockDetailsLayout = ({ ticker }: { ticker: string }) => {
 			socket.close();
 		};
 	}, [ticker]);
+
+	const amountSchema = z
+		.number()
+		.min(0, { message: "Amount must be greater than or equal to 0" })
+		.multipleOf(0.00001, {
+			message: "Amount cannot have more than 5 decimal places",
+		});
+
+	function handleTransaction(
+		transactionFn: typeof buyStock | typeof sellStock,
+	) {
+		const isBuy = transactionFn === buyStock;
+		const defaultStyle = "text-white border-black";
+		transactionFn(
+			{ amount },
+			{
+				onSuccess: (data) => {
+					toast(
+						t("messages.transactionSuccess", {
+							amount: data.amount,
+							ticker,
+							price: getFormatCurrencyString(
+								getFormatCurrency(data.unitPrice, locale),
+								locale,
+							),
+							action: isBuy ? t("actions.bought") : t("actions.sold"),
+						}),
+						{
+							className: `${isBuy ? "bg-green-600" : "bg-red-600"} ${defaultStyle}`,
+						},
+					);
+				},
+				onError: (e) => {
+					const { status } = e as AxiosError;
+					if (status === 400) {
+						toast(t("messages.insufficientStocks"), {
+							className: `bg-red-600 ${defaultStyle}`,
+						});
+					} else if (status === 402) {
+						toast(t("messages.insufficientFunds"), {
+							className: `bg-red-600 ${defaultStyle}`,
+						});
+					} else if (status === 404) {
+						toast(t("messages.stockNotFound"), {
+							className: `bg-red-600 ${defaultStyle}`,
+						});
+					} else if (status === 422) {
+						toast(t("messages.incorrectAmount"), {
+							className: `bg-red-600 ${defaultStyle}`,
+						});
+					} else {
+						toast(t("messages.serverErr"), {
+							className: `bg-red-600 ${defaultStyle}`,
+						});
+					}
+				},
+			},
+		);
+	}
 
 	if (isLoading || !data) return <Spinner />;
 	if (error) return error.message;
@@ -65,16 +137,30 @@ const StockDetailsLayout = ({ ticker }: { ticker: string }) => {
 					</div>
 				</div>
 				<StockChart ticker={ticker} />
-				<div className="buttons flex justify-center gap-2 flex-1 px-6">
+				<div className="flex p-6">
+					<Input
+						type="number"
+						placeholder="0"
+						value={amount || ""}
+						onChange={(e) => setAmount(e.target.valueAsNumber)}
+					/>
+				</div>
+				<div className="buttons flex justify-center gap-2 flex-1 px-6 mb-6">
 					<Button
 						className="flex flex-col bg-green-600 px-7 py-8 w-1/2 font-bold"
-						// onClick={handleBuy}
+						disabled={!amountSchema.safeParse(amount).success}
+						onClick={() => {
+							handleTransaction(buyStock);
+						}}
 					>
 						{t("buttons.buy")}
 					</Button>
 					<Button
 						className="flex  flex-col bg-red-600 px-7 py-8 w-1/2 font-bold"
-						// onClick={handleSell}
+						disabled={!amountSchema.safeParse(amount).success}
+						onClick={() => {
+							handleTransaction(sellStock);
+						}}
 					>
 						{t("buttons.sell")}
 					</Button>

@@ -31,3 +31,10 @@ export interface StockHistory {
 	open: number;
 	close: number;
 }
+
+export type TransactionResponse = {
+	amount: number;
+	unitPrice: number;
+	timestamp: string;
+	orderType: "buy" | "sell";
+};
