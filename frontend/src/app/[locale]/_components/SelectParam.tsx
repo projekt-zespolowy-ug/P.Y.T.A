@@ -9,14 +9,20 @@ import {
 } from "@/components/ui/select";
 import { useSearchParamsStore } from "@/store/search-params";
 import type { ExchangeResponse, IndustryResponse } from "@/types/api-responses";
+import { useTranslations } from "next-intl";
 
 type SelectIndustryProps = {
 	data: IndustryResponse[] | ExchangeResponse[];
 	paramKey: "industry" | "exchange";
 };
 
+function capitalize(str: string) {
+	return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 export default function SelectParam({ data, paramKey }: SelectIndustryProps) {
 	const paramsStore = useSearchParamsStore();
+	const t = useTranslations("StockTable.selects");
 
 	return (
 		<Select
@@ -26,9 +32,7 @@ export default function SelectParam({ data, paramKey }: SelectIndustryProps) {
 			value={paramsStore[paramKey]}
 		>
 			<SelectTrigger className="w-[188px]">
-				<SelectValue
-					placeholder={paramKey.charAt(0).toUpperCase() + paramKey.slice(1)}
-				/>
+				<SelectValue placeholder={capitalize(t(paramKey))} />
 			</SelectTrigger>
 			<SelectContent>
 				{data
