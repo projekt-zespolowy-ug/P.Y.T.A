@@ -8,7 +8,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/projekt-zespolowy-ug/P.Y.T.A">
-    <img src="frontend/public/static/pyta-black.svg" alt="Logo" width="300">
+    <img src="frontend/public/static/pyta-white.svg" alt="Logo" width="300">
   </a>
 
   <h3 align="center">Profit - Your Trading App</h3>
