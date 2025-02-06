@@ -14,6 +14,7 @@ import {
 	getFormatCurrencyString,
 	useFormatCurrency,
 } from "@/hooks/useFormatCurrency";
+import { useGetUser } from "@/query/auth";
 import { useGetStockDetails } from "@/query/stock-details";
 import { useStockTransaction } from "@/query/transaction";
 import type { StockPriceMessage } from "@/types/stocks";
@@ -32,6 +33,7 @@ const StockDetailsLayout = ({ ticker }: { ticker: string }) => {
 	const [latestSellPrice, setLatestSellPrice] = useState<number>(0);
 	const [amount, setAmount] = useState<number>(1);
 	const locale = useLocale();
+	const { isSuccess: isLogged } = useGetUser();
 
 	const formattedBuyPrice = useFormatCurrency(latestBuyPrice);
 	const formattedSellPrice = useFormatCurrency(latestSellPrice);
@@ -137,34 +139,38 @@ const StockDetailsLayout = ({ ticker }: { ticker: string }) => {
 					</div>
 				</div>
 				<StockChart ticker={ticker} />
-				<div className="flex p-6">
-					<Input
-						type="number"
-						placeholder="0"
-						value={amount || ""}
-						onChange={(e) => setAmount(e.target.valueAsNumber)}
-					/>
-				</div>
-				<div className="buttons flex justify-center gap-2 flex-1 px-6 mb-6">
-					<Button
-						className="flex flex-col bg-green-600 px-7 py-8 w-1/2 font-bold"
-						disabled={!amountSchema.safeParse(amount).success}
-						onClick={() => {
-							handleTransaction(buyStock);
-						}}
-					>
-						{t("buttons.buy")}
-					</Button>
-					<Button
-						className="flex  flex-col bg-red-600 px-7 py-8 w-1/2 font-bold"
-						disabled={!amountSchema.safeParse(amount).success}
-						onClick={() => {
-							handleTransaction(sellStock);
-						}}
-					>
-						{t("buttons.sell")}
-					</Button>
-				</div>
+				{isLogged && (
+					<>
+						<div className="flex p-6">
+							<Input
+								type="number"
+								placeholder="0"
+								value={amount || ""}
+								onChange={(e) => setAmount(e.target.valueAsNumber)}
+							/>
+						</div>
+						<div className="buttons flex justify-center gap-2 flex-1 px-6 mb-6">
+							<Button
+								className="flex flex-col bg-green-600 px-7 py-8 w-1/2 font-bold"
+								disabled={!amountSchema.safeParse(amount).success}
+								onClick={() => {
+									handleTransaction(buyStock);
+								}}
+							>
+								{t("buttons.buy")}
+							</Button>
+							<Button
+								className="flex  flex-col bg-red-600 px-7 py-8 w-1/2 font-bold"
+								disabled={!amountSchema.safeParse(amount).success}
+								onClick={() => {
+									handleTransaction(sellStock);
+								}}
+							>
+								{t("buttons.sell")}
+							</Button>
+						</div>
+					</>
+				)}
 			</CardContent>
 		</Card>
 	);
