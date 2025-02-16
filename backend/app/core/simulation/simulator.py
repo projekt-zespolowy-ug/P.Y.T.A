@@ -3,6 +3,8 @@ import logging
 import random
 import time
 
+from typing import TypedDict
+
 import numpy as np
 
 from sqlmodel import select
@@ -15,6 +17,11 @@ from app.database import database_manager
 logger = logging.getLogger(__name__)
 settings = Settings()
 db = database_manager
+
+
+class StockPrice(TypedDict):
+	buy: float
+	sell: float
 
 
 class Stock:
@@ -32,8 +39,11 @@ class Stock:
 		if len(self.price_history) > settings.simulation_lookback_amount:
 			self.price_history.pop(0)
 
-	def get_latest_price(self) -> float:
-		return self.price_history[-1][0]
+	def get_latest_price(self) -> StockPrice:
+		return {
+			"buy": self.price_history[-1][0],
+			"sell": self.price_history[-1][1],
+		}
 
 
 class StockPriceSimulator:
@@ -73,7 +83,7 @@ class StockPriceManager:
 			stock.price_history = [(last_known_price["buy"], last_known_price["sell"])]
 			mu = random.uniform(-0.4, 0.4)
 			sigma = random.uniform(0.1, 0.5)
-			stock.simulator = StockPriceSimulator(stock.get_latest_price(), mu, sigma)
+			stock.simulator = StockPriceSimulator(stock.get_latest_price()["buy"], mu, sigma)
 
 	def create_stock_list(self) -> list[Stock]:
 		with db.get_session() as session:
@@ -112,3 +122,6 @@ class StockPriceManager:
 				logger.fatal("Database update was skipped")
 
 			self.last_db_update = time.time()
+
+	def __getitem__(self, ticker: str) -> Stock | None:
+		return next((stock for stock in self.stocks if stock.ticker == ticker), None)

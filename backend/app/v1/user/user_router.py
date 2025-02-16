@@ -52,14 +52,9 @@ async def user_portfolio(
 					name=portfolio.Company.name,
 					ticker=portfolio.Company.ticker,
 					amount=portfolio.Portfolio.amount,
-					price=(
-						list(
-							filter(
-								lambda x: x.ticker == portfolio.Company.ticker,
-								request.app.state.stock_manager.stocks,
-							)
-						)[0]
-					).price_history[-1][1],
+					price=request.app.state.stock_manager[
+						portfolio.Company.ticker
+					].get_latest_price()["sell"],
 				)
 				for portfolio in portfolios
 			]
