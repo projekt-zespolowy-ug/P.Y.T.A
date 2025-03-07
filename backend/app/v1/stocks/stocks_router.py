@@ -105,10 +105,9 @@ async def stock_updates(ticker: str, websocket: WebSocket) -> None:
 
 	await websocket.accept()
 
-	stock_price = stock.get_latest_price()
-
 	while websocket.client_state != WebSocketState.DISCONNECTED:
 		try:
+			stock_price = stock.get_latest_price()
 			await websocket.send_json({"buy": stock_price["buy"], "sell": stock_price["sell"]})
 		except WebSocketDisconnect as _:  # pragma: no cover
 			break
