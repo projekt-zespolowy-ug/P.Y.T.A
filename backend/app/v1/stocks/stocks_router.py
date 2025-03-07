@@ -25,6 +25,7 @@ from app.core.schemas.stock_order_out import StockOrderOut
 from app.core.schemas.stock_prices import StockPrices
 from app.core.settings import Settings
 from app.core.simulation.simulator import Stock as SimStock
+from app.core.simulation.simulator import StockPrice
 from app.core.utils.querying_utils import QueryingUtils
 from app.database import database_manager
 
@@ -75,9 +76,7 @@ async def list_stocks(
 		stock_list: list[Stock] = []
 
 		for stock, industry_obj, exchange_obj in stocks:
-			price = list(
-				filter(lambda x: x.ticker == stock.ticker, request.app.state.stock_manager.stocks)
-			)[0].price_history[-1]
+			price = request.app.state.stock_manager[stock.ticker].get_latest_price()
 
 			stock_list.append(
 				Stock(
@@ -86,8 +85,8 @@ async def list_stocks(
 					ticker=stock.ticker,
 					exchange=exchange_obj.name,
 					image_url=stock.image_url,
-					buy=price[0],
-					sell=price[1],
+					buy=price["buy"],
+					sell=price["sell"],
 				)
 			)
 
@@ -98,7 +97,7 @@ async def list_stocks(
 
 @stocks_router.websocket("/updates/{ticker}")
 async def stock_updates(ticker: str, websocket: WebSocket) -> None:
-	stock = list(filter(lambda x: x.ticker == ticker, websocket.app.state.stock_manager.stocks))
+	stock = websocket.app.state.stock_manager[ticker]
 
 	if not stock:
 		await websocket.close(code=1008, reason="Invalid ticker")
@@ -106,11 +105,10 @@ async def stock_updates(ticker: str, websocket: WebSocket) -> None:
 
 	await websocket.accept()
 
-	price_history = stock[0].price_history
-
 	while websocket.client_state != WebSocketState.DISCONNECTED:
 		try:
-			await websocket.send_json({"buy": price_history[-1][0], "sell": price_history[-1][1]})
+			stock_price = stock.get_latest_price()
+			await websocket.send_json({"buy": stock_price["buy"], "sell": stock_price["sell"]})
 		except WebSocketDisconnect as _:  # pragma: no cover
 			break
 
@@ -167,16 +165,19 @@ async def get_stock_price(
 				for stock in result
 			]
 
-			stock_from_memory = list(
-				filter(lambda x: x.ticker == ticker, request.app.state.stock_manager.stocks)
-			)[0]
+			stock_from_memory = request.app.state.stock_manager[ticker]
+
+			if not stock_from_memory:
+				raise HTTPException(status_code=404, detail="Ticker not found")
+
+			memory_price: StockPrice = stock_from_memory.get_latest_price()
 
 			if time_unit not in ["min", "s"] and stock_from_memory.price_history and stock_prices:
-				stock_prices[-1].close = stock_from_memory.price_history[-1][0]
-				if min(stock_from_memory.price_history[-1]) < stock_prices[-1].min:
-					stock_prices[-1].min = min(stock_from_memory.price_history[-1])
-				if max(stock_from_memory.price_history[-1]) > stock_prices[-1].max:
-					stock_prices[-1].max = max(stock_from_memory.price_history[-1])
+				stock_prices[-1].close = memory_price["buy"]
+				if memory_price["sell"] < stock_prices[-1].min:
+					stock_prices[-1].min = memory_price["sell"]
+				if memory_price["buy"] > stock_prices[-1].max:
+					stock_prices[-1].max = memory_price["buy"]
 
 			return stock_prices
 
@@ -189,9 +190,6 @@ async def get_stock_price(
 	except InvalidTimeUnitError as _:
 		logger.error(f"Invalid time unit: {time_unit}")
 		raise HTTPException(status_code=422, detail="Invalid time unit") from None
-	except Exception as e:  # pragma: no cover
-		logger.error("Failed to get stock prices", exc_info=True)
-		raise HTTPException(status_code=500, detail="Failed to get stock prices") from e
 
 
 @stocks_router.post("/{ticker}/buy")
@@ -201,14 +199,14 @@ async def buy_stock(
 	request: Request,
 	user: Any = Depends(get_user_from_token),
 ) -> StockOrderOut:
-	stock = list(filter(lambda x: x.ticker == ticker, request.app.state.stock_manager.stocks))
+	stock = request.app.state.stock_manager[ticker]
 
 	if not stock:
 		raise HTTPException(status_code=404, detail="Stock not found")
 
-	stock_sim: SimStock = stock[0]
+	stock_sim: SimStock = stock
 
-	unit_buy_price = stock_sim.price_history[-1][0]
+	unit_buy_price = stock_sim.get_latest_price()["buy"]
 	transaction_cost = unit_buy_price * stock_buy.amount
 
 	if user["balance"] < transaction_cost:
@@ -244,12 +242,12 @@ async def sell_stock(
 	request: Request,
 	user: Any = Depends(get_user_from_token),
 ) -> StockOrderOut:
-	stock = list(filter(lambda x: x.ticker == ticker, request.app.state.stock_manager.stocks))
+	stock = request.app.state.stock_manager[ticker]
 
 	if not stock:
 		raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Stock not found")
 
-	stock_sim: SimStock = stock[0]
+	stock_sim: SimStock = stock
 
 	unit_sell_price = stock_sim.price_history[-1][1]
 	transaction_cost = unit_sell_price * stock_buy.amount
