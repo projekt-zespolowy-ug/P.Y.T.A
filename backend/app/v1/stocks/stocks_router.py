@@ -103,7 +103,7 @@ class PriceUpdateMessage(TypedDict):
 
 @stocks_router.websocket("/updates")
 async def stock_updates(websocket: WebSocket) -> None:
-	requested_stock_updates = []
+	requested_stock_updates = set()
 
 	await websocket.accept()
 
@@ -111,13 +111,9 @@ async def stock_updates(websocket: WebSocket) -> None:
 		with contextlib.suppress(TimeoutError):
 			client_update = await asyncio.wait_for(websocket.receive_json(), timeout=0.01)
 			if "type" in client_update and client_update["type"] == "subscribe":
-				requested_stock_updates += client_update["tickers"]
+				requested_stock_updates.update(client_update["tickers"])
 			elif "type" in client_update and client_update["type"] == "unsubscribe":
-				requested_stock_updates = [
-					stock
-					for stock in requested_stock_updates
-					if stock not in client_update["tickers"]
-				]
+				requested_stock_updates.difference_update(client_update["tickers"])
 			continue
 
 		price_update_message: PriceUpdateMessage = {"type": "price_update", "tickers": {}}
