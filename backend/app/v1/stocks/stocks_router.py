@@ -1,8 +1,9 @@
 import asyncio
+import contextlib
 import logging
 import time
 
-from typing import Any
+from typing import Any, TypedDict
 
 from fastapi import APIRouter, HTTPException, Request, WebSocket, WebSocketDisconnect, status
 from fastapi.params import Depends
@@ -95,20 +96,36 @@ async def list_stocks(
 		)
 
 
-@stocks_router.websocket("/updates/{ticker}")
-async def stock_updates(ticker: str, websocket: WebSocket) -> None:
-	stock = websocket.app.state.stock_manager[ticker]
+class PriceUpdateMessage(TypedDict):
+	type: str
+	tickers: dict[str, float]
 
-	if not stock:
-		await websocket.close(code=1008, reason="Invalid ticker")
-		return
+
+@stocks_router.websocket("/updates")
+async def stock_updates(websocket: WebSocket) -> None:
+	requested_stock_updates = []
 
 	await websocket.accept()
 
 	while websocket.client_state != WebSocketState.DISCONNECTED:
+		with contextlib.suppress(TimeoutError):
+			client_update = await asyncio.wait_for(websocket.receive_json(), timeout=0.01)
+			if "type" in client_update and client_update["type"] == "subscribe":
+				requested_stock_updates += client_update["tickers"]
+			elif "type" in client_update and client_update["type"] == "unsubscribe":
+				requested_stock_updates = [
+					stock
+					for stock in requested_stock_updates
+					if stock not in client_update["tickers"]
+				]
+			continue
+
+		price_update_message: PriceUpdateMessage = {"type": "price_update", "tickers": {}}
 		try:
-			stock_price = stock.get_latest_price()
-			await websocket.send_json({"buy": stock_price["buy"], "sell": stock_price["sell"]})
+			for stock in requested_stock_updates:
+				if stock_obj := websocket.app.state.stock_manager[stock]:
+					price_update_message["tickers"][stock] = stock_obj.get_latest_price()
+			await websocket.send_json(price_update_message)
 		except WebSocketDisconnect as _:  # pragma: no cover
 			break
 

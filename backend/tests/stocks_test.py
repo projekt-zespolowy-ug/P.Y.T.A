@@ -1,7 +1,6 @@
 import pytest
 
 from fastapi.testclient import TestClient
-from starlette.websockets import WebSocketDisconnect
 
 from app.main import app
 
@@ -67,20 +66,43 @@ def test_stock_detail_not_found():
 
 def test_stock_websocket():
 	with TestClient(app) as client:
-		with client.websocket_connect("/api/stocks/updates/DOOR") as websocket:
-			data = websocket.receive_json()
+		with client.websocket_connect("/api/stocks/updates") as websocket:
+			data = _validate_price_update_response(websocket)
+			assert len(data["tickers"]) == 0
 
-			assert "buy" in data
-			assert "sell" in data
-			assert isinstance(data["buy"], float)
-			assert isinstance(data["sell"], float)
+			websocket.send_json({"type": "subscribe", "tickers": ["DOOR"]})
+			data = _validate_price_update_response(websocket)
+			assert "DOOR" in data["tickers"]
+			assert "sell" in data["tickers"]["DOOR"]
+			assert "buy" in data["tickers"]["DOOR"]
+			assert isinstance(data["tickers"]["DOOR"]["sell"], float)
+			assert isinstance(data["tickers"]["DOOR"]["buy"], float)
+
+			websocket.send_json({"type": "unsubscribe", "tickers": ["DOOR"]})
+			data = _validate_price_update_response(websocket)
+			assert len(data["tickers"]) == 0
+
+			websocket.send_json({"type": "subscribe", "tickers": ["DOOR", "AAPL"]})
+			data = _validate_price_update_response(websocket)
+			assert "DOOR" in data["tickers"]
+			assert "AAPL" in data["tickers"]
+
+
+def _validate_price_update_response(websocket):
+	result = websocket.receive_json()
+	assert result["type"] == "price_update"
+	assert "tickers" in result
+	assert isinstance(result["tickers"], dict)
+	return result
 
 
 def test_stock_updates_invalid_ticker():
 	with TestClient(app) as client:
-		with pytest.raises(WebSocketDisconnect) as e:
-			with client.websocket_connect("/api/stocks/updates/KUUURWA") as websocket:
-				websocket.receive_json()
+		with client.websocket_connect("/api/stocks/updates") as websocket:
+			websocket.send_json({"type": "subscribe", "tickers": ["NON^EXISTENT"]})
+			data = websocket.receive_json()
 
-		assert e.value.code == 1008
-		assert e.value.reason == "Invalid ticker"
+			assert data["type"] == "price_update"
+			assert "tickers" in data
+			assert isinstance(data["tickers"], dict)
+			assert len(data["tickers"]) == 0
