@@ -111,7 +111,11 @@ async def stock_updates(websocket: WebSocket) -> None:
 		with contextlib.suppress(TimeoutError):
 			client_update = await asyncio.wait_for(websocket.receive_json(), timeout=0.01)
 			if "type" in client_update and client_update["type"] == "subscribe":
-				requested_stock_updates.update(client_update["tickers"])
+				for requested_ticker in client_update["tickers"]:
+					if websocket.app.state.stock_manager[requested_ticker] is None:
+						continue
+					requested_stock_updates.update(client_update["tickers"])
+
 			elif "type" in client_update and client_update["type"] == "unsubscribe":
 				requested_stock_updates.difference_update(client_update["tickers"])
 			continue
@@ -119,8 +123,10 @@ async def stock_updates(websocket: WebSocket) -> None:
 		price_update_message: PriceUpdateMessage = {"type": "price_update", "tickers": {}}
 		try:
 			for stock in requested_stock_updates:
-				if stock_obj := websocket.app.state.stock_manager[stock]:
-					price_update_message["tickers"][stock] = stock_obj.get_latest_price()
+				stock_obj = websocket.app.state.stock_manager[stock]
+
+				print(stock_obj, stock)
+				price_update_message["tickers"][stock] = stock_obj.get_latest_price()
 			await websocket.send_json(price_update_message)
 		except WebSocketDisconnect as _:  # pragma: no cover
 			break

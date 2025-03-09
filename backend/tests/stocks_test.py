@@ -105,4 +105,4 @@ def test_stock_updates_invalid_ticker():
 			assert data["type"] == "price_update"
 			assert "tickers" in data
 			assert isinstance(data["tickers"], dict)
-			assert len(data["tickers"]) == 0
+			assert data["tickers"] == {}
