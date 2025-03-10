@@ -26,7 +26,9 @@ from app.core.schemas.stock_prices import StockPrices
 from app.core.settings import Settings
 from app.core.simulation.simulator import Stock as SimStock
 from app.core.simulation.simulator import StockPrice
-from app.core.utils.querying_utils import QueryingUtils
+from app.core.utils.portfolio_utils import PortfolioUtils
+from app.core.utils.stock_utils import StockUtils
+from app.core.utils.user_utils import UserUtils
 from app.database import database_manager
 
 stocks_router = APIRouter(prefix="/stocks")
@@ -43,7 +45,7 @@ def get_user_from_token(request: Request) -> dict[str, Any]:
 		raise HTTPException(status_code=401, detail="Unauthorized")
 
 	with database_manager.get_session() as session:
-		if user := QueryingUtils.get_user_from_token(session, token):
+		if user := UserUtils.get_user_from_token(session, token):
 			return user
 		else:
 			raise HTTPException(status_code=401, detail="Unauthorized")
@@ -61,7 +63,7 @@ async def list_stocks(
 ) -> StockList:
 	with database_manager.get_session() as session:
 		stocks = list(
-			QueryingUtils.get_stock_list(
+			StockUtils.get_stock_list(
 				session,
 				industry,
 				exchange,
@@ -122,7 +124,7 @@ async def stock_updates(ticker: str, websocket: WebSocket) -> None:
 @stocks_router.get("/{ticker}")
 async def get_stock(ticker: str, request: Request) -> StockDetails:
 	with database_manager.get_session() as session:
-		result = QueryingUtils.get_stock_details(session, ticker)
+		result = StockUtils.get_stock_details(session, ticker)
 
 		if not result:
 			raise HTTPException(status_code=404, detail="Stock not found")
@@ -152,7 +154,7 @@ async def get_stock_price(
 			if time_unit not in UNIT_TIME:
 				raise InvalidTimeUnitError()
 
-			result = QueryingUtils.get_stock_prices(session, ticker, period, time_unit)
+			result = StockUtils.get_stock_prices(session, ticker, period, time_unit)
 
 			stock_prices = [
 				StockPrices(
@@ -223,8 +225,8 @@ async def buy_stock(
 
 		session.add(new_transaction)
 
-		QueryingUtils.update_user_balance(session, user["id"], -transaction_cost)
-		QueryingUtils.update_user_portfolio(
+		UserUtils.update_user_balance(session, user["id"], -transaction_cost)
+		PortfolioUtils.update_user_portfolio(
 			session, user["id"], stock_sim.id, stock_buy.amount, True
 		)
 
@@ -253,7 +255,7 @@ async def sell_stock(
 	transaction_cost = unit_sell_price * stock_buy.amount
 
 	with database_manager.get_session() as session:
-		user_portfolio = QueryingUtils.get_user_portfolio(session, user["id"], stock_sim.id)
+		user_portfolio = PortfolioUtils.get_user_portfolio(session, user["id"], stock_sim.id)
 
 		if not user_portfolio or user_portfolio.amount < stock_buy.amount:
 			raise HTTPException(
@@ -270,8 +272,8 @@ async def sell_stock(
 
 		session.add(new_transaction)
 
-		QueryingUtils.update_user_balance(session, user["id"], transaction_cost)
-		QueryingUtils.update_user_portfolio(
+		UserUtils.update_user_balance(session, user["id"], transaction_cost)
+		PortfolioUtils.update_user_portfolio(
 			session, user["id"], stock_sim.id, stock_buy.amount, False
 		)
 

@@ -11,7 +11,7 @@ from sqlmodel import select
 
 from app.core.models.company import Company
 from app.core.settings import Settings
-from app.core.utils.querying_utils import QueryingUtils
+from app.core.utils.stock_utils import StockUtils
 from app.database import database_manager
 
 logger = logging.getLogger(__name__)
@@ -71,7 +71,7 @@ class StockPriceManager:
 		self.stocks = self.create_stock_list()
 		self.last_db_update = time.time()
 
-		newest_price_for_all_stocks = QueryingUtils.get_newest_price_for_all_stocks()
+		newest_price_for_all_stocks = StockUtils.get_newest_price_for_all_stocks()
 
 		random.seed(42069)
 
@@ -109,7 +109,7 @@ class StockPriceManager:
 	async def try_db_insert(self) -> None:
 		if time.time() % settings.simulation_database_snapshot_time_s < 1:
 			logger.info("Inserting price snapshot into the database")
-			await QueryingUtils.insert_prices(
+			await StockUtils.insert_prices(
 				[(stock.id, stock.price_history[-1]) for stock in self.stocks]
 			)
 

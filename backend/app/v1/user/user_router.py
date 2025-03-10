@@ -8,7 +8,8 @@ from fastapi.params import Depends
 from app.core.exceptions import UserNotFoundError
 from app.core.schemas.portfolio_out import PortfolioOut
 from app.core.schemas.user_out import UserOut
-from app.core.utils.querying_utils import QueryingUtils
+from app.core.utils.portfolio_utils import PortfolioUtils
+from app.core.utils.user_utils import UserUtils
 from app.database import database_manager
 from app.v1.stocks.stocks_router import get_user_from_token
 
@@ -27,7 +28,7 @@ async def user_info(request: Request) -> UserOut:
 		if not session_id:
 			raise HTTPException(status_code=404, detail="User not found")
 
-		return QueryingUtils.get_user_info(session_id)
+		return UserUtils.get_user_info(session_id)
 
 	except UserNotFoundError as _:
 		logger.error(f"Invalid session. Session ID: {session_id}")
@@ -45,7 +46,7 @@ async def user_portfolio(
 ) -> list[PortfolioOut]:
 	try:
 		with database_manager.get_session() as session:
-			portfolios = QueryingUtils.get_user_portfolios(session, user["id"])
+			portfolios = PortfolioUtils.get_user_portfolios(session, user["id"])
 
 			return [
 				PortfolioOut(

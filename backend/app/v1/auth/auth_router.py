@@ -12,7 +12,7 @@ from app.core.exceptions import (
 from app.core.schemas.session_out import SessionOut
 from app.core.schemas.user_login import UserLogin
 from app.core.schemas.user_register import UserRegister
-from app.core.utils.querying_utils import QueryingUtils
+from app.core.utils.auth_utils import AuthUtils
 
 auth_router = APIRouter(prefix="/auth")
 
@@ -25,7 +25,7 @@ async def register(user: UserRegister, request: Request, response: Response) -> 
 		if not request.client:  # pragma: no cover
 			raise HTTPException(status_code=500, detail="User creation failed")
 
-		new_session = QueryingUtils.register(user, request.client.host)
+		new_session = AuthUtils.register(user, request.client.host)
 
 		response.set_cookie(key="session_id", value=new_session, httponly=True)
 		return SessionOut(session_id=new_session)
@@ -45,7 +45,7 @@ async def login(user: UserLogin, request: Request, response: Response) -> Sessio
 		if not request.client:  # pragma: no cover
 			raise HTTPException(status_code=500, detail="User login failed")
 
-		new_session = QueryingUtils.login(user, request.client.host)
+		new_session = AuthUtils.login(user, request.client.host)
 
 		response.set_cookie(key="session_id", value=new_session, httponly=True)
 		return SessionOut(session_id=new_session)
@@ -67,7 +67,7 @@ async def logout(request: Request, response: Response) -> dict[str, str]:
 		if not session_id:
 			raise UserNotLoggedInError
 
-		QueryingUtils.logout(session_id)
+		AuthUtils.logout(session_id)
 		response.delete_cookie("session_id")
 	except Exception as _:
 		logger.error("Failed to logout", exc_info=True)
