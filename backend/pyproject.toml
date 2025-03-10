@@ -34,7 +34,10 @@ company_preprocessing = "scripts.company_preprocessing:main"
 omit = [
     "*/tests/*",
     "*/simulator.py",
-    "*/querying_utils.py",
+    "*/auth_utils.py",
+    "*/stock_utils.py",
+    "*/user_utils.py",
+    "*/portfolio_utils.py",
     "*/__init__.py",
     "*/database.py",
     "*/logger.py",
