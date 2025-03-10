@@ -8,17 +8,27 @@ import {
 	getFormatCurrencyString,
 } from "@/hooks/useFormatCurrency";
 import { useLocale, useTranslations } from "next-intl";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { useGetStockHistory } from "@/query/stock-details";
+import { TimeUnit } from "@/types/stocks";
+import { useQueryClient } from "@tanstack/react-query";
 import moment from "moment";
 
 const StockChart = ({ ticker }: { ticker: string }) => {
-	const period = "100y";
-	const timeUnit = "h";
+	const [period, setPeriod] = useState("100y");
+	const [timeUnit, setTimeUnit] = useState("h");
 	const t = useTranslations("StockDetails.tooltip");
 	const chartRef = useRef<HTMLDivElement | null>(null);
-	const { data, error, isLoading } = useGetStockHistory(
+	const queryClient = useQueryClient();
+	const { data, error, isLoading, refetch } = useGetStockHistory(
 		ticker,
 		period,
 		timeUnit,
@@ -29,6 +39,12 @@ const StockChart = ({ ticker }: { ticker: string }) => {
 		() => (value: number) => getFormatCurrencyString(value, locale),
 		[locale],
 	);
+
+	const handleTimeUnitChange = async (timeUnitValue: string) => {
+		setTimeUnit(timeUnitValue);
+		// await refetch();
+		// queryClient.invalidateQueries({ queryKey: ["stockPriceHistory", ticker] });
+	};
 
 	const transformChartData = useMemo(() => {
 		if (!data || data.length === 0) return { timestamps: [], prices: [] };
@@ -52,6 +68,10 @@ const StockChart = ({ ticker }: { ticker: string }) => {
 			{ timestamps: [], prices: [] },
 		);
 	}, [data, locale]);
+
+	useEffect(() => {
+		refetch();
+	}, [timeUnit, refetch]);
 
 	useEffect(() => {
 		if (!chartRef.current || !transformChartData.timestamps.length) return;
@@ -80,16 +100,18 @@ const StockChart = ({ ticker }: { ticker: string }) => {
 			tooltip: {
 				formatter: (params) => {
 					// @ts-expect-error: echarts provide value property, but it does not exist in the type.
+
 					const [_, open, close, lowest, highest] = params.value;
 
 					return `
-					${t("open")}: ${yAxisFormatter(open)}<br/>
-					${t("close")}: ${yAxisFormatter(close)}<br/>
-					${t("low")}: ${yAxisFormatter(lowest)}<br/>
-					${t("High")}: ${yAxisFormatter(highest)}
-				  `;
+        ${t("open")}: <b>${yAxisFormatter(open)}</b><br/>
+        ${t("close")}: <b>${yAxisFormatter(close)}</b><br/>
+        ${t("low")}: <b>${yAxisFormatter(lowest)}</b><br/>
+        ${t("high")}: <b>${yAxisFormatter(highest)}</b>
+        `;
 				},
 			},
+
 			series: [series],
 		};
 
@@ -103,7 +125,36 @@ const StockChart = ({ ticker }: { ticker: string }) => {
 	if (isLoading) return;
 	if (error) return <div className="error">{error.message}</div>;
 
-	return <div className="chart w-full h-96 px-1" ref={chartRef} />;
+	return (
+		<div className="flex flex-col">
+			<div>
+				<div className="period-picker w-auto">
+					<Select
+						value={timeUnit}
+						onValueChange={(value) => handleTimeUnitChange(value)}
+					>
+						<SelectTrigger>
+							<SelectValue placeholder={timeUnit.toUpperCase()} />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value={TimeUnit.YEAR}>1Y</SelectItem>
+							<SelectItem value={TimeUnit.MONTH}>1MTH</SelectItem>
+							<SelectItem defaultChecked value={TimeUnit.DAY}>
+								1D
+							</SelectItem>
+							<SelectItem value={TimeUnit.HOUR}>1H</SelectItem>
+							<SelectItem value={TimeUnit.MINUTE}>15MIN</SelectItem>
+						</SelectContent>
+					</Select>
+				</div>
+			</div>
+
+			<div
+				className="chart w-full h-96 px-1 min-w-[300px] max-w-[100%] m-auto"
+				ref={chartRef}
+			/>
+		</div>
+	);
 };
 
 export default StockChart;

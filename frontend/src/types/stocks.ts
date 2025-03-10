@@ -17,3 +17,12 @@ export type PortfolioItem = Omit<
 	Stock,
 	"industry" | "exchange" | "imageUrl" | "buy" | "sell"
 > & { amount: number; price: number };
+
+export enum TimeUnit {
+	SECOND = "s",
+	MINUTE = "min",
+	HOUR = "h",
+	DAY = "d",
+	MONTH = "mth",
+	YEAR = "y",
+}

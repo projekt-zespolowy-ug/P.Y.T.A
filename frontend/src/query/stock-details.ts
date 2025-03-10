@@ -1,4 +1,5 @@
 import type { GetStockDetailsResponse } from "@/types/api-responses";
+import { TimeUnit } from "@/types/stocks";
 import { useQuery } from "@tanstack/react-query";
 import type { StockHistory } from "../types/api-responses";
 import { axiosInstance } from "./http";
@@ -19,8 +20,9 @@ export const useGetStockHistory = (
 	timeUnit: string,
 ) =>
 	useQuery({
-		queryKey: ["stockPriceHistory", ticker],
+		queryKey: ["stockPriceHistory", ticker, period, timeUnit],
 		queryFn: () => getStockHistory(ticker, period, timeUnit),
+		staleTime: 1000 * 60,
 	});
 
 const getStockHistory = async (
