@@ -12,7 +12,7 @@ from app.core.exceptions import (
 from app.core.schemas.session_out import SessionOut
 from app.core.schemas.user_login import UserLogin
 from app.core.schemas.user_register import UserRegister
-from app.core.utils.auth_utils import AuthUtils
+from app.core.utils.query.auth_utils import AuthUtils
 
 auth_router = APIRouter(prefix="/auth")
 

@@ -8,8 +8,8 @@ from fastapi.params import Depends
 from app.core.exceptions import UserNotFoundError
 from app.core.schemas.portfolio_out import PortfolioOut
 from app.core.schemas.user_out import UserOut
-from app.core.utils.portfolio_utils import PortfolioUtils
-from app.core.utils.user_utils import UserUtils
+from app.core.utils.query.portfolio_utils import PortfolioUtils
+from app.core.utils.query.user_utils import UserUtils
 from app.database import database_manager
 from app.v1.stocks.stocks_router import get_user_from_token
 

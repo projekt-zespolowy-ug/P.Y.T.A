@@ -11,7 +11,7 @@ from sqlmodel import select
 
 from app.core.models.company import Company
 from app.core.settings import Settings
-from app.core.utils.stock_utils import StockUtils
+from app.core.utils.query.stock_utils import StockUtils
 from app.database import database_manager
 
 logger = logging.getLogger(__name__)

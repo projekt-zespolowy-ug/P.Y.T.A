@@ -26,9 +26,9 @@ from app.core.schemas.stock_prices import StockPrices
 from app.core.settings import Settings
 from app.core.simulation.simulator import Stock as SimStock
 from app.core.simulation.simulator import StockPrice
-from app.core.utils.portfolio_utils import PortfolioUtils
-from app.core.utils.stock_utils import StockUtils
-from app.core.utils.user_utils import UserUtils
+from app.core.utils.query.portfolio_utils import PortfolioUtils
+from app.core.utils.query.stock_utils import StockUtils
+from app.core.utils.query.user_utils import UserUtils
 from app.database import database_manager
 
 stocks_router = APIRouter(prefix="/stocks")
