@@ -8,9 +8,9 @@ export type Stock = {
 	sell: number;
 };
 
-export interface StockPriceMessage {
-	buy: number;
-	sell: number;
+export interface StockSocketMessage {
+	type: "subscribe" | "unsubscribe" | "price_update";
+	tickers: Record<string, { buy: number; sell: number }>;
 }
 
 export type PortfolioItem = Omit<
