@@ -129,7 +129,7 @@
 			"open": "Otwarcie",
 			"close": "Zamkniecie",
 			"low": "Minimum",
-			"High": "Maksimum"
+			"high": "Maksimum"
 		},
 		"actions": {
 			"bought": "Kupiono",

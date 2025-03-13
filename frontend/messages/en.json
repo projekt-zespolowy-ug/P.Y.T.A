@@ -130,7 +130,7 @@
 			"open": "Open",
 			"close": "Close",
 			"low": "Low",
-			"High": "High"
+			"high": "High"
 		},
 		"actions": {
 			"bought": "bought",

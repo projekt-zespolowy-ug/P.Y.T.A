@@ -1,6 +1,7 @@
 "use client";
 import {
 	Sheet,
+	SheetClose,
 	SheetContent,
 	SheetFooter,
 	SheetHeader,
@@ -13,16 +14,18 @@ import { Menu } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import Image from "next/image";
+import { useState } from "react";
 import { ModeToggle } from "./ModeToggle";
 
 const BarMenu = () => {
+	const [isOpen, setIsOpen] = useState(false);
 	const { isSuccess: isAuthenticated } = useGetUser();
 	const tLeftTabs = useTranslations("Header.LeftTabs");
 	const tHeader = useTranslations("Header");
 	const { resolvedTheme } = useTheme();
 
 	return (
-		<Sheet>
+		<Sheet open={isOpen} onOpenChange={setIsOpen}>
 			<SheetTrigger>
 				<Menu />
 			</SheetTrigger>
@@ -45,11 +48,15 @@ const BarMenu = () => {
 					<div className="tabs flex flex-col">
 						<ul className="flex flex-col list-none gap-2 text-lg text-start">
 							<li className="hover:text-primary">
-								<Link href="/">{tLeftTabs("browseStocks")}</Link>
+								<Link href="/" onClick={() => setIsOpen(false)}>
+									{tLeftTabs("browseStocks")}
+								</Link>
 							</li>
 							{isAuthenticated && (
 								<li>
-									<Link href="/portfolio">{tLeftTabs("portfolio")}</Link>
+									<Link href="/portfolio" onClick={() => setIsOpen(false)}>
+										{tLeftTabs("portfolio")}
+									</Link>
 								</li>
 							)}
 						</ul>

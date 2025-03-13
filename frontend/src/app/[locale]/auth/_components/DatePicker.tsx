@@ -37,7 +37,7 @@ interface DatePickerProps {
 
 export function DatePicker({ fromDate, toDate }: DatePickerProps) {
 	const [date, setDate] = React.useState<Date>(toDate);
-
+	const [isOpen, setIsOpen] = React.useState(false);
 	const t = useTranslations("AuthForm.Calendar");
 
 	const locale = useLocale();
@@ -75,7 +75,10 @@ export function DatePicker({ fromDate, toDate }: DatePickerProps) {
 	};
 
 	const handleSelect = (selectedData: Date | undefined) => {
-		if (selectedData) setDate(selectedData);
+		if (selectedData) {
+			setDate(selectedData);
+			setIsOpen(false);
+		}
 	};
 
 	const form = useFormContext();
@@ -87,7 +90,7 @@ export function DatePicker({ fromDate, toDate }: DatePickerProps) {
 			render={({ field }) => (
 				<FormItem className="flex flex-col">
 					<FormLabel>{t("dobLabel")}</FormLabel>
-					<Popover>
+					<Popover open={isOpen} onOpenChange={setIsOpen}>
 						<PopoverTrigger asChild>
 							<FormControl>
 								<Button

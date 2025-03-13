@@ -20,7 +20,7 @@ const Header = () => {
 	} = useGetUser();
 
 	return (
-		<header className="flex justify-between items-center bg-secondary p-2">
+		<header className="flex justify-between items-center bg-secondary p-2 sticky top-0 z-10">
 			<div className="left">
 				<div className="logo">
 					<Link href="/" className="hover:text-blue-600">
