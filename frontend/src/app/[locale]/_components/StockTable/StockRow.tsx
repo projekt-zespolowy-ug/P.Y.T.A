@@ -2,7 +2,7 @@
 import { TableRow } from "@/components/ui/table";
 import { useRouter } from "@/i18n/routing";
 import type { Stock } from "@/types/stocks";
-import { getTickerPrices } from "@/ws/ticker-update";
+import { createPriceHandler, stockUpdateClient } from "@/ws";
 import type { Row } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
@@ -26,14 +26,19 @@ export default function StockRow({ row }: TickerItemProps) {
 	const router = useRouter();
 
 	useEffect(() => {
+		const priceHandler = createPriceHandler(ticker, (event) => {
+			setPrices(event.detail[ticker]);
+		});
+
 		if (!inView) {
 			return;
 		}
-		const socket = getTickerPrices(ticker, ({ data }) => {
-			setPrices(JSON.parse(data));
-		});
+		stockUpdateClient.subscribe([ticker]);
+		stockUpdateClient.addPriceHandler(priceHandler);
+
 		return () => {
-			socket.close();
+			stockUpdateClient.unsubscribe([ticker]);
+			stockUpdateClient.removePriceHandler(priceHandler);
 		};
 	}, [ticker, inView]);
 

@@ -7,8 +7,8 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { useFormatCurrency } from "@/hooks/useFormatCurrency";
-import type { PortfolioItem, StockPriceMessage } from "@/types/stocks";
-import { getTickerPrices } from "@/ws/ticker-update";
+import type { PortfolioItem } from "@/types/stocks";
+import { createPriceHandler, stockUpdateClient } from "@/ws";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -30,19 +30,22 @@ const OwnedStock = ({ item }: { item: PortfolioItem }) => {
 				: null;
 
 	useEffect(() => {
-		const socket = getTickerPrices(item.ticker, ({ data }) => {
-			const parsed = JSON.parse(data) as StockPriceMessage;
-
+		const priceHandler = createPriceHandler(item.ticker, (event) => {
 			setCurrentPrice((prev) => {
 				setPrevPrice(prev);
-				return parsed.sell;
+				return event.detail[item.ticker].sell;
 			});
 		});
 
+		stockUpdateClient.subscribe([item.ticker]);
+		stockUpdateClient.addPriceHandler(priceHandler);
+
 		return () => {
-			socket.close();
+			stockUpdateClient.unsubscribe([item.ticker]);
+			stockUpdateClient.removePriceHandler(priceHandler);
 		};
 	}, [item.ticker]);
+
 	return (
 		<Card>
 			<CardHeader className="flex justify-between m-2">
