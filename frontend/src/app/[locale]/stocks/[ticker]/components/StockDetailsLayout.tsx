@@ -20,8 +20,6 @@ import { useLocale, useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
-import ApexStockChart from "./ReactStockChart";
-import ReactStockChart from "./ReactStockChart";
 import StockChart from "./StockChart";
 
 const StockDetailsLayout = ({ ticker }: { ticker: string }) => {
@@ -145,7 +143,6 @@ const StockDetailsLayout = ({ ticker }: { ticker: string }) => {
 					</div>
 				</div>
 				<StockChart ticker={ticker} />
-				<ReactStockChart ticker={ticker} />
 				{isLogged && (
 					<>
 						<div className="flex p-6">

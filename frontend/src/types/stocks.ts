@@ -26,3 +26,12 @@ export enum TimeUnit {
 	MONTH = "mth",
 	YEAR = "y",
 }
+
+export enum PeriodUnit {
+	ONE_YEAR = "1y",
+	THREE_YEARS = "3y",
+	FIVE_YEARS = "5y",
+	ONE_DAY = "1d",
+	THREE_DAYS = "3d",
+	SEVEN_DAYS = "7d",
+}

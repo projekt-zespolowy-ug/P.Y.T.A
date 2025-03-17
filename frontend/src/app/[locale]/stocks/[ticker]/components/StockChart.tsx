@@ -1,157 +1,154 @@
 "use client";
 
-import * as echarts from "echarts";
-
-import { candleChartOptions, candleChartSeries } from "@/data/chart-options";
+import { Spinner } from "@/app/[locale]/_components/Spinner";
+import { Label } from "@/components/ui/label";
 import {
 	getFormatCurrency,
 	getFormatCurrencyString,
 } from "@/hooks/useFormatCurrency";
-import { useLocale, useTranslations } from "next-intl";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
 import { useGetStockHistory } from "@/query/stock-details";
-import { TimeUnit } from "@/types/stocks";
-import { useQueryClient } from "@tanstack/react-query";
-import moment from "moment";
+import { PeriodUnit, TimeUnit } from "@/types/stocks";
+import type { ApexOptions } from "apexcharts";
+import { useLocale, useTranslations } from "next-intl";
+import { useTheme } from "next-themes";
+import React, { useEffect, useMemo, useState } from "react";
+import ReactApexChart from "react-apexcharts";
+import PeriodSelect from "./PeriodSelect";
+import TimeUnitSelect from "./TimeUnitSelect";
 
 const StockChart = ({ ticker }: { ticker: string }) => {
-	const [period, setPeriod] = useState("100y");
-	const [timeUnit, setTimeUnit] = useState("h");
-	const t = useTranslations("StockDetails.tooltip");
-	const chartRef = useRef<HTMLDivElement | null>(null);
-	const queryClient = useQueryClient();
+	const [period, setPeriod] = useState(PeriodUnit.ONE_YEAR);
+	const [timeUnit, setTimeUnit] = useState(TimeUnit.HOUR);
+	const t = useTranslations("StockDetails");
+
 	const { data, error, isLoading, refetch } = useGetStockHistory(
 		ticker,
 		period,
 		timeUnit,
 	);
 	const locale = useLocale();
-
+	const { resolvedTheme } = useTheme();
 	const yAxisFormatter = useMemo(
 		() => (value: number) => getFormatCurrencyString(value, locale),
 		[locale],
 	);
+	const transformedChartData = useMemo(() => {
+		if (!data || data.length === 0) return [];
 
-	const handleTimeUnitChange = async (timeUnitValue: string) => {
-		setTimeUnit(timeUnitValue);
-		// await refetch();
-		// queryClient.invalidateQueries({ queryKey: ["stockPriceHistory", ticker] });
-	};
-
-	const transformChartData = useMemo(() => {
-		if (!data || data.length === 0) return { timestamps: [], prices: [] };
-
-		return data.reduce<{
-			timestamps: string[];
-			prices: number[][];
-		}>(
-			(acc, { timestamp, open, close, min, max }) => {
-				const formattedDate = moment(timestamp).format("YYYY-MM-DD");
-
-				const formattedPrices = [open, close, min, max].map(
-					(price) => Math.round(getFormatCurrency(price, locale) * 100) / 100,
-				);
-
-				acc.timestamps.push(formattedDate);
-				acc.prices.push(formattedPrices);
-
-				return acc;
-			},
-			{ timestamps: [], prices: [] },
-		);
+		return data.map(({ timestamp, open, close, min, max }) => ({
+			x: new Date(timestamp),
+			y: [open, max, min, close].map((price) =>
+				getFormatCurrency(price, locale),
+			),
+		}));
 	}, [data, locale]);
+	const getTooltipContentDiv = (
+		open: number,
+		close: number,
+		lowest: number,
+		highest: number,
+	) => `<div className="flex flex-col">
+			<div>
+				${t("tooltip.open")}: <b>${yAxisFormatter(open)}</b>
+			</div>
+			<div>
+				${t("tooltip.close")}: <b>${yAxisFormatter(close)}</b>
+			</div>
+			<div>
+				${t("tooltip.low")}: <b>${yAxisFormatter(lowest)}</b>
+			</div>
+			<div>
+				${t("tooltip.high")}: <b>${yAxisFormatter(highest)}</b>
+			</div>
+		</div>`;
+	const [chartOptions, setChartOptions] = useState<{
+		series: { data: { x: Date; y: number[] }[] }[];
+		options: ApexOptions;
+	}>({
+		series: [{ data: [] }],
+		options: {
+			theme: {
+				mode: resolvedTheme === "dark" ? "dark" : "light",
+			},
+			chart: {
+				type: "candlestick",
+				height: 350,
+				toolbar: {},
+			},
+			title: {
+				text: ticker,
+				align: "center",
+			},
+			xaxis: {
+				type: "datetime",
+				labels: {
+					hideOverlappingLabels: true,
+				},
+			},
+
+			yaxis: {
+				tooltip: { enabled: true },
+				labels: {
+					formatter: (val) => yAxisFormatter(val),
+				},
+			},
+
+			tooltip: {
+				custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+					const open = w.globals.seriesCandleO[seriesIndex][dataPointIndex];
+					const high = w.globals.seriesCandleH[seriesIndex][dataPointIndex];
+					const low = w.globals.seriesCandleL[seriesIndex][dataPointIndex];
+					const close = w.globals.seriesCandleC[seriesIndex][dataPointIndex];
+					return getTooltipContentDiv(open, close, low, high);
+				},
+				theme: resolvedTheme,
+			},
+		},
+	});
 
 	useEffect(() => {
 		refetch();
-	}, [timeUnit, refetch]);
+	}, [timeUnit]);
 
 	useEffect(() => {
-		if (!chartRef.current || !transformChartData.timestamps.length) return;
-
-		const chart = echarts.init(chartRef.current);
-		const series = {
-			...candleChartSeries,
-			data: transformChartData.prices,
-		} as echarts.SeriesOption;
-
-		const newOptions: echarts.EChartsOption = {
-			...candleChartOptions,
-			title: { ...candleChartOptions.title, text: ticker },
-			xAxis: {
-				...candleChartOptions.xAxis,
-				data: transformChartData.timestamps,
+		setChartOptions((prev) => ({
+			...prev,
+			options: {
+				...prev.options,
+				tooltip: { ...prev.options.tooltip, theme: resolvedTheme },
 			},
-			yAxis: {
-				...candleChartOptions.yAxis,
-				type: "value",
-				boundaryGap: ["0%", "0%"],
-				axisLabel: {
-					formatter: yAxisFormatter,
-				},
-			},
-			tooltip: {
-				formatter: (params) => {
-					// @ts-expect-error: echarts provide value property, but it does not exist in the type.
+		}));
+	}, [resolvedTheme]);
 
-					const [_, open, close, lowest, highest] = params.value;
+	useEffect(() => {
+		setChartOptions((prev) => ({
+			...prev,
+			series: [
+				{ data: transformedChartData.length ? transformedChartData : [] },
+			],
+		}));
+	}, [transformedChartData]);
 
-					return `
-        ${t("open")}: <b>${yAxisFormatter(open)}</b><br/>
-        ${t("close")}: <b>${yAxisFormatter(close)}</b><br/>
-        ${t("low")}: <b>${yAxisFormatter(lowest)}</b><br/>
-        ${t("high")}: <b>${yAxisFormatter(highest)}</b>
-        `;
-				},
-			},
-
-			series: [series],
-		};
-
-		chart.setOption(newOptions);
-
-		return () => {
-			chart.dispose();
-		};
-	}, [transformChartData, ticker, yAxisFormatter, t]);
-
-	if (isLoading) return;
+	if (isLoading) return <Spinner />;
 	if (error) return <div className="error">{error.message}</div>;
 
 	return (
-		<div className="flex flex-col">
-			<div>
-				<div className="period-picker w-auto">
-					<Select
-						value={timeUnit}
-						onValueChange={(value) => handleTimeUnitChange(value)}
-					>
-						<SelectTrigger>
-							<SelectValue placeholder={timeUnit.toUpperCase()} />
-						</SelectTrigger>
-						<SelectContent>
-							<SelectItem value={TimeUnit.YEAR}>1Y</SelectItem>
-							<SelectItem value={TimeUnit.MONTH}>1MTH</SelectItem>
-							<SelectItem defaultChecked value={TimeUnit.DAY}>
-								1D
-							</SelectItem>
-							<SelectItem value={TimeUnit.HOUR}>1H</SelectItem>
-							<SelectItem value={TimeUnit.MINUTE}>15MIN</SelectItem>
-						</SelectContent>
-					</Select>
+		<div className="flex flex-col gap-1">
+			<div className="options flex  justify-between flex-1 m-2">
+				<div className="option">
+					<Label>{t("labels.period")}</Label>
+					<PeriodSelect setPeriod={setPeriod} period={period} />
+				</div>
+				<div className="option">
+					<Label>{t("labels.timeUnit")}</Label>
+					<TimeUnitSelect timeUnit={timeUnit} setTimeUnit={setTimeUnit} />
 				</div>
 			</div>
-
-			<div
-				className="chart w-full h-96 px-1 min-w-[300px] max-w-[100%] m-auto"
-				ref={chartRef}
+			<ReactApexChart
+				options={chartOptions.options}
+				series={chartOptions.series}
+				type="candlestick"
+				height={350}
 			/>
 		</div>
 	);

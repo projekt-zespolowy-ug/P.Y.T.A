@@ -142,6 +142,10 @@
 			"insufficientStocks": "Niewystarczająca ilość akcji.",
 			"stockNotFound": "Akcje nie znalezione.",
 			"incorrectAmount": "Nieprawidłowa ilość."
+		},
+		"labels": {
+			"period": "Zakres czasowy",
+			"timeUnit": "Interwał czasowy"
 		}
 	},
 	"Portfolio": {
