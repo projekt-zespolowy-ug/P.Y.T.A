@@ -12,8 +12,7 @@ import {
 import { useGetUser } from "@/query/auth";
 import { useGetStockDetails } from "@/query/stock-details";
 import { useStockTransaction } from "@/query/transaction";
-import type { StockPriceMessage } from "@/types/stocks";
-import { getTickerPrices } from "@/ws/ticker-update";
+import { createPriceHandler, stockUpdateClient } from "@/ws";
 import type { AxiosError } from "axios";
 import { ExternalLinkIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -38,14 +37,17 @@ const StockDetailsLayout = ({ ticker }: { ticker: string }) => {
 	const { mutate: sellStock } = useStockTransaction("sell", ticker);
 
 	useEffect(() => {
-		const socket = getTickerPrices(ticker, ({ data }) => {
-			const parsed = JSON.parse(data) as StockPriceMessage;
-			setLatestBuyPrice(parsed.buy);
-			setLatestSellPrice(parsed.sell);
+		const priceHandler = createPriceHandler(ticker, (event) => {
+			setLatestBuyPrice(event.detail[ticker].buy);
+			setLatestSellPrice(event.detail[ticker].sell);
 		});
 
+		stockUpdateClient.subscribe([ticker]);
+		stockUpdateClient.addPriceHandler(priceHandler);
+
 		return () => {
-			socket.close();
+			stockUpdateClient.unsubscribe([ticker]);
+			stockUpdateClient.removePriceHandler(priceHandler);
 		};
 	}, [ticker]);
 
