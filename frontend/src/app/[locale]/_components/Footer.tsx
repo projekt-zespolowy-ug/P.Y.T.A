@@ -29,7 +29,6 @@ const Footer = () => {
 						className="text-primary font-bold flex gap-1"
 					>
 						<div>{t("platform")}</div>
-						{/* INFO: according to https://lucide.dev/icons/github this logo is not deprecated */}
 						<div>
 							{t("platform").toLowerCase().startsWith("github") && <Github />}
 						</div>
