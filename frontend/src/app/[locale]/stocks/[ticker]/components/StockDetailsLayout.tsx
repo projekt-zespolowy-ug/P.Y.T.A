@@ -17,6 +17,7 @@ import { getTickerPrices } from "@/ws/ticker-update";
 import type { AxiosError } from "axios";
 import { ExternalLinkIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -120,9 +121,9 @@ const StockDetailsLayout = ({ ticker }: { ticker: string }) => {
 								<span className="name">{data?.name}</span>
 								<span className="company-link">
 									<MyTooltip tooltipContent={<span>{data?.description}</span>}>
-										<a href={data?.description}>
+										<Link target="_blank" href={data?.description}>
 											<ExternalLinkIcon />
-										</a>
+										</Link>
 									</MyTooltip>
 								</span>
 							</div>

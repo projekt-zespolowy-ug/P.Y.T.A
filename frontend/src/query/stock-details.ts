@@ -1,5 +1,4 @@
 import type { GetStockDetailsResponse } from "@/types/api-responses";
-import { TimeUnit } from "@/types/stocks";
 import { useQuery } from "@tanstack/react-query";
 import type { StockHistory } from "../types/api-responses";
 import { axiosInstance } from "./http";
