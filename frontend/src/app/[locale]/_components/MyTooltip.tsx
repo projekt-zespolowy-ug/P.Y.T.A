@@ -10,7 +10,7 @@ import React from "react";
 const MyTooltip = ({
 	children,
 	tooltipContent,
-}: { children: JSX.Element; tooltipContent: JSX.Element }) => (
+}: PropsWithChildren<{  tooltipContent: React.ReactNode }>) => (
 	<TooltipProvider>
 		<Tooltip>
 			<TooltipTrigger asChild>{children}</TooltipTrigger>
