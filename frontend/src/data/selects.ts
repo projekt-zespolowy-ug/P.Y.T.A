@@ -3,7 +3,7 @@ import { PeriodUnit, TimeUnit } from "@/types/stocks";
 type SimpleSelect<T> = {
 	id: string;
 	value: T;
-	label: string | React.ReactNode;
+	label: string;
 };
 
 type PeriodSelect = SimpleSelect<PeriodUnit>;
