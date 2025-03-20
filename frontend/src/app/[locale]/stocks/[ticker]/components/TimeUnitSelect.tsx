@@ -6,7 +6,8 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { TimeUnit } from "@/types/stocks";
+import { timeUnitSelectItems } from "@/data/selects";
+import type { TimeUnit } from "@/types/stocks";
 import type { Dispatch, SetStateAction } from "react";
 
 const TimeUnitSelect = ({
@@ -16,9 +17,8 @@ const TimeUnitSelect = ({
 	timeUnit: TimeUnit;
 	setTimeUnit: Dispatch<SetStateAction<TimeUnit>>;
 }) => {
-	const handlePeriodChange = (value: string) => {
-		if (Object.values(TimeUnit).includes(value as TimeUnit))
-			setTimeUnit(value as TimeUnit);
+	const handlePeriodChange = (value: TimeUnit) => {
+		setTimeUnit(value);
 	};
 
 	return (
@@ -28,11 +28,11 @@ const TimeUnitSelect = ({
 					<SelectValue placeholder={timeUnit.toUpperCase()} />
 				</SelectTrigger>
 				<SelectContent>
-					<SelectItem value={TimeUnit.YEAR}>1Y</SelectItem>
-					<SelectItem value={TimeUnit.MONTH}>1MTH</SelectItem>
-					<SelectItem value={TimeUnit.DAY}>1D</SelectItem>
-					<SelectItem value={TimeUnit.HOUR}>1H</SelectItem>
-					<SelectItem value={TimeUnit.MINUTE}>15MIN</SelectItem>
+					{timeUnitSelectItems.map(({ id, label, value }) => (
+						<SelectItem key={id} value={value}>
+							{label}
+						</SelectItem>
+					))}
 				</SelectContent>
 			</Select>
 		</div>

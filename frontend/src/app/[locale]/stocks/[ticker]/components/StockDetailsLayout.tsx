@@ -123,9 +123,13 @@ const StockDetailsLayout = ({ ticker }: { ticker: string }) => {
 								<span className="name">{data?.name}</span>
 								<span className="company-link">
 									<MyTooltip tooltipContent={<span>{data?.description}</span>}>
-										<Link target="_blank" href={data?.description}>
+										<a
+											target="_blank"
+											rel="noreferrer"
+											href={data?.description}
+										>
 											<ExternalLinkIcon />
-										</Link>
+										</a>
 									</MyTooltip>
 								</span>
 							</div>

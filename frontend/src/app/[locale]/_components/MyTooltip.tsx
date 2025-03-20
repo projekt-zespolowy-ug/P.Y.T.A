@@ -5,12 +5,12 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import React from "react";
+import type { PropsWithChildren, ReactNode } from "react";
 
 const MyTooltip = ({
 	children,
 	tooltipContent,
-}: PropsWithChildren<{  tooltipContent: React.ReactNode }>) => (
+}: PropsWithChildren<{ tooltipContent: ReactNode }>) => (
 	<TooltipProvider>
 		<Tooltip>
 			<TooltipTrigger asChild>{children}</TooltipTrigger>

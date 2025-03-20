@@ -107,10 +107,6 @@ const StockChart = ({ ticker }: { ticker: string }) => {
 	});
 
 	useEffect(() => {
-		refetch();
-	}, [timeUnit]);
-
-	useEffect(() => {
 		setChartOptions((prev) => ({
 			...prev,
 			options: {
