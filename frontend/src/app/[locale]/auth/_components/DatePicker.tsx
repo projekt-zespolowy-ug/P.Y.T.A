@@ -33,9 +33,10 @@ import { enUS, pl } from "date-fns/locale";
 interface DatePickerProps {
 	fromDate: Date;
 	toDate: Date;
+	name: string;
 }
 
-export function DatePicker({ fromDate, toDate }: DatePickerProps) {
+export function DatePicker({ fromDate, toDate, name }: DatePickerProps) {
 	const [date, setDate] = React.useState<Date>(toDate);
 
 	const t = useTranslations("AuthForm.Calendar");
@@ -96,6 +97,7 @@ export function DatePicker({ fromDate, toDate }: DatePickerProps) {
 										"w-[250px] justify-start text-left font-normal",
 										!date && "text-muted-foreground",
 									)}
+									name={name}
 								>
 									<CalendarIcon className="mr-2 h-4 w-4" />
 									{date ? (
@@ -111,8 +113,9 @@ export function DatePicker({ fromDate, toDate }: DatePickerProps) {
 								<Select
 									onValueChange={handleMonthChange}
 									value={months[getMonth(date)]}
+									name={"monthSelect"}
 								>
-									<SelectTrigger className="w-[110px]">
+									<SelectTrigger className="w-[110px]" name="monthTrigger">
 										<SelectValue placeholder="Month" />
 									</SelectTrigger>
 									<SelectContent>
@@ -126,8 +129,9 @@ export function DatePicker({ fromDate, toDate }: DatePickerProps) {
 								<Select
 									onValueChange={handleYearChange}
 									value={getYear(date).toString()}
+									name="yearSelect"
 								>
-									<SelectTrigger className="w-[110px]">
+									<SelectTrigger className="w-[110px]" name="yearTrigger">
 										<SelectValue placeholder="Year" />
 									</SelectTrigger>
 									<SelectContent>
