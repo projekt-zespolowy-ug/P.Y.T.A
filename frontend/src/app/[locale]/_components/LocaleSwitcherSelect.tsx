@@ -41,7 +41,10 @@ export default function LocaleSwitcherSelect({
 				name="localeSwitcher"
 				value={defaultValue}
 			>
-				<SelectTrigger className="focus:ring-0 focus:ring-offset-0">
+				<SelectTrigger
+					className="focus:ring-0 focus:ring-offset-0"
+					name="localeSwitcherTrigger"
+				>
 					<SelectValue />
 				</SelectTrigger>
 				{children}

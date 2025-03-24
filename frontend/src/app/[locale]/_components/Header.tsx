@@ -24,7 +24,7 @@ const Header = () => {
 			<div className="left">
 				<div className="logo">
 					<Link href="/" className="hover:text-blue-600">
-						<PytaLogo className="w-24 h-8 fill-primary" />
+						<PytaLogo className="w-24 h-8 fill-primary" id="mainLogo" />
 					</Link>
 				</div>
 			</div>
@@ -38,7 +38,7 @@ const Header = () => {
 						</div>
 					)}
 					{isError && (
-						<Link href={"/auth/sign-in"}>
+						<Link href={"/auth/sign-in"} id="signInLink">
 							<Button>{tHeader("RightTabs.signIn")}</Button>
 						</Link>
 					)}

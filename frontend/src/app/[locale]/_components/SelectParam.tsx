@@ -30,8 +30,9 @@ export default function SelectParam({ data, paramKey }: SelectIndustryProps) {
 				paramsStore.setParam(paramKey, value);
 			}}
 			value={paramsStore[paramKey]}
+			name={paramKey}
 		>
-			<SelectTrigger className="w-[188px]">
+			<SelectTrigger className="w-[188px]" name={`${paramKey}Trigger`}>
 				<SelectValue placeholder={capitalize(t(paramKey))} />
 			</SelectTrigger>
 			<SelectContent>

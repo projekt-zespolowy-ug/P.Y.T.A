@@ -47,7 +47,7 @@ const UserAvatarMenu = ({ user }: Props) => {
 
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger className="rounded-full">
+			<DropdownMenuTrigger className="rounded-full" name="avatar-dropdown-menu">
 				<Avatar>
 					<AvatarImage
 						className="w-[3rem] h-[3rem] rounded-full"
@@ -68,7 +68,7 @@ const UserAvatarMenu = ({ user }: Props) => {
 				<DropdownMenuSeparator />
 				<DropdownMenuItem>{t("RightTabs.Avatar.profile")}</DropdownMenuItem>
 				<DropdownMenuItem>
-					<Button onClick={handleSignOut}>
+					<Button onClick={handleSignOut} name="sign-out-btn">
 						{t("RightTabs.Avatar.signOut")}
 					</Button>
 				</DropdownMenuItem>
