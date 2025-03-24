@@ -23,7 +23,7 @@ const BarMenu = () => {
 
 	return (
 		<Sheet>
-			<SheetTrigger>
+			<SheetTrigger name="bar-menu-trigger">
 				<Menu />
 			</SheetTrigger>
 			<SheetContent side="left" className="flex flex-col justify-between">
