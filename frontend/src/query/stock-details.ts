@@ -19,8 +19,9 @@ export const useGetStockHistory = (
 	timeUnit: string,
 ) =>
 	useQuery({
-		queryKey: ["stockPriceHistory", ticker],
+		queryKey: ["stockPriceHistory", ticker, period, timeUnit],
 		queryFn: () => getStockHistory(ticker, period, timeUnit),
+		staleTime: 1000 * 60,
 	});
 
 const getStockHistory = async (

@@ -130,7 +130,7 @@
 			"open": "Open",
 			"close": "Close",
 			"low": "Low",
-			"High": "High"
+			"high": "High"
 		},
 		"actions": {
 			"bought": "bought",
@@ -143,6 +143,10 @@
 			"insufficientStocks": "Insufficient stocks.",
 			"stockNotFound": "Stock not found.",
 			"incorrectAmount": "Incorrect amount."
+		},
+		"labels": {
+			"period": "Time period",
+			"timeUnit": "Time interval"
 		}
 	},
 	"Portfolio": {
