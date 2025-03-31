@@ -1,14 +1,7 @@
-import type { SignUpRequestBody } from "../../src/types/api-requests";
+import user from "../fixtures/user.json";
+
 describe("Signing up", () => {
 	it("should signup a  user", () => {
-		const userInfo: SignUpRequestBody = {
-			date_of_birth: "",
-			email: "pregnant@man11.com",
-			last_name: "man",
-			password: "Admin123.",
-			name: "pregnant",
-		};
-
 		cy.visit("/");
 
 		cy.get('a[href*="auth/sign-in"]').click();
@@ -17,11 +10,11 @@ describe("Signing up", () => {
 		cy.get('a[href*="auth/sign-up"]').click();
 		cy.url().should("include", "/auth/sign-up");
 
-		cy.get("input[name=email]").type(userInfo.email);
-		cy.get("input[name=password]").type(userInfo.password);
-		cy.get("input[name=confirmPassword]").type(userInfo.password);
-		cy.get("input[name=name]").type(userInfo.name);
-		cy.get("input[name=lastName]").type(userInfo.last_name);
+		cy.get("input[name=email]").type(user.email);
+		cy.get("input[name=password]").type(user.password);
+		cy.get("input[name=confirmPassword]").type(user.password);
+		cy.get("input[name=name]").type(user.name);
+		cy.get("input[name=lastName]").type(user.last_name);
 
 		cy.get("button[name=signUpDateOfBirth]").click();
 

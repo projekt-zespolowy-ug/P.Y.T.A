@@ -59,7 +59,10 @@ const UserAvatarMenu = ({ user }: Props) => {
 				</Avatar>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
-				<DropdownMenuItem className="text-md text-green-700">
+				<DropdownMenuItem
+					data-name={"data-balance"}
+					className="text-md text-green-700"
+				>
 					{formattedBalance}
 				</DropdownMenuItem>
 				<DropdownMenuItem className="text-md italic font">
