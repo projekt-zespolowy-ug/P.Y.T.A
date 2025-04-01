@@ -28,7 +28,7 @@ describe("Signing up", () => {
 
 		cy.url().should("include", `/stocks/${stocks.testStock.ticker}`);
 
-		cy.get("canvas").should("be.visible");
+		cy.get("foreignObject").should("be.visible");
 
 		cy.get("footer").scrollIntoView();
 		cy.get("input[name=stock-amount-input]").should("be.visible").type("2");
