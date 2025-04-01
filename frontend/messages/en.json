@@ -119,6 +119,9 @@
 		"selects": {
 			"industry": "Industry",
 			"exchange": "Exchange"
+		},
+		"results": {
+			"noResults": "No results"
 		}
 	},
 	"StockDetails": {
