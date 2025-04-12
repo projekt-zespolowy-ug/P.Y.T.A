@@ -41,10 +41,13 @@ pipeline {
 
         stage('Build frontend image') {
             agent any
+            environment {
+                NEXT_PUBLIC_API_URL=credentials("NEXT_PUBLIC_API_URL")
+            }
             steps {
                 script {
                     setBuildStatus("Building frontend docker image...", "PENDING")
-                    def frontend_docker_image = docker.build("${DOCKER_IMAGE_NAME}-frontend", "./frontend")
+                    def frontend_docker_image = docker.build("${DOCKER_IMAGE_NAME}-frontend", "--build-arg NEXT_PUBLIC_API_URL=${env.NEXT_PUBLIC_API_URL} ./frontend")
                     
                     docker.withRegistry('https://registry.hub.docker.com', DOCKER_HUB_CREDENTIALS) {
                         frontend_docker_image.push('latest')
