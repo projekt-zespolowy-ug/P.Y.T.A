@@ -1,13 +1,8 @@
 "use client";
+import MyTooltip from "@/app/[locale]/_components/MyTooltip";
 import { Spinner } from "@/app/[locale]/_components/Spinner";
 import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
 	getFormatCurrency,
@@ -19,7 +14,9 @@ import { useGetStockDetails } from "@/query/stock-details";
 import { useStockTransaction } from "@/query/transaction";
 import { createPriceHandler, stockUpdateClient } from "@/ws";
 import type { AxiosError } from "axios";
+import { ExternalLinkIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -122,12 +119,24 @@ const StockDetailsLayout = ({ ticker }: { ticker: string }) => {
 				<CardTitle>
 					<div className="flex items-center justify-between">
 						<div className="stock-left flex flex-col">
-							<div>{data?.name}</div>
+							<div className="flex gap-1">
+								<span className="name">{data?.name}</span>
+								<span className="company-link">
+									<MyTooltip tooltipContent={<span>{data?.description}</span>}>
+										<a
+											target="_blank"
+											rel="noreferrer"
+											href={data?.description}
+										>
+											<ExternalLinkIcon />
+										</a>
+									</MyTooltip>
+								</span>
+							</div>
 							<div className="font-normal text-sm">{data?.industry.name}</div>
 						</div>
 					</div>
 				</CardTitle>
-				<CardDescription>{data?.description}</CardDescription>
 			</CardHeader>
 			<CardContent className="p-0">
 				<div className="prices flex gap-1 text-xl justify-between p-6">

@@ -1,6 +1,6 @@
 import { createId } from "@paralleldrive/cuid2";
+import { Github } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
 import React from "react";
 import PytaLogo from "./PytaLogo";
 
@@ -20,16 +20,18 @@ const Footer = () => {
 				<div className="footerInfo text-muted text-sm my-2">
 					{t("appShortDesc")}
 				</div>
-				<div>
-					{t("sourceCodeInfo")}
+				<div className="flex gap-1 flex-wrap">
+					<div>{t("sourceCodeInfo")}</div>
 					<a
 						href="https://github.com/projekt-zespolowy-ug/P.Y.T.A/"
 						target="_blank"
 						rel="noreferrer"
-						className="text-primary font-bold"
+						className="text-primary font-bold flex gap-1"
 					>
-						{" "}
-						{t("platform")}
+						<div>{t("platform")}</div>
+						<div>
+							{t("platform").toLowerCase().startsWith("github") && <Github />}
+						</div>
 					</a>
 				</div>
 			</div>
