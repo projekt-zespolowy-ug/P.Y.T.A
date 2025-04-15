@@ -19,6 +19,7 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import StockRow from "./StockRow";
 
@@ -33,7 +34,7 @@ export default function StockTable<TValue>({
 }: DataTableProps<TValue>) {
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-
+	const t = useTranslations("StockTable.results");
 	const table = useReactTable({
 		data,
 		columns,
@@ -78,11 +79,17 @@ export default function StockTable<TValue>({
 					{table.getRowModel().rows?.length ? (
 						table
 							.getRowModel()
-							.rows.map((row) => <StockRow row={row} key={row.id} />)
+							.rows.map((row) => (
+								<StockRow data-name={"stock-row"} row={row} key={row.id} />
+							))
 					) : (
 						<TableRow>
-							<TableCell colSpan={columns.length} className="h-24 text-center">
-								No results.
+							<TableCell
+								data-name={"stock-table-results"}
+								colSpan={columns.length}
+								className="h-24 text-center"
+							>
+								{t("noResults")}
 							</TableCell>
 						</TableRow>
 					)}

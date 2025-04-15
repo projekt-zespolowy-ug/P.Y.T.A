@@ -11,8 +11,16 @@ export default async function Home() {
 
 	return (
 		<HomePageLayout>
-			<SelectParam paramKey="industry" data={industries} />
-			<SelectParam paramKey="exchange" data={exchanges} />
+			<SelectParam
+				data-test-id={"industry-select"}
+				paramKey="industry"
+				data={industries}
+			/>
+			<SelectParam
+				data-test-id={"exchange-select"}
+				paramKey="exchange"
+				data={exchanges}
+			/>
 		</HomePageLayout>
 	);
 }
