@@ -85,6 +85,6 @@ async def user_transactions(
 				for transaction in transactions
 			]
 
-	except Exception as error:
+	except Exception as error:  # pragma: no cover
 		logger.error(error)
 		raise HTTPException(status_code=500, detail="Failed to get transactions") from None
