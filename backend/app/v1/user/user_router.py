@@ -7,6 +7,7 @@ from fastapi.params import Depends
 
 from app.core.exceptions import UserNotFoundError
 from app.core.schemas.portfolio_out import PortfolioOut
+from app.core.schemas.transaction_out import TransactionOut
 from app.core.schemas.user_out import UserOut
 from app.core.utils.query.portfolio_utils import PortfolioUtils
 from app.core.utils.query.user_utils import UserUtils
@@ -63,3 +64,27 @@ async def user_portfolio(
 	except Exception as error:  # pragma: no cover
 		logger.error(error)
 		raise HTTPException(status_code=500, detail="Failed to get portfolios") from None
+
+
+@user_router.get("/transactions")
+async def user_transactions(
+	request: Request, user: Any = Depends(get_user_from_token), page: int = 1, limit: int = 10
+) -> list[TransactionOut]:
+	try:
+		with database_manager.get_session() as session:
+			transactions = UserUtils.get_user_transactions(session, user["id"], page, limit)
+
+			return [
+				TransactionOut(
+					company_name=transaction[1],
+					amount=transaction[0].amount,
+					unit_price=transaction[0].unit_price,
+					transaction_type=transaction[0].transaction_type,
+					timestamp=transaction[0].timestamp,
+				)
+				for transaction in transactions
+			]
+
+	except Exception as error:
+		logger.error(error)
+		raise HTTPException(status_code=500, detail="Failed to get transactions") from None
