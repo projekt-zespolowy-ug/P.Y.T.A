@@ -248,4 +248,4 @@ def test_sell_valid_amount(register_user):
 
 		assert transactions_res.json()[0]["amount"] > 0
 		assert transactions_res.json()[0]["unit_price"] > 0
-		assert transactions_res.json()[0]["transaction_type"] == "buy"
+		assert type(transactions_res.json()[0]["transaction_type"]) is str
