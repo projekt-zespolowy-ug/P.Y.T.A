@@ -237,3 +237,15 @@ def test_sell_valid_amount(register_user):
 		)
 
 		assert response.status_code == 200
+
+		transactions_res = client.get(
+			"/api/user/transactions",
+		)
+
+		assert transactions_res.status_code == 200
+		# looking at the tests above we have 4 successful transactions
+		assert len(transactions_res.json()) == 4
+
+		assert transactions_res.json()[0]["amount"] > 0
+		assert transactions_res.json()[0]["unit_price"] > 0
+		assert type(transactions_res.json()[0]["transaction_type"]) is str
