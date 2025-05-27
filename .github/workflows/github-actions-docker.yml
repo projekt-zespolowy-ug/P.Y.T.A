@@ -50,11 +50,11 @@ jobs:
           push-to-registry: true
 
       # Frontend image
-      - name: Extract metadata for frontend Docker
-        id: meta-frontend
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ github.repository }}/frontend
+      # - name: Extract metadata for frontend Docker
+      #   id: meta-frontend
+      #   uses: docker/metadata-action@v5
+      #   with:
+      #     images: ${{ env.REGISTRY }}/${{ github.repository }}/frontend
 
       # - name: Build and push frontend Docker image
       #   id: push-frontend
