@@ -7,7 +7,9 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
-		"cypress:open": "cypress open"
+		"cypress:open": "cypress open",
+		"test": "vitest run",
+		"test:dev": "vitest dev"
 	},
 	"dependencies": {
 		"@dicebear/collection": "^9.2.2",
@@ -60,9 +62,13 @@
 		"@types/react": "^19.0.12",
 		"@types/react-dom": "^19.0.4",
 		"cypress": "^14.2.1",
+		"@vitejs/plugin-react": "^4.3.4",
+		"jsdom": "^26.0.0",
 		"postcss": "^8.5.3",
 		"tailwindcss": "^3.4.17",
 		"ts-node": "^10.9.2",
-		"typescript": "^5.8.2"
+		"typescript": "^5.8.2",
+		"vite-tsconfig-paths": "^5.1.4",
+		"vitest": "^3.0.9"
 	}
 }

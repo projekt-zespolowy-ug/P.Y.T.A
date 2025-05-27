@@ -33,12 +33,19 @@ const Header = () => {
 					<LocaleSwitcher />
 					{isLoading && <Skeleton className="w-[3rem] h-[3rem] rounded-full" />}
 					{isAuthenticated && (
-						<div className="avatar flex flex-col items-center">
+						<div
+							data-testid="avatar-div"
+							className="avatar flex flex-col items-center"
+						>
 							<UserAvatarMenu user={user} />
 						</div>
 					)}
 					{isError && (
-						<Link href={"/auth/sign-in"} id="signInLink">
+						<Link
+							href={"/auth/sign-in"}
+							id="signInLink"
+							data-testid="auth-button"
+						>
 							<Button>{tHeader("RightTabs.signIn")}</Button>
 						</Link>
 					)}
