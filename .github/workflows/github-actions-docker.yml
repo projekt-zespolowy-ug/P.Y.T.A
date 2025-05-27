@@ -1,17 +1,12 @@
 name: Create and publish Docker images
 
-on:
-  pull_request:
-    types:
-      - closed
+on: [pull_request]
 
 env:
   REGISTRY: ghcr.io
 
 jobs:
   if_merged:
-    if: github.event.pull_request.merged == true
-
     runs-on: ubuntu-latest
 
     permissions:
@@ -66,7 +61,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./frontend/
-          push: true
+          push: false
           tags: ${{ steps.meta-frontend.outputs.tags }}
           labels: ${{ steps.meta-frontend.outputs.labels }}
 
@@ -75,4 +70,4 @@ jobs:
         with:
           subject-name: ${{ env.REGISTRY }}/${{ github.repository }}/frontend
           subject-digest: ${{ steps.push-frontend.outputs.digest }}
-          push-to-registry: true
+          push-to-registry: false

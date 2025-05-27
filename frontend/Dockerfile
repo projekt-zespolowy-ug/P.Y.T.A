@@ -4,6 +4,8 @@ ARG NEXT_PUBLIC_API_URL
 
 WORKDIR /app
 
+RUN apt update && apt install -y unzip
+
 COPY package.json  bun.lock ./
 RUN bun install --frozen-lockfile
 
