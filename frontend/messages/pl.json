@@ -118,6 +118,9 @@
 		"selects": {
 			"industry": "Branża",
 			"exchange": "Giełda"
+		},
+		"results": {
+			"noResults": "Brak wyników 🫃🏿"
 		}
 	},
 	"StockDetails": {

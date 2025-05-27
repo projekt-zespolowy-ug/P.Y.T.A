@@ -47,6 +47,7 @@ export default function StockRow({ row }: TickerItemProps) {
 
 	return (
 		<TableRow
+			data-ticker={row.original.ticker}
 			ref={ref}
 			key={row.id}
 			data-state={row.getIsSelected() && "selected"}

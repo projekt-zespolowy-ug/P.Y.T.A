@@ -25,6 +25,7 @@ const LocaleSwitcher = () => {
 						className="bg-primary-foreground [&:not(:last-child)]:rounded-b-none [&:not(:first-child)]:rounded-t-none"
 						key={cur}
 						value={cur}
+						data-test-id={`lang-${cur}`}
 					>
 						{getLocaleNameFull(cur)}
 					</SelectItem>

@@ -216,7 +216,11 @@ const SignUpForm = () => {
 						)}
 					/>
 
-					<DatePicker fromDate={maxBirthDate} toDate={minBirthDate} />
+					<DatePicker
+						fromDate={maxBirthDate}
+						toDate={minBirthDate}
+						name={"signUpDateOfBirth"}
+					/>
 					<FormField
 						control={form.control}
 						name="termsChecked"

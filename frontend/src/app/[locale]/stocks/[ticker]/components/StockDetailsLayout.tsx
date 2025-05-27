@@ -78,7 +78,9 @@ const StockDetailsLayout = ({ ticker }: { ticker: string }) => {
 							action: isBuy ? t("actions.bought") : t("actions.sold"),
 						}),
 						{
-							className: `${isBuy ? "bg-green-600" : "bg-red-600"} ${defaultStyle}`,
+							className: `${
+								isBuy ? "bg-green-600" : "bg-red-600"
+							} ${defaultStyle}`,
 						},
 					);
 				},
@@ -154,6 +156,7 @@ const StockDetailsLayout = ({ ticker }: { ticker: string }) => {
 					<>
 						<div className="flex p-6">
 							<Input
+								name="stock-amount-input"
 								type="number"
 								placeholder="0"
 								value={amount || ""}
@@ -162,6 +165,7 @@ const StockDetailsLayout = ({ ticker }: { ticker: string }) => {
 						</div>
 						<div className="buttons flex justify-center gap-2 flex-1 px-6 mb-6">
 							<Button
+								name="buy-btn"
 								className="flex flex-col bg-green-600 px-7 py-8 w-1/2 font-bold"
 								disabled={!amountSchema.safeParse(amount).success}
 								onClick={() => {
@@ -171,6 +175,7 @@ const StockDetailsLayout = ({ ticker }: { ticker: string }) => {
 								{t("buttons.buy")}
 							</Button>
 							<Button
+								name="sell-btn"
 								className="flex  flex-col bg-red-600 px-7 py-8 w-1/2 font-bold"
 								disabled={!amountSchema.safeParse(amount).success}
 								onClick={() => {

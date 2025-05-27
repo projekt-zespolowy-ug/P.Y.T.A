@@ -8,6 +8,7 @@ body {
 
 @layer base {
 	:root {
+		/* RGB() 255 255 255  */
 		--background: 0 0% 100%;
 		--foreground: 0 0% 3.9%;
 		--card: 0 0% 100%;
@@ -36,6 +37,7 @@ body {
 		--muted: 0 0% 30%;
 	}
 	.dark {
+		/* RGB() 10 10 10  */
 		--background: 0 0% 3.9%;
 		--foreground: 0 0% 98%;
 		--card: 0 0% 3.9%;

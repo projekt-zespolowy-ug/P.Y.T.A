@@ -57,6 +57,7 @@ export default function HomePageLayout({
 					value={searchName ?? ""}
 					onChange={(event) => setSearchName(event.target.value)}
 					className="max-w-sm"
+					name={"stock-search-bar"}
 				/>
 			</div>
 			<div className="container mx-auto pb-10">
