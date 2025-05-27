@@ -65,9 +65,9 @@ jobs:
       #     tags: ${{ steps.meta-frontend.outputs.tags }}
       #     labels: ${{ steps.meta-frontend.outputs.labels }}
 
-      - name: Generate frontend artifact attestation
-        uses: actions/attest-build-provenance@v1
-        with:
-          subject-name: ${{ env.REGISTRY }}/${{ github.repository }}/frontend
-          subject-digest: ${{ steps.push-frontend.outputs.digest }}
-          push-to-registry: true
+      # - name: Generate frontend artifact attestation
+      #   uses: actions/attest-build-provenance@v1
+      #   with:
+      #     subject-name: ${{ env.REGISTRY }}/${{ github.repository }}/frontend
+      #     subject-digest: ${{ steps.push-frontend.outputs.digest }}
+      #     push-to-registry: true
