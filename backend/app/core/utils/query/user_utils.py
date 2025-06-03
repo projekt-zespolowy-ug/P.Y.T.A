@@ -8,7 +8,9 @@ from app.core.exceptions import (
 	UserNotFoundError,
 )
 from app.core.models.auth import Auth
+from app.core.models.company import Company
 from app.core.models.session import Session as SessionModel
+from app.core.models.transaction import Transaction
 from app.core.models.user import User
 from app.core.schemas.user_out import UserOut
 from app.database import database_manager
@@ -62,3 +64,20 @@ class UserUtils:
 		session.execute(
 			update(User).where(User.id == user_id).values(balance=User.balance + change)  # type: ignore[arg-type]
 		)
+
+	@staticmethod
+	def get_user_transactions(
+		session: Session, user_id: str, page: int = 1, limit: int = 10
+	) -> Any:
+		query = (
+			select(Transaction, Company.name, Company.ticker)
+			.join(Company, Transaction.company_id == Company.id)  # type: ignore[arg-type]
+			.where(
+				Transaction.user_id == user_id,
+			)
+			.order_by(Transaction.timestamp.desc())  # type: ignore
+			.limit(limit)
+			.offset((page - 1) * limit)
+		)
+
+		return session.execute(query).all()
