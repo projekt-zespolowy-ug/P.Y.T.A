@@ -11,7 +11,7 @@ export class StockUpdateClient {
 
 	public connect() {
 		this.socket = new WebSocket(
-			`ws://${process.env.NEXT_PUBLIC_API_URL}/stocks/updates`,
+			`${process.env.NEXT_PUBLIC_API_URL}/stocks/updates`,
 		);
 		this.socket.onmessage = (event) => {
 			const parsedData = JSON.parse(event.data);
